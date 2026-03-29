@@ -1,0 +1,16 @@
+gateway:
+  address: localhost:8443
+  tls: false
+
+capture:
+  interface: any
+  bpf_filter: ""
+  flush_interval: 10s
+  batch_size: 100
+
+heartbeat:
+  interval: 30s
+
+logging:
+  level: debug
+  format: json

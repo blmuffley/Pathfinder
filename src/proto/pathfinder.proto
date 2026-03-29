@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package pathfinder;
+
+option go_package = "github.com/blmuffley/Pathfinder/src/proto";
+
+// FlowRecord represents a network connection observed by an agent.
+message FlowRecord {
+  string agent_id = 1;
+  string src_ip = 2;
+  uint32 src_port = 3;
+  string dst_ip = 4;
+  uint32 dst_port = 5;
+  string protocol = 6;        // tcp, udp, etc.
+  uint64 bytes_sent = 7;
+  uint64 bytes_received = 8;
+  int64  timestamp_ns = 9;
+  string process_name = 10;
+  uint32 process_pid = 11;
+}
+
+// AgentHeartbeat sent periodically by each agent.
+message AgentHeartbeat {
+  string agent_id = 1;
+  string hostname = 2;
+  string os_type = 3;          // linux, windows, k8s
+  string agent_version = 4;
+  int64  uptime_seconds = 5;
+  int64  timestamp_ns = 6;
+}
+
+// EnrollmentRequest sent on first agent startup.
+message EnrollmentRequest {
+  string enrollment_token = 1;
+  string hostname = 2;
+  string os_type = 3;
+  string agent_version = 4;
+}
+
+message EnrollmentResponse {
+  string agent_id = 1;
+  string gateway_cert = 2;
+}
+
+message FlowBatch {
+  repeated FlowRecord flows = 1;
+}
+
+message Ack {
+  bool success = 1;
+  string message = 2;
+}
+
+// PathfinderGateway is the core gRPC service agents connect to.
+service PathfinderGateway {
+  rpc Enroll(EnrollmentRequest) returns (EnrollmentResponse);
+  rpc SendFlows(stream FlowBatch) returns (Ack);
+  rpc Heartbeat(AgentHeartbeat) returns (Ack);
+}

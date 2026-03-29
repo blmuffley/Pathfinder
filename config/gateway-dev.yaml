@@ -1,0 +1,18 @@
+server:
+  port: 8443
+  tls: false
+
+database:
+  url: postgres://pathfinder:localdev@localhost:5432/pathfinder?sslmode=disable
+
+servicenow:
+  instance: https://mock-sn.localhost
+  auth: oauth
+  sync_interval: 60s
+
+classification:
+  confidence_threshold: 0.8
+
+logging:
+  level: debug
+  format: json

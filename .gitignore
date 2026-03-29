@@ -1,0 +1,62 @@
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+pathfinder-gateway
+pathfinder-agent
+
+# Go
+vendor/
+*.test
+*.out
+coverage.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+
+# eBPF compiled objects
+*.o
+!src/agent/linux/ebpf/*.c
+
+# Node / ServiceNow tooling
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+
+# Docker
+docker-compose.override.yml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+/bin/
+/tmp/
