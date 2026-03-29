@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="'DM Sans', 'Helvetica Neue', sans-serif">
+  <defs>
+    <filter id="s8"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1C1917" flood-opacity="0.08"/></filter>
+    <linearGradient id="limeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#39FF14;stop-opacity:0.1"/>
+      <stop offset="100%" style="stop-color:#39FF14;stop-opacity:0.02"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="700" fill="#0E0E0C"/>
+
+  <!-- Avennorth wordmark -->
+  <text x="600" y="38" text-anchor="middle" font-family="'Syne', sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" letter-spacing="-0.02em">Avennorth</text>
+  <text x="600" y="56" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194" letter-spacing="0.25em">INTELLIGENT SOFTWARE</text>
+
+  <!-- Product portfolio title -->
+  <text x="600" y="90" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.15em">PATHFINDER + INTELLIGENCE PLATFORM — PRODUCT MAP</text>
+
+  <!-- Discovery Layer -->
+  <rect x="60" y="115" width="1080" height="190" rx="16" fill="#1C1917" stroke="#39FF14" stroke-width="2"/>
+  <rect x="60" y="115" width="1080" height="190" rx="16" fill="url(#limeGrad)"/>
+  <text x="100" y="143" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.15em" font-weight="700">DISCOVERY LAYER</text>
+
+  <text x="600" y="143" text-anchor="middle" font-family="'Syne', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF">Pathfinder</text>
+
+  <!-- Agent cards -->
+  <rect x="90" y="165" width="230" height="120" rx="12" fill="#0E0E0C" stroke="#39FF1444" stroke-width="1"/>
+  <circle cx="115" cy="192" r="6" fill="#39FF14"/>
+  <text x="130" y="196" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Linux Agent</text>
+  <text x="110" y="216" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Go + eBPF</text>
+  <text x="110" y="234" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Kernel-level TCP/UDP tracing</text>
+  <text x="110" y="270" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">CAP_BPF • <2% CPU • <50MB</text>
+
+  <rect x="340" y="165" width="230" height="120" rx="12" fill="#0E0E0C" stroke="#39FF1444" stroke-width="1"/>
+  <circle cx="365" cy="192" r="6" fill="#39FF14"/>
+  <text x="380" y="196" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Windows Agent</text>
+  <text x="360" y="216" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Go + ETW</text>
+  <text x="360" y="234" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">ETW network event tracing</text>
+  <text x="360" y="270" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">Administrator • MSI install</text>
+
+  <rect x="590" y="165" width="230" height="120" rx="12" fill="#0E0E0C" stroke="#39FF1444" stroke-width="1"/>
+  <circle cx="615" cy="192" r="6" fill="#39FF14"/>
+  <text x="630" y="196" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">K8s Agent</text>
+  <text x="610" y="216" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">DaemonSet + eBPF</text>
+  <text x="610" y="234" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Pod/Service/NS enrichment</text>
+  <text x="610" y="270" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">Host networking • All nodes</text>
+
+  <rect x="840" y="165" width="280" height="120" rx="12" fill="#0E0E0C" stroke="#39FF14" stroke-width="1.5"/>
+  <text x="980" y="196" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#39FF14">Gateway</text>
+  <text x="980" y="216" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">gRPC server • Classification engine</text>
+  <text x="980" y="234" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">CI resolution • SN sync</text>
+  <text x="980" y="254" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">PostgreSQL • Health logging</text>
+  <text x="980" y="272" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">Go 1.22+ • Port 8443</text>
+
+  <!-- Intelligence Layer -->
+  <rect x="60" y="330" width="1080" height="200" rx="16" fill="#1C1917" stroke="#E8E6E0" stroke-width="1"/>
+  <text x="100" y="358" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.15em" font-weight="700">INTELLIGENCE LAYER</text>
+
+  <rect x="90" y="375" width="310" height="135" rx="12" fill="#0E0E0C" stroke="#39FF14" stroke-width="1.5"/>
+  <text x="245" y="402" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">Integration Intelligence</text>
+  <text x="110" y="425" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Health scoring (0–100 composite)</text>
+  <text x="110" y="443" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">AI summarization (Claude)</text>
+  <text x="110" y="461" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Rationalization + EA reconciliation</text>
+  <text x="245" y="496" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">Python 3.11+ • Port 8081</text>
+
+  <rect x="430" y="375" width="310" height="135" rx="12" fill="#0E0E0C" stroke="#39FF14" stroke-width="1.5"/>
+  <text x="585" y="402" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">CMDB Ops Agent</text>
+  <text x="450" y="425" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">8 autonomous AI agents</text>
+  <text x="450" y="443" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Dedup • Orphan • Stale • Compliance</text>
+  <text x="450" y="461" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Autonomy levels L0–L3</text>
+  <text x="585" y="496" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">Python 3.11+ • Port 8082</text>
+
+  <rect x="770" y="375" width="350" height="135" rx="12" fill="#0E0E0C" stroke="#39FF14" stroke-width="1.5"/>
+  <text x="945" y="402" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">Service Map Intelligence</text>
+  <text x="790" y="425" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Coverage gap analysis</text>
+  <text x="790" y="443" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Risk scoring per application</text>
+  <text x="790" y="461" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Change impact prediction</text>
+  <text x="945" y="496" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">Python 3.11+ • Port 8083</text>
+
+  <!-- Shared AI Engine bar -->
+  <rect x="90" y="520" width="1030" height="45" rx="10" fill="#0E0E0C" stroke="#39FF14" stroke-width="2"/>
+  <text x="600" y="548" text-anchor="middle" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#39FF14">Shared AI Engine</text>
+  <text x="830" y="548" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Claude API orchestration • Anomaly detection • Prompt management</text>
+
+  <!-- ServiceNow Layer -->
+  <rect x="60" y="585" width="1080" height="80" rx="16" fill="#1C1917" stroke="#E8E6E0" stroke-width="1"/>
+  <text x="100" y="613" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.15em" font-weight="700">SERVICENOW LAYER</text>
+
+  <text x="350" y="613" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Scoped App (x_avnth_)</text>
+  <text x="100" y="640" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">6 custom tables • Scripted REST API v1 • Business rules • Flow Designer workflows • PA dashboards</text>
+
+  <!-- Pricing tiers -->
+  <rect x="680" y="598" width="130" height="28" rx="6" fill="#39FF1422" stroke="#39FF14" stroke-width="1"/>
+  <text x="745" y="617" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14">ESSENTIALS</text>
+
+  <rect x="825" y="598" width="130" height="28" rx="6" fill="#39FF1444" stroke="#39FF14" stroke-width="1"/>
+  <text x="890" y="617" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14">PROFESSIONAL</text>
+
+  <rect x="970" y="598" width="130" height="28" rx="6" fill="#39FF1466" stroke="#39FF14" stroke-width="1.5"/>
+  <text x="1035" y="617" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14">ENTERPRISE</text>
+
+  <text x="600" y="692" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194" letter-spacing="0.1em">AVENNORTH — PATHFINDER + INTELLIGENCE PLATFORM PORTFOLIO</text>
+</svg>

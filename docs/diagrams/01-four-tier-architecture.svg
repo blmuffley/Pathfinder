@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" font-family="'DM Sans', 'Helvetica Neue', sans-serif">
+  <defs>
+    <linearGradient id="limeGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#39FF14;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#39FF14;stop-opacity:0.05"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1C1917" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="900" fill="#FAFAF8"/>
+
+  <!-- Title -->
+  <text x="600" y="50" text-anchor="middle" font-family="'Syne', sans-serif" font-size="28" font-weight="800" fill="#1C1917" letter-spacing="-0.02em">Pathfinder — Four-Tier Architecture</text>
+  <text x="600" y="72" text-anchor="middle" font-family="'Space Mono', monospace" font-size="10" fill="#A8A194" letter-spacing="0.15em">AVENNORTH INTELLIGENT SOFTWARE</text>
+
+  <!-- TIER 4: ServiceNow -->
+  <rect x="60" y="100" width="1080" height="155" rx="16" fill="#FAFAF8" stroke="#39FF14" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="60" y="100" width="1080" height="155" rx="16" fill="url(#limeGlow)" opacity="0.5"/>
+  <text x="90" y="128" font-family="'Space Mono', monospace" font-size="10" fill="#39FF14" letter-spacing="0.15em" font-weight="700">TIER 4</text>
+  <text x="160" y="128" font-family="'Syne', sans-serif" font-size="16" font-weight="700" fill="#1C1917">ServiceNow</text>
+
+  <rect x="100" y="145" width="280" height="90" rx="12" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1" filter="url(#shadow)"/>
+  <text x="240" y="175" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#1C1917">Scoped App</text>
+  <text x="240" y="195" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">x_avnth_ tables</text>
+  <text x="240" y="212" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">REST API v1</text>
+
+  <rect x="420" y="145" width="280" height="90" rx="12" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1" filter="url(#shadow)"/>
+  <text x="560" y="175" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#1C1917">Flow Designer</text>
+  <text x="560" y="195" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Coverage remediation</text>
+  <text x="560" y="212" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Triage workflows</text>
+
+  <rect x="740" y="145" width="280" height="90" rx="12" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1" filter="url(#shadow)"/>
+  <text x="880" y="175" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#1C1917">PA Dashboards</text>
+  <text x="880" y="195" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Health / Coverage</text>
+  <text x="880" y="212" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Risk / Impact</text>
+
+  <!-- Connection line T4 to T3 -->
+  <line x1="600" y1="255" x2="600" y2="285" stroke="#39FF14" stroke-width="2" stroke-dasharray="6,4" filter="url(#glow)"/>
+  <text x="620" y="275" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">REST API</text>
+
+  <!-- TIER 3: Intelligence -->
+  <rect x="60" y="285" width="1080" height="155" rx="16" fill="#FAFAF8" stroke="#E8E6E0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="90" y="313" font-family="'Space Mono', monospace" font-size="10" fill="#39FF14" letter-spacing="0.15em" font-weight="700">TIER 3</text>
+  <text x="160" y="313" font-family="'Syne', sans-serif" font-size="16" font-weight="700" fill="#1C1917">Intelligence</text>
+
+  <rect x="100" y="330" width="240" height="90" rx="12" fill="#0E0E0C" stroke="#39FF14" stroke-width="1.5"/>
+  <text x="220" y="360" text-anchor="middle" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Shared AI Engine</text>
+  <text x="220" y="380" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#39FF14">Claude API</text>
+  <text x="220" y="397" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Anomaly detection</text>
+
+  <rect x="370" y="330" width="200" height="90" rx="12" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1" filter="url(#shadow)"/>
+  <text x="470" y="360" text-anchor="middle" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#1C1917">Integration Intel</text>
+  <text x="470" y="380" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Health scoring</text>
+  <text x="470" y="397" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Summarization</text>
+
+  <rect x="600" y="330" width="200" height="90" rx="12" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1" filter="url(#shadow)"/>
+  <text x="700" y="360" text-anchor="middle" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#1C1917">CMDB Ops Agent</text>
+  <text x="700" y="380" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">8 AI agents</text>
+  <text x="700" y="397" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Autonomous ops</text>
+
+  <rect x="830" y="330" width="200" height="90" rx="12" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1" filter="url(#shadow)"/>
+  <text x="930" y="360" text-anchor="middle" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#1C1917">Service Map Intel</text>
+  <text x="930" y="380" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Coverage gaps</text>
+  <text x="930" y="397" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Risk scoring</text>
+
+  <!-- Connection line T3 to T2 -->
+  <line x1="600" y1="440" x2="600" y2="470" stroke="#39FF14" stroke-width="2" stroke-dasharray="6,4" filter="url(#glow)"/>
+  <text x="620" y="460" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">HTTP + SQL</text>
+
+  <!-- TIER 2: Gateway -->
+  <rect x="60" y="470" width="1080" height="165" rx="16" fill="#0E0E0C" stroke="#39FF14" stroke-width="2"/>
+  <text x="90" y="498" font-family="'Space Mono', monospace" font-size="10" fill="#39FF14" letter-spacing="0.15em" font-weight="700">TIER 2</text>
+  <text x="160" y="498" font-family="'Syne', sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">Pathfinder Gateway</text>
+  <text x="380" y="498" font-family="'Space Mono', monospace" font-size="11" fill="#A8A194">Go 1.22+</text>
+
+  <rect x="100" y="515" width="210" height="100" rx="12" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+  <text x="205" y="545" text-anchor="middle" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#39FF14">gRPC Server</text>
+  <text x="205" y="565" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Enroll / SendFlows</text>
+  <text x="205" y="582" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Heartbeat</text>
+
+  <rect x="340" y="515" width="210" height="100" rx="12" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+  <text x="445" y="545" text-anchor="middle" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#39FF14">Classification</text>
+  <text x="445" y="565" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Port / Protocol rules</text>
+  <text x="445" y="582" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Confidence scoring</text>
+
+  <rect x="580" y="515" width="210" height="100" rx="12" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+  <text x="685" y="545" text-anchor="middle" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#39FF14">SN Sync</text>
+  <text x="685" y="565" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">OAuth2 client</text>
+  <text x="685" y="582" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Batch upsert</text>
+
+  <rect x="820" y="515" width="210" height="100" rx="12" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+  <text x="925" y="545" text-anchor="middle" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#39FF14">PostgreSQL</text>
+  <text x="925" y="565" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Flows / Classifications</text>
+  <text x="925" y="582" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Health metrics</text>
+
+  <!-- Connection line T2 to T1 -->
+  <line x1="600" y1="635" x2="600" y2="665" stroke="#39FF14" stroke-width="2" stroke-dasharray="6,4" filter="url(#glow)"/>
+  <text x="620" y="655" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">gRPC / mTLS</text>
+
+  <!-- TIER 1: Agents -->
+  <rect x="60" y="665" width="1080" height="155" rx="16" fill="#FAFAF8" stroke="#E8E6E0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="90" y="693" font-family="'Space Mono', monospace" font-size="10" fill="#39FF14" letter-spacing="0.15em" font-weight="700">TIER 1</text>
+  <text x="160" y="693" font-family="'Syne', sans-serif" font-size="16" font-weight="700" fill="#1C1917">Agents</text>
+
+  <rect x="130" y="710" width="260" height="90" rx="12" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1" filter="url(#shadow)"/>
+  <circle cx="160" cy="740" r="8" fill="#39FF14"/>
+  <text x="260" y="740" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#1C1917">Linux Agent</text>
+  <text x="260" y="760" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Go + eBPF</text>
+  <text x="260" y="777" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">Kernel-level TCP/UDP</text>
+
+  <rect x="440" y="710" width="260" height="90" rx="12" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1" filter="url(#shadow)"/>
+  <circle cx="470" cy="740" r="8" fill="#39FF14"/>
+  <text x="570" y="740" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#1C1917">Windows Agent</text>
+  <text x="570" y="760" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Go + ETW</text>
+  <text x="570" y="777" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">ETW network events</text>
+
+  <rect x="750" y="710" width="260" height="90" rx="12" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1" filter="url(#shadow)"/>
+  <circle cx="780" cy="740" r="8" fill="#39FF14"/>
+  <text x="880" y="740" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#1C1917">K8s Agent</text>
+  <text x="880" y="760" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">DaemonSet + eBPF</text>
+  <text x="880" y="777" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">Pod/Service enrichment</text>
+
+  <!-- Footer -->
+  <text x="600" y="870" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194" letter-spacing="0.1em">AVENNORTH PATHFINDER + INTELLIGENCE PLATFORM — PHYSICAL ARCHITECTURE</text>
+</svg>

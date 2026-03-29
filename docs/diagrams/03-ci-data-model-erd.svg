@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="'DM Sans', 'Helvetica Neue', sans-serif">
+  <defs>
+    <filter id="s3"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1C1917" flood-opacity="0.06"/></filter>
+    <marker id="a3" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#39FF14"/>
+    </marker>
+    <marker id="a3g" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#A8A194"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="800" fill="#FAFAF8"/>
+
+  <!-- Title -->
+  <text x="600" y="40" text-anchor="middle" font-family="'Syne', sans-serif" font-size="24" font-weight="800" fill="#1C1917">ServiceNow CI Data Model</text>
+  <text x="600" y="60" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.15em">x_avnth_ SCOPED APPLICATION — ENTITY RELATIONSHIP DIAGRAM</text>
+
+  <!-- cmdb_ci (base) -->
+  <rect x="460" y="85" width="280" height="50" rx="10" fill="#0E0E0C" stroke="#39FF14" stroke-width="2"/>
+  <text x="600" y="115" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#39FF14">cmdb_ci</text>
+  <text x="600" y="128" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">ServiceNow base table</text>
+
+  <!-- Extends arrows -->
+  <line x1="500" y1="135" x2="320" y2="180" stroke="#39FF14" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <line x1="700" y1="135" x2="880" y2="180" stroke="#39FF14" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="390" y="155" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">extends</text>
+  <text x="790" y="155" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">extends</text>
+
+  <!-- Integration CI -->
+  <rect x="80" y="180" width="480" height="320" rx="14" fill="#FFFFFF" stroke="#39FF14" stroke-width="2" filter="url(#s3)"/>
+  <rect x="80" y="180" width="480" height="40" rx="14" fill="#0E0E0C"/>
+  <rect x="80" y="206" width="480" height="14" fill="#0E0E0C"/>
+  <text x="320" y="207" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#39FF14">x_avnth_cmdb_ci_integration</text>
+  <text x="320" y="245" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#1C1917" font-weight="700">FIELDS</text>
+
+  <text x="110" y="270" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">source_ci</text>
+  <text x="330" y="270" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">ref → cmdb_ci</text>
+  <text x="110" y="290" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">target_ci</text>
+  <text x="330" y="290" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">ref → cmdb_ci</text>
+  <text x="110" y="310" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">integration_type</text>
+  <text x="330" y="310" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">API | DB | File | Msg | ...</text>
+  <text x="110" y="330" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">classification_confidence</text>
+  <text x="330" y="330" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">decimal 0.00–1.00</text>
+  <text x="110" y="350" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">discovery_method</text>
+  <text x="330" y="350" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Pathfinder | Manual | Import</text>
+  <text x="110" y="370" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">health_status</text>
+  <text x="330" y="370" font-family="'DM Sans', sans-serif" font-size="10" fill="#39FF14">Healthy | Degraded | Critical</text>
+  <text x="110" y="390" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">health_score</text>
+  <text x="330" y="390" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">integer 0–100</text>
+  <text x="110" y="410" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">ai_summary</text>
+  <text x="330" y="410" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">string (4000)</text>
+  <text x="110" y="430" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">ea_status</text>
+  <text x="330" y="430" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Mapped | Unmapped | Disputed</text>
+  <text x="110" y="450" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">criticality</text>
+  <text x="330" y="450" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Critical | High | Med | Low</text>
+  <text x="110" y="470" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">flow_count, first_discovered</text>
+  <text x="110" y="487" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">last_observed, owner, ...</text>
+
+  <!-- Interface CI -->
+  <rect x="640" y="180" width="480" height="280" rx="14" fill="#FFFFFF" stroke="#39FF14" stroke-width="2" filter="url(#s3)"/>
+  <rect x="640" y="180" width="480" height="40" rx="14" fill="#0E0E0C"/>
+  <rect x="640" y="206" width="480" height="14" fill="#0E0E0C"/>
+  <text x="880" y="207" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#39FF14">x_avnth_cmdb_ci_interface</text>
+  <text x="880" y="245" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#1C1917" font-weight="700">FIELDS</text>
+
+  <text x="670" y="270" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">integration</text>
+  <text x="880" y="270" font-family="'DM Sans', sans-serif" font-size="10" fill="#39FF14">ref → integration CI (FK)</text>
+  <text x="670" y="290" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">protocol</text>
+  <text x="880" y="290" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">TCP | HTTP | gRPC | AMQP</text>
+  <text x="670" y="310" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">port</text>
+  <text x="880" y="310" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">integer (dest port)</text>
+  <text x="670" y="330" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">direction</text>
+  <text x="880" y="330" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">In | Out | Bidirectional</text>
+  <text x="670" y="350" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">pattern</text>
+  <text x="880" y="350" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Req-Reply | Pub-Sub | Batch</text>
+  <text x="670" y="370" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">data_format</text>
+  <text x="880" y="370" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">JSON | XML | Protobuf | ...</text>
+  <text x="670" y="390" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">process_name</text>
+  <text x="880" y="390" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">string (from agent)</text>
+  <text x="670" y="410" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">latency_p50_ms, p99_ms</text>
+  <text x="880" y="410" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">decimal</text>
+  <text x="670" y="430" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">error_rate, flow_count</text>
+  <text x="880" y="430" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">decimal, integer</text>
+
+  <!-- 1:M relationship arrow -->
+  <line x1="560" y1="270" x2="640" y2="270" stroke="#39FF14" stroke-width="2.5" marker-end="url(#a3)"/>
+  <text x="600" y="262" text-anchor="middle" font-family="'Syne', sans-serif" font-size="11" font-weight="700" fill="#39FF14">1 : M</text>
+
+  <!-- Health Log -->
+  <rect x="80" y="540" width="340" height="160" rx="14" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1.5" filter="url(#s3)"/>
+  <rect x="80" y="540" width="340" height="36" rx="14" fill="#1C1917"/>
+  <rect x="80" y="564" width="340" height="12" fill="#1C1917"/>
+  <text x="250" y="564" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">x_avnth_integration_health_log</text>
+  <text x="110" y="600" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">integration (ref)</text>
+  <text x="110" y="618" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">interface (ref, optional)</text>
+  <text x="110" y="636" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">metric_type</text>
+  <text x="290" y="636" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Latency | Throughput</text>
+  <text x="110" y="654" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">metric_value, unit</text>
+  <text x="110" y="672" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">recorded_at, source</text>
+
+  <!-- Arrow from Integration to Health Log -->
+  <line x1="250" y1="500" x2="250" y2="540" stroke="#A8A194" stroke-width="1.5" marker-end="url(#a3g)" stroke-dasharray="5,3"/>
+  <text x="265" y="525" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">1:M</text>
+
+  <!-- EA Map -->
+  <rect x="460" y="540" width="300" height="160" rx="14" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1.5" filter="url(#s3)"/>
+  <rect x="460" y="540" width="300" height="36" rx="14" fill="#1C1917"/>
+  <rect x="460" y="564" width="300" height="12" fill="#1C1917"/>
+  <text x="610" y="564" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">x_avnth_integration_ea_map</text>
+  <text x="490" y="600" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">integration (ref)</text>
+  <text x="490" y="618" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">ea_relationship (ref)</text>
+  <text x="490" y="636" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">mapping_status</text>
+  <text x="680" y="636" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Confirmed | Suggested</text>
+  <text x="490" y="654" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">confidence, match_reason</text>
+  <text x="490" y="672" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">mapped_by, mapped_at</text>
+
+  <!-- Arrow from Integration to EA Map -->
+  <line x1="400" y1="500" x2="540" y2="540" stroke="#A8A194" stroke-width="1.5" marker-end="url(#a3g)" stroke-dasharray="5,3"/>
+  <text x="485" y="518" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">1:M</text>
+
+  <!-- Coverage Gap -->
+  <rect x="800" y="540" width="320" height="130" rx="14" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1.5" filter="url(#s3)"/>
+  <rect x="800" y="540" width="320" height="36" rx="14" fill="#1C1917"/>
+  <rect x="800" y="564" width="320" height="12" fill="#1C1917"/>
+  <text x="960" y="564" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">x_avnth_coverage_gap</text>
+  <text x="830" y="600" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">server (ref → cmdb_ci_server)</text>
+  <text x="830" y="618" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">gap_type</text>
+  <text x="1000" y="618" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">NoAgent | Stale | WrongTier</text>
+  <text x="830" y="636" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">remediation_status, priority</text>
+  <text x="830" y="654" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">remediation_cr (ref → CR)</text>
+
+  <!-- Agent Inventory (small, connected to coverage) -->
+  <rect x="800" y="695" width="320" height="70" rx="12" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1.5" filter="url(#s3)"/>
+  <rect x="800" y="695" width="320" height="30" rx="12" fill="#1C1917"/>
+  <rect x="800" y="715" width="320" height="10" fill="#1C1917"/>
+  <text x="960" y="715" text-anchor="middle" font-family="'Syne', sans-serif" font-size="11" font-weight="700" fill="#FFFFFF">x_avnth_pathfinder_agent</text>
+  <text x="830" y="745" font-family="'Space Mono', monospace" font-size="10" fill="#1C1917">agent_id, hostname, os_type, status, coverage_tier</text>
+
+  <!-- Footer -->
+  <text x="600" y="790" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194" letter-spacing="0.1em">AVENNORTH PATHFINDER — SERVICENOW CI DATA MODEL (ERD)</text>
+</svg>

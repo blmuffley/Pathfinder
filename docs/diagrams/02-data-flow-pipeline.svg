@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" font-family="'DM Sans', 'Helvetica Neue', sans-serif">
+  <defs>
+    <marker id="arrowLime" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#39FF14"/>
+    </marker>
+    <marker id="arrowGrey" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#A8A194"/>
+    </marker>
+    <filter id="glow2">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow2">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1C1917" flood-opacity="0.06"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="600" fill="#0E0E0C"/>
+
+  <!-- Title -->
+  <text x="600" y="40" text-anchor="middle" font-family="'Syne', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF" letter-spacing="-0.02em">Data Flow Pipeline</text>
+  <text x="600" y="60" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.15em">AGENT → GATEWAY → CLASSIFICATION → SERVICENOW</text>
+
+  <!-- Step 1: Agent Capture -->
+  <rect x="40" y="100" width="180" height="120" rx="14" fill="#1C1917" stroke="#39FF14" stroke-width="1.5"/>
+  <text x="130" y="135" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.1em">STEP 1</text>
+  <text x="130" y="160" text-anchor="middle" font-family="'Syne', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">eBPF Capture</text>
+  <text x="130" y="180" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">tcp_connect</text>
+  <text x="130" y="195" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">tcp_close</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="220" y1="160" x2="280" y2="160" stroke="#39FF14" stroke-width="2" marker-end="url(#arrowLime)" filter="url(#glow2)"/>
+  <text x="250" y="150" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">batch</text>
+
+  <!-- Step 2: Flow Batch -->
+  <rect x="280" y="100" width="180" height="120" rx="14" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+  <text x="370" y="135" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.1em">STEP 2</text>
+  <text x="370" y="160" text-anchor="middle" font-family="'Syne', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">gRPC Stream</text>
+  <text x="370" y="180" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">FlowBatch msg</text>
+  <text x="370" y="195" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">100 flows / 10s</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="460" y1="160" x2="520" y2="160" stroke="#39FF14" stroke-width="2" marker-end="url(#arrowLime)" filter="url(#glow2)"/>
+  <text x="490" y="150" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">insert</text>
+
+  <!-- Step 3: Raw Storage -->
+  <rect x="520" y="100" width="180" height="120" rx="14" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+  <text x="610" y="135" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.1em">STEP 3</text>
+  <text x="610" y="160" text-anchor="middle" font-family="'Syne', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">PostgreSQL</text>
+  <text x="610" y="180" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">raw_flows table</text>
+  <text x="610" y="195" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Partitioned monthly</text>
+
+  <!-- Arrow 3→4 -->
+  <line x1="700" y1="160" x2="760" y2="160" stroke="#39FF14" stroke-width="2" marker-end="url(#arrowLime)" filter="url(#glow2)"/>
+
+  <!-- Step 4: Classification -->
+  <rect x="760" y="100" width="180" height="120" rx="14" fill="#1C1917" stroke="#39FF14" stroke-width="1.5"/>
+  <text x="850" y="135" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.1em">STEP 4</text>
+  <text x="850" y="160" text-anchor="middle" font-family="'Syne', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Classify</text>
+  <text x="850" y="180" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Port + Process rules</text>
+  <text x="850" y="195" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Confidence scoring</text>
+
+  <!-- Arrow 4→5 -->
+  <line x1="940" y1="160" x2="1000" y2="160" stroke="#39FF14" stroke-width="2" marker-end="url(#arrowLime)" filter="url(#glow2)"/>
+
+  <!-- Step 5: SN Sync -->
+  <rect x="1000" y="100" width="160" height="120" rx="14" fill="#1C1917" stroke="#39FF14" stroke-width="1.5"/>
+  <text x="1080" y="135" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.1em">STEP 5</text>
+  <text x="1080" y="160" text-anchor="middle" font-family="'Syne', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">SN Sync</text>
+  <text x="1080" y="180" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">OAuth2 REST</text>
+  <text x="1080" y="195" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Upsert CIs</text>
+
+  <!-- Classification detail row -->
+  <text x="600" y="280" text-anchor="middle" font-family="'Syne', sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">Classification Pipeline Detail</text>
+
+  <!-- Dedup -->
+  <rect x="80" y="310" width="200" height="90" rx="12" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+  <text x="180" y="340" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#39FF14">1. Dedup</text>
+  <text x="180" y="360" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Collapse flows by</text>
+  <text x="180" y="375" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">(src, dst, port, proto)</text>
+
+  <line x1="280" y1="355" x2="330" y2="355" stroke="#39FF14" stroke-width="1.5" marker-end="url(#arrowLime)"/>
+
+  <!-- Resolve -->
+  <rect x="330" y="310" width="200" height="90" rx="12" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+  <text x="430" y="340" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#39FF14">2. Resolve</text>
+  <text x="430" y="360" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">IP → Application CI</text>
+  <text x="430" y="375" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">CMDB lookup / config</text>
+
+  <line x1="530" y1="355" x2="580" y2="355" stroke="#39FF14" stroke-width="1.5" marker-end="url(#arrowLime)"/>
+
+  <!-- Group -->
+  <rect x="580" y="310" width="200" height="90" rx="12" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+  <text x="680" y="340" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#39FF14">3. Group</text>
+  <text x="680" y="360" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Interfaces → Integrations</text>
+  <text x="680" y="375" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">(src_app, dst_app)</text>
+
+  <line x1="780" y1="355" x2="830" y2="355" stroke="#39FF14" stroke-width="1.5" marker-end="url(#arrowLime)"/>
+
+  <!-- Score -->
+  <rect x="830" y="310" width="200" height="90" rx="12" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+  <text x="930" y="340" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#39FF14">4. Score</text>
+  <text x="930" y="360" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Confidence 0.0 – 1.0</text>
+  <text x="930" y="375" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">threshold: 0.8</text>
+
+  <!-- Output boxes -->
+  <text x="600" y="460" text-anchor="middle" font-family="'Syne', sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">Output</text>
+
+  <rect x="200" y="480" width="320" height="70" rx="12" fill="#1C1917" stroke="#39FF14" stroke-width="1.5"/>
+  <text x="360" y="510" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#39FF14">Integration CI</text>
+  <text x="360" y="530" text-anchor="middle" font-family="'Space Mono', monospace" font-size="10" fill="#A8A194">x_avnth_cmdb_ci_integration</text>
+
+  <rect x="600" y="480" width="320" height="70" rx="12" fill="#1C1917" stroke="#39FF14" stroke-width="1.5"/>
+  <text x="760" y="510" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#39FF14">Interface CI</text>
+  <text x="760" y="530" text-anchor="middle" font-family="'Space Mono', monospace" font-size="10" fill="#A8A194">x_avnth_cmdb_ci_interface</text>
+
+  <!-- Footer -->
+  <text x="600" y="585" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194" letter-spacing="0.1em">AVENNORTH PATHFINDER — DATA FLOW PIPELINE</text>
+</svg>

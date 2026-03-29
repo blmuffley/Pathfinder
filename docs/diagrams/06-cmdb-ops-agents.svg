@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" font-family="'DM Sans', 'Helvetica Neue', sans-serif">
+  <defs>
+    <filter id="s6"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1C1917" flood-opacity="0.06"/></filter>
+    <marker id="a6" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#39FF14"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="750" fill="#0E0E0C"/>
+
+  <text x="600" y="40" text-anchor="middle" font-family="'Syne', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">CMDB Ops Agent — 8 Autonomous AI Agents</text>
+  <text x="600" y="58" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.15em">OBSERVE → DIAGNOSE → RECOMMEND → ACT → VERIFY</text>
+
+  <!-- Agent lifecycle bar -->
+  <rect x="80" y="80" width="1040" height="50" rx="10" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+  <rect x="80" y="80" width="208" height="50" rx="10" fill="#39FF1422"/>
+  <text x="184" y="110" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#39FF14">observe()</text>
+  <rect x="288" y="80" width="208" height="50" fill="#39FF1411"/>
+  <text x="392" y="110" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">diagnose()</text>
+  <text x="600" y="110" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">recommend()</text>
+  <text x="808" y="110" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">act()</text>
+  <text x="1016" y="110" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#39FF14">verify()</text>
+
+  <!-- 8 Agent cards - 4x2 grid -->
+  <!-- Row 1 -->
+  <rect x="60" y="155" width="260" height="120" rx="12" fill="#1C1917" stroke="#39FF14" stroke-width="1.5"/>
+  <circle cx="85" cy="180" r="8" fill="#39FF14"/>
+  <text x="100" y="184" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Duplicate Detector</text>
+  <text x="80" y="205" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Find + merge duplicate Integration CIs</text>
+  <text x="80" y="223" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Fuzzy name matching via AI</text>
+  <rect x="80" y="240" width="60" height="20" rx="4" fill="#39FF1422"/>
+  <text x="110" y="254" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">L1</text>
+  <text x="155" y="254" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">Daily 02:00</text>
+
+  <rect x="340" y="155" width="260" height="120" rx="12" fill="#1C1917" stroke="#39FF14" stroke-width="1.5"/>
+  <circle cx="365" cy="180" r="8" fill="#39FF14"/>
+  <text x="380" y="184" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Orphan Finder</text>
+  <text x="360" y="205" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Interfaces with no parent Integration</text>
+  <text x="360" y="223" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Integrations with dangling refs</text>
+  <rect x="360" y="240" width="60" height="20" rx="4" fill="#39FF1422"/>
+  <text x="390" y="254" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">L1</text>
+  <text x="435" y="254" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">Daily 02:30</text>
+
+  <rect x="620" y="155" width="260" height="120" rx="12" fill="#1C1917" stroke="#39FF14" stroke-width="1.5"/>
+  <circle cx="645" cy="180" r="8" fill="#39FF14"/>
+  <text x="660" y="184" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Stale Record Reaper</text>
+  <text x="640" y="205" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">CIs not observed in 90+ days</text>
+  <text x="640" y="223" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Warning → Stale → Expired tiers</text>
+  <rect x="640" y="240" width="60" height="20" rx="4" fill="#39FF1444"/>
+  <text x="670" y="254" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">L2</text>
+  <text x="715" y="254" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">Daily 03:00</text>
+
+  <rect x="900" y="155" width="260" height="120" rx="12" fill="#1C1917" stroke="#39FF1488" stroke-width="1"/>
+  <circle cx="925" cy="180" r="8" fill="#A8A194"/>
+  <text x="940" y="184" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Relationship Validator</text>
+  <text x="920" y="205" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Self-references, wrong CI types</text>
+  <text x="920" y="223" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Circular relationship checks</text>
+  <rect x="920" y="240" width="60" height="20" rx="4" fill="#39FF1422"/>
+  <text x="950" y="254" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">L1</text>
+  <text x="995" y="254" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">Weekly Sun</text>
+
+  <!-- Row 2 -->
+  <rect x="60" y="300" width="260" height="120" rx="12" fill="#1C1917" stroke="#39FF1488" stroke-width="1"/>
+  <circle cx="85" cy="325" r="8" fill="#A8A194"/>
+  <text x="100" y="329" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Classification Auditor</text>
+  <text x="80" y="350" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Verify port/proto matches type</text>
+  <text x="80" y="368" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Flag low-confidence auto-creates</text>
+  <rect x="80" y="385" width="60" height="20" rx="4" fill="#39FF1422"/>
+  <text x="110" y="399" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">L1</text>
+  <text x="155" y="399" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">Daily 04:00</text>
+
+  <rect x="340" y="300" width="260" height="120" rx="12" fill="#1C1917" stroke="#39FF1488" stroke-width="1"/>
+  <circle cx="365" cy="325" r="8" fill="#A8A194"/>
+  <text x="380" y="329" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Compliance Checker</text>
+  <text x="360" y="350" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Missing owner, support group</text>
+  <text x="360" y="368" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Unmapped EA > 30 days</text>
+  <rect x="360" y="385" width="60" height="20" rx="4" fill="#39FF1422"/>
+  <text x="390" y="399" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">L1</text>
+  <text x="435" y="399" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">Daily 05:00</text>
+
+  <rect x="620" y="300" width="260" height="120" rx="12" fill="#1C1917" stroke="#39FF14" stroke-width="1.5"/>
+  <circle cx="645" cy="325" r="8" fill="#39FF14"/>
+  <text x="660" y="329" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Health Scorer</text>
+  <text x="640" y="350" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Compute composite 0–100 score</text>
+  <text x="640" y="368" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Delegates to Integration Intel</text>
+  <rect x="640" y="385" width="60" height="20" rx="4" fill="#39FF1444"/>
+  <text x="670" y="399" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">L2</text>
+  <text x="715" y="399" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">Every 4h</text>
+
+  <rect x="900" y="300" width="260" height="120" rx="12" fill="#1C1917" stroke="#39FF14" stroke-width="2"/>
+  <circle cx="925" cy="325" r="8" fill="#39FF14"/>
+  <text x="940" y="329" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#39FF14">Remediation Orchestrator</text>
+  <text x="920" y="350" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Aggregates all findings</text>
+  <text x="920" y="368" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Resolves conflicts, orders actions</text>
+  <rect x="920" y="385" width="60" height="20" rx="4" fill="#39FF1422"/>
+  <text x="950" y="399" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">L1</text>
+  <text x="995" y="399" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">Daily 06:00</text>
+
+  <!-- Autonomy levels legend -->
+  <text x="600" y="470" text-anchor="middle" font-family="'Syne', sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">Autonomy Levels</text>
+
+  <rect x="100" y="490" width="220" height="60" rx="10" fill="#1C1917" stroke="#A8A194" stroke-width="1"/>
+  <text x="210" y="515" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">L0 — Report Only</text>
+  <text x="210" y="535" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">observe + diagnose only</text>
+
+  <rect x="350" y="490" width="220" height="60" rx="10" fill="#1C1917" stroke="#39FF1488" stroke-width="1"/>
+  <text x="460" y="515" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">L1 — Recommend</text>
+  <text x="460" y="535" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Creates recommendations in SN</text>
+
+  <rect x="600" y="490" width="220" height="60" rx="10" fill="#1C1917" stroke="#39FF14" stroke-width="1.5"/>
+  <text x="710" y="515" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#39FF14">L2 — Act w/ Approval</text>
+  <text x="710" y="535" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Creates Change Request first</text>
+
+  <rect x="850" y="490" width="220" height="60" rx="10" fill="#1C1917" stroke="#39FF14" stroke-width="2"/>
+  <text x="960" y="515" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#39FF14">L3 — Autonomous</text>
+  <text x="960" y="535" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Acts immediately, logs CR</text>
+
+  <!-- Guardrails -->
+  <text x="600" y="600" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">Guardrails</text>
+
+  <rect x="100" y="615" width="200" height="45" rx="8" fill="#1C1917" stroke="#A8A194" stroke-width="0.5"/>
+  <text x="200" y="635" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">Blast radius: 50 CIs max</text>
+  <text x="200" y="650" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">per run</text>
+
+  <rect x="330" y="615" width="200" height="45" rx="8" fill="#1C1917" stroke="#A8A194" stroke-width="0.5"/>
+  <text x="430" y="635" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">Cool-down: 24h between</text>
+  <text x="430" y="650" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">actions on same CI</text>
+
+  <rect x="560" y="615" width="200" height="45" rx="8" fill="#1C1917" stroke="#A8A194" stroke-width="0.5"/>
+  <text x="660" y="635" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">Exclusion tag:</text>
+  <text x="660" y="650" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14">x_avnth_ops_exclude</text>
+
+  <rect x="790" y="615" width="200" height="45" rx="8" fill="#1C1917" stroke="#A8A194" stroke-width="0.5"/>
+  <text x="890" y="635" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">Kill switch: global</text>
+  <text x="890" y="650" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14">cmdb_ops_enabled</text>
+
+  <text x="600" y="710" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194" letter-spacing="0.1em">AVENNORTH PATHFINDER — CMDB OPS AGENT ARCHITECTURE</text>
+</svg>

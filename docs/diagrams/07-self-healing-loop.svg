@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" font-family="'DM Sans', 'Helvetica Neue', sans-serif">
+  <defs>
+    <marker id="a7" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#39FF14"/>
+    </marker>
+    <filter id="s7"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1C1917" flood-opacity="0.06"/></filter>
+    <filter id="glow7">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1000" height="700" fill="#FAFAF8"/>
+
+  <text x="500" y="40" text-anchor="middle" font-family="'Syne', sans-serif" font-size="24" font-weight="800" fill="#1C1917">Coverage Gap Self-Healing Loop</text>
+  <text x="500" y="58" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.15em">DETECT → RECORD → REMEDIATE → VERIFY</text>
+
+  <!-- Central loop circle (decorative) -->
+  <circle cx="500" cy="360" r="200" fill="none" stroke="#39FF1422" stroke-width="3" stroke-dasharray="12,6"/>
+  <circle cx="500" cy="360" r="200" fill="none" stroke="#39FF14" stroke-width="1" stroke-dasharray="2,10" opacity="0.3"/>
+
+  <!-- Step 1: DETECT (top) -->
+  <rect x="370" y="100" width="260" height="110" rx="14" fill="#0E0E0C" stroke="#39FF14" stroke-width="2"/>
+  <text x="500" y="130" text-anchor="middle" font-family="'Space Mono', monospace" font-size="10" fill="#39FF14" letter-spacing="0.12em" font-weight="700">STEP 1</text>
+  <text x="500" y="155" text-anchor="middle" font-family="'Syne', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">DETECT</text>
+  <text x="500" y="175" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Compare agent inventory</text>
+  <text x="500" y="192" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">vs. server population</text>
+
+  <!-- Arrow: DETECT → RECORD (right side) -->
+  <path d="M 630 180 Q 730 180 730 300" fill="none" stroke="#39FF14" stroke-width="2" marker-end="url(#a7)" filter="url(#glow7)"/>
+
+  <!-- Step 2: RECORD (right) -->
+  <rect x="670" y="300" width="260" height="110" rx="14" fill="#0E0E0C" stroke="#39FF14" stroke-width="2"/>
+  <text x="800" y="330" text-anchor="middle" font-family="'Space Mono', monospace" font-size="10" fill="#39FF14" letter-spacing="0.12em" font-weight="700">STEP 2</text>
+  <text x="800" y="355" text-anchor="middle" font-family="'Syne', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">RECORD</text>
+  <text x="800" y="375" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Create coverage_gap record</text>
+  <text x="800" y="392" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">NoAgent | StaleAgent | WrongTier</text>
+
+  <!-- Arrow: RECORD → REMEDIATE (bottom) -->
+  <path d="M 730 410 Q 730 510 630 510" fill="none" stroke="#39FF14" stroke-width="2" marker-end="url(#a7)" filter="url(#glow7)"/>
+
+  <!-- Step 3: REMEDIATE (bottom) -->
+  <rect x="370" y="460" width="260" height="130" rx="14" fill="#0E0E0C" stroke="#39FF14" stroke-width="2"/>
+  <text x="500" y="490" text-anchor="middle" font-family="'Space Mono', monospace" font-size="10" fill="#39FF14" letter-spacing="0.12em" font-weight="700">STEP 3</text>
+  <text x="500" y="515" text-anchor="middle" font-family="'Syne', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">REMEDIATE</text>
+  <text x="500" y="535" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Flow Designer workflow</text>
+  <text x="500" y="552" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Create CR → Deploy agent</text>
+  <text x="500" y="569" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Configure → Enroll</text>
+
+  <!-- Arrow: REMEDIATE → VERIFY (left) -->
+  <path d="M 370 510 Q 270 510 270 410" fill="none" stroke="#39FF14" stroke-width="2" marker-end="url(#a7)" filter="url(#glow7)"/>
+
+  <!-- Step 4: VERIFY (left) -->
+  <rect x="70" y="300" width="260" height="110" rx="14" fill="#0E0E0C" stroke="#39FF14" stroke-width="2"/>
+  <text x="200" y="330" text-anchor="middle" font-family="'Space Mono', monospace" font-size="10" fill="#39FF14" letter-spacing="0.12em" font-weight="700">STEP 4</text>
+  <text x="200" y="355" text-anchor="middle" font-family="'Syne', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">VERIFY</text>
+  <text x="200" y="375" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Agent enrolled? Heartbeat?</text>
+  <text x="200" y="392" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">First flows arriving?</text>
+
+  <!-- Arrow: VERIFY → DETECT (back to top) -->
+  <path d="M 270 300 Q 270 180 370 180" fill="none" stroke="#39FF14" stroke-width="2" marker-end="url(#a7)" filter="url(#glow7)"/>
+
+  <!-- Gap types -->
+  <rect x="60" y="620" width="260" height="55" rx="10" fill="#FFFFFF" stroke="#39FF14" stroke-width="1.5" filter="url(#s7)"/>
+  <text x="190" y="645" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#1C1917">NoAgent</text>
+  <text x="190" y="663" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Server has no agent at all</text>
+
+  <rect x="360" y="620" width="260" height="55" rx="10" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1.5" filter="url(#s7)"/>
+  <text x="490" y="645" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#1C1917">StaleAgent</text>
+  <text x="490" y="663" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Last heartbeat > 7 days ago</text>
+
+  <rect x="660" y="620" width="260" height="55" rx="10" fill="#FFFFFF" stroke="#E8E6E0" stroke-width="1.5" filter="url(#s7)"/>
+  <text x="790" y="645" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#1C1917">WrongTier</text>
+  <text x="790" y="663" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Coverage tier below required</text>
+
+  <text x="500" y="695" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194" letter-spacing="0.1em">AVENNORTH PATHFINDER — SELF-HEALING COVERAGE LOOP</text>
+</svg>
