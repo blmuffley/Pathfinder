@@ -1,0 +1,107 @@
+{
+  "name": "x_avnth_coverage_gap",
+  "label": "Coverage Gap",
+  "scope": "x_avnth_pathfinder",
+  "description": "Tracks servers that should have Pathfinder agents but don't. Feeds the self-healing remediation loop.",
+  "fields": [
+    {
+      "name": "server",
+      "label": "Server",
+      "type": "reference",
+      "reference": "cmdb_ci_server",
+      "mandatory": true,
+      "description": "The server missing coverage"
+    },
+    {
+      "name": "gap_type",
+      "label": "Gap Type",
+      "type": "choice",
+      "mandatory": true,
+      "choices": [
+        { "value": "NoAgent", "label": "No Agent" },
+        { "value": "StaleAgent", "label": "Stale Agent" },
+        { "value": "WrongTier", "label": "Wrong Tier" }
+      ]
+    },
+    {
+      "name": "required_tier",
+      "label": "Required Tier",
+      "type": "integer",
+      "description": "Expected coverage tier for this server"
+    },
+    {
+      "name": "current_tier",
+      "label": "Current Tier",
+      "type": "integer",
+      "default_value": 0,
+      "description": "Actual coverage tier (0 if no agent)"
+    },
+    {
+      "name": "detected_at",
+      "label": "Detected At",
+      "type": "glide_date_time",
+      "mandatory": true
+    },
+    {
+      "name": "remediation_status",
+      "label": "Remediation Status",
+      "type": "choice",
+      "mandatory": true,
+      "default_value": "Open",
+      "choices": [
+        { "value": "Open", "label": "Open" },
+        { "value": "InProgress", "label": "In Progress" },
+        { "value": "Resolved", "label": "Resolved" },
+        { "value": "Waived", "label": "Waived" },
+        { "value": "Failed", "label": "Failed" }
+      ]
+    },
+    {
+      "name": "remediation_method",
+      "label": "Remediation Method",
+      "type": "choice",
+      "choices": [
+        { "value": "AutoDeploy", "label": "Auto Deploy" },
+        { "value": "ManualDeploy", "label": "Manual Deploy" },
+        { "value": "ChangeRequest", "label": "Change Request" },
+        { "value": "Waived", "label": "Waived" }
+      ]
+    },
+    {
+      "name": "remediation_cr",
+      "label": "Change Request",
+      "type": "reference",
+      "reference": "change_request",
+      "description": "Associated change request"
+    },
+    {
+      "name": "resolved_at",
+      "label": "Resolved At",
+      "type": "glide_date_time"
+    },
+    {
+      "name": "waived_by",
+      "label": "Waived By",
+      "type": "reference",
+      "reference": "sys_user"
+    },
+    {
+      "name": "waive_reason",
+      "label": "Waive Reason",
+      "type": "string",
+      "max_length": 500
+    },
+    {
+      "name": "priority",
+      "label": "Priority",
+      "type": "choice",
+      "default_value": "Medium",
+      "choices": [
+        { "value": "Critical", "label": "Critical" },
+        { "value": "High", "label": "High" },
+        { "value": "Medium", "label": "Medium" },
+        { "value": "Low", "label": "Low" }
+      ]
+    }
+  ]
+}

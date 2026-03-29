@@ -1,0 +1,125 @@
+{
+  "name": "x_avnth_cmdb_ci_interface",
+  "label": "Interface CI",
+  "extends": "cmdb_ci",
+  "scope": "x_avnth_pathfinder",
+  "description": "Represents a specific data exchange pathway within an Integration. Child of Integration CI (1:M).",
+  "fields": [
+    {
+      "name": "integration",
+      "label": "Integration",
+      "type": "reference",
+      "reference": "x_avnth_cmdb_ci_integration",
+      "mandatory": true,
+      "description": "Parent Integration CI"
+    },
+    {
+      "name": "protocol",
+      "label": "Protocol",
+      "type": "choice",
+      "mandatory": true,
+      "choices": [
+        { "value": "TCP", "label": "TCP" },
+        { "value": "UDP", "label": "UDP" },
+        { "value": "HTTP", "label": "HTTP" },
+        { "value": "HTTPS", "label": "HTTPS" },
+        { "value": "gRPC", "label": "gRPC" },
+        { "value": "AMQP", "label": "AMQP" },
+        { "value": "MQTT", "label": "MQTT" }
+      ]
+    },
+    {
+      "name": "port",
+      "label": "Port",
+      "type": "integer",
+      "mandatory": true,
+      "description": "Destination port"
+    },
+    {
+      "name": "direction",
+      "label": "Direction",
+      "type": "choice",
+      "mandatory": true,
+      "choices": [
+        { "value": "Inbound", "label": "Inbound" },
+        { "value": "Outbound", "label": "Outbound" },
+        { "value": "Bidirectional", "label": "Bidirectional" }
+      ]
+    },
+    {
+      "name": "pattern",
+      "label": "Communication Pattern",
+      "type": "choice",
+      "choices": [
+        { "value": "Request-Reply", "label": "Request-Reply" },
+        { "value": "Fire-and-Forget", "label": "Fire-and-Forget" },
+        { "value": "Pub-Sub", "label": "Pub-Sub" },
+        { "value": "Batch", "label": "Batch" },
+        { "value": "Streaming", "label": "Streaming" }
+      ]
+    },
+    {
+      "name": "data_format",
+      "label": "Data Format",
+      "type": "choice",
+      "choices": [
+        { "value": "JSON", "label": "JSON" },
+        { "value": "XML", "label": "XML" },
+        { "value": "Binary", "label": "Binary" },
+        { "value": "CSV", "label": "CSV" },
+        { "value": "Protobuf", "label": "Protobuf" },
+        { "value": "Avro", "label": "Avro" },
+        { "value": "Unknown", "label": "Unknown" }
+      ]
+    },
+    {
+      "name": "process_name",
+      "label": "Process Name",
+      "type": "string",
+      "max_length": 255,
+      "description": "Source process name from agent"
+    },
+    {
+      "name": "avg_bytes_per_flow",
+      "label": "Avg Bytes Per Flow",
+      "type": "integer",
+      "description": "Average payload size"
+    },
+    {
+      "name": "flow_count",
+      "label": "Flow Count",
+      "type": "integer",
+      "default_value": 0
+    },
+    {
+      "name": "first_discovered",
+      "label": "First Discovered",
+      "type": "glide_date_time"
+    },
+    {
+      "name": "last_observed",
+      "label": "Last Observed",
+      "type": "glide_date_time"
+    },
+    {
+      "name": "latency_p50_ms",
+      "label": "Latency P50 (ms)",
+      "type": "decimal",
+      "description": "Median latency"
+    },
+    {
+      "name": "latency_p99_ms",
+      "label": "Latency P99 (ms)",
+      "type": "decimal",
+      "description": "99th percentile latency"
+    },
+    {
+      "name": "error_rate",
+      "label": "Error Rate",
+      "type": "decimal",
+      "precision": 3,
+      "scale": 2,
+      "description": "Observed error rate (0.00-1.00)"
+    }
+  ]
+}

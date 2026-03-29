@@ -1,0 +1,64 @@
+{
+  "name": "x_avnth_integration_ea_map",
+  "label": "EA Reconciliation Map",
+  "scope": "x_avnth_pathfinder",
+  "description": "Links discovered integrations to EA-managed relationship records for reconciliation.",
+  "fields": [
+    {
+      "name": "integration",
+      "label": "Integration",
+      "type": "reference",
+      "reference": "x_avnth_cmdb_ci_integration",
+      "mandatory": true,
+      "description": "Discovered integration"
+    },
+    {
+      "name": "ea_relationship",
+      "label": "EA Relationship",
+      "type": "reference",
+      "reference": "cmdb_rel_ci",
+      "mandatory": true,
+      "description": "EA-managed relationship record"
+    },
+    {
+      "name": "mapping_status",
+      "label": "Mapping Status",
+      "type": "choice",
+      "mandatory": true,
+      "default_value": "Suggested",
+      "choices": [
+        { "value": "Confirmed", "label": "Confirmed" },
+        { "value": "Suggested", "label": "Suggested" },
+        { "value": "Rejected", "label": "Rejected" }
+      ]
+    },
+    {
+      "name": "confidence",
+      "label": "Confidence",
+      "type": "decimal",
+      "precision": 3,
+      "scale": 2,
+      "description": "Match confidence (0.00-1.00)"
+    },
+    {
+      "name": "mapped_by",
+      "label": "Mapped By",
+      "type": "reference",
+      "reference": "sys_user",
+      "description": "User who confirmed or rejected the mapping"
+    },
+    {
+      "name": "mapped_at",
+      "label": "Mapped At",
+      "type": "glide_date_time",
+      "description": "Confirmation/rejection timestamp"
+    },
+    {
+      "name": "match_reason",
+      "label": "Match Reason",
+      "type": "string",
+      "max_length": 1000,
+      "description": "Explanation of why the match was suggested"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "name": "x_avnth_integration_health_log",
+  "label": "Integration Health Log",
+  "scope": "x_avnth_pathfinder",
+  "description": "Time-series health telemetry for integrations. Written by Gateway, consumed by Integration Intelligence.",
+  "fields": [
+    {
+      "name": "integration",
+      "label": "Integration",
+      "type": "reference",
+      "reference": "x_avnth_cmdb_ci_integration",
+      "mandatory": true,
+      "description": "Parent integration"
+    },
+    {
+      "name": "interface",
+      "label": "Interface",
+      "type": "reference",
+      "reference": "x_avnth_cmdb_ci_interface",
+      "description": "Specific interface (optional — null means integration-level)"
+    },
+    {
+      "name": "metric_type",
+      "label": "Metric Type",
+      "type": "choice",
+      "mandatory": true,
+      "choices": [
+        { "value": "Latency", "label": "Latency" },
+        { "value": "Throughput", "label": "Throughput" },
+        { "value": "ErrorRate", "label": "Error Rate" },
+        { "value": "Availability", "label": "Availability" }
+      ]
+    },
+    {
+      "name": "metric_value",
+      "label": "Metric Value",
+      "type": "decimal",
+      "mandatory": true,
+      "description": "The measured value"
+    },
+    {
+      "name": "unit",
+      "label": "Unit",
+      "type": "string",
+      "max_length": 20,
+      "description": "Measurement unit: ms, bytes/s, percent, requests/s"
+    },
+    {
+      "name": "recorded_at",
+      "label": "Recorded At",
+      "type": "glide_date_time",
+      "mandatory": true,
+      "description": "Measurement timestamp"
+    },
+    {
+      "name": "source",
+      "label": "Source",
+      "type": "choice",
+      "default_value": "Agent",
+      "choices": [
+        { "value": "Agent", "label": "Agent" },
+        { "value": "Gateway", "label": "Gateway" },
+        { "value": "Synthetic", "label": "Synthetic" }
+      ]
+    }
+  ]
+}

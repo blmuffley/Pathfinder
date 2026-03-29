@@ -1,0 +1,159 @@
+{
+  "name": "x_avnth_cmdb_ci_integration",
+  "label": "Integration CI",
+  "extends": "cmdb_ci",
+  "scope": "x_avnth_pathfinder",
+  "description": "Represents a logical connection between two applications. One record per unique directed (source, target) pair.",
+  "fields": [
+    {
+      "name": "source_ci",
+      "label": "Source Application",
+      "type": "reference",
+      "reference": "cmdb_ci",
+      "mandatory": true,
+      "description": "The application initiating connections"
+    },
+    {
+      "name": "target_ci",
+      "label": "Target Application",
+      "type": "reference",
+      "reference": "cmdb_ci",
+      "mandatory": true,
+      "description": "The application receiving connections"
+    },
+    {
+      "name": "integration_type",
+      "label": "Integration Type",
+      "type": "choice",
+      "mandatory": true,
+      "choices": [
+        { "value": "API", "label": "API" },
+        { "value": "Database", "label": "Database" },
+        { "value": "File Transfer", "label": "File Transfer" },
+        { "value": "Messaging", "label": "Messaging" },
+        { "value": "Email", "label": "Email" },
+        { "value": "Directory", "label": "Directory" },
+        { "value": "Remote Access", "label": "Remote Access" },
+        { "value": "Custom", "label": "Custom" }
+      ]
+    },
+    {
+      "name": "classification_confidence",
+      "label": "Classification Confidence",
+      "type": "decimal",
+      "precision": 3,
+      "scale": 2,
+      "description": "Gateway's confidence in the automated classification (0.00-1.00)"
+    },
+    {
+      "name": "discovery_method",
+      "label": "Discovery Method",
+      "type": "choice",
+      "mandatory": true,
+      "default_value": "Pathfinder",
+      "choices": [
+        { "value": "Pathfinder", "label": "Pathfinder" },
+        { "value": "Manual", "label": "Manual" },
+        { "value": "Import", "label": "Import" }
+      ]
+    },
+    {
+      "name": "first_discovered",
+      "label": "First Discovered",
+      "type": "glide_date_time",
+      "description": "Timestamp of first flow observation"
+    },
+    {
+      "name": "last_observed",
+      "label": "Last Observed",
+      "type": "glide_date_time",
+      "description": "Timestamp of most recent flow"
+    },
+    {
+      "name": "flow_count",
+      "label": "Flow Count",
+      "type": "integer",
+      "default_value": 0,
+      "description": "Total flows observed across all interfaces"
+    },
+    {
+      "name": "health_status",
+      "label": "Health Status",
+      "type": "choice",
+      "default_value": "Unknown",
+      "choices": [
+        { "value": "Healthy", "label": "Healthy" },
+        { "value": "Degraded", "label": "Degraded" },
+        { "value": "Critical", "label": "Critical" },
+        { "value": "Unknown", "label": "Unknown" }
+      ]
+    },
+    {
+      "name": "health_score",
+      "label": "Health Score",
+      "type": "integer",
+      "description": "Composite score (0-100) from Integration Intelligence"
+    },
+    {
+      "name": "ai_summary",
+      "label": "AI Summary",
+      "type": "string",
+      "max_length": 4000,
+      "description": "AI-generated natural-language summary"
+    },
+    {
+      "name": "ea_status",
+      "label": "EA Status",
+      "type": "choice",
+      "default_value": "Unmapped",
+      "choices": [
+        { "value": "Mapped", "label": "Mapped" },
+        { "value": "Unmapped", "label": "Unmapped" },
+        { "value": "Disputed", "label": "Disputed" }
+      ]
+    },
+    {
+      "name": "ea_relationship",
+      "label": "EA Relationship",
+      "type": "reference",
+      "reference": "cmdb_rel_ci",
+      "description": "Link to EA relationship record"
+    },
+    {
+      "name": "criticality",
+      "label": "Criticality",
+      "type": "choice",
+      "default_value": "Unknown",
+      "choices": [
+        { "value": "Critical", "label": "Critical" },
+        { "value": "High", "label": "High" },
+        { "value": "Medium", "label": "Medium" },
+        { "value": "Low", "label": "Low" },
+        { "value": "Unknown", "label": "Unknown" }
+      ]
+    },
+    {
+      "name": "data_classification",
+      "label": "Data Classification",
+      "type": "choice",
+      "choices": [
+        { "value": "Public", "label": "Public" },
+        { "value": "Internal", "label": "Internal" },
+        { "value": "Confidential", "label": "Confidential" },
+        { "value": "Restricted", "label": "Restricted" }
+      ]
+    },
+    {
+      "name": "owner",
+      "label": "Owner",
+      "type": "reference",
+      "reference": "sys_user"
+    },
+    {
+      "name": "support_group",
+      "label": "Support Group",
+      "type": "reference",
+      "reference": "sys_user_group"
+    }
+  ]
+}

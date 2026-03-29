@@ -1,0 +1,97 @@
+{
+  "name": "x_avnth_pathfinder_agent",
+  "label": "Pathfinder Agent",
+  "scope": "x_avnth_pathfinder",
+  "description": "Every enrolled Pathfinder agent with heartbeat status, deployment model, and coverage tier.",
+  "fields": [
+    {
+      "name": "agent_id",
+      "label": "Agent ID",
+      "type": "string",
+      "max_length": 64,
+      "mandatory": true,
+      "unique": true,
+      "description": "Unique agent identifier assigned during enrollment"
+    },
+    {
+      "name": "hostname",
+      "label": "Hostname",
+      "type": "string",
+      "max_length": 255,
+      "mandatory": true
+    },
+    {
+      "name": "server",
+      "label": "Server CI",
+      "type": "reference",
+      "reference": "cmdb_ci_server",
+      "description": "Linked server CI in CMDB"
+    },
+    {
+      "name": "os_type",
+      "label": "OS Type",
+      "type": "choice",
+      "mandatory": true,
+      "choices": [
+        { "value": "Linux", "label": "Linux" },
+        { "value": "Windows", "label": "Windows" },
+        { "value": "K8s", "label": "Kubernetes" }
+      ]
+    },
+    {
+      "name": "agent_version",
+      "label": "Agent Version",
+      "type": "string",
+      "max_length": 50,
+      "mandatory": true
+    },
+    {
+      "name": "last_heartbeat",
+      "label": "Last Heartbeat",
+      "type": "glide_date_time",
+      "description": "Timestamp of most recent heartbeat"
+    },
+    {
+      "name": "status",
+      "label": "Status",
+      "type": "choice",
+      "mandatory": true,
+      "default_value": "Active",
+      "choices": [
+        { "value": "Active", "label": "Active" },
+        { "value": "Stale", "label": "Stale" },
+        { "value": "Decommissioned", "label": "Decommissioned" }
+      ]
+    },
+    {
+      "name": "deployment_model",
+      "label": "Deployment Model",
+      "type": "choice",
+      "choices": [
+        { "value": "Standalone", "label": "Standalone" },
+        { "value": "Managed", "label": "Managed" },
+        { "value": "SaaS", "label": "SaaS" }
+      ]
+    },
+    {
+      "name": "coverage_tier",
+      "label": "Coverage Tier",
+      "type": "integer",
+      "default_value": 2,
+      "description": "0=None, 1=Basic, 2=Standard, 3=Enhanced, 4=Full"
+    },
+    {
+      "name": "enrolled_at",
+      "label": "Enrolled At",
+      "type": "glide_date_time",
+      "mandatory": true
+    },
+    {
+      "name": "flows_collected",
+      "label": "Flows Collected",
+      "type": "integer",
+      "default_value": 0,
+      "description": "Total flow records collected by this agent"
+    }
+  ]
+}
