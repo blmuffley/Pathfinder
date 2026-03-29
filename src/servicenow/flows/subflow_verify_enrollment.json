@@ -1,0 +1,90 @@
+{
+  "_comment": "Flow Designer subflow — Verify agent enrollment after deployment",
+  "sys_hub_flow": {
+    "name": "Pathfinder - Verify Agent Enrollment",
+    "internal_name": "x_avnth_verify_enrollment",
+    "scope": "x_avnth_pathfinder",
+    "type": "SUBFLOW",
+    "description": "Waits for a deployed agent to enroll, send heartbeat, and optionally first flow data",
+    "active": true
+  },
+
+  "inputs": {
+    "server_sys_id": { "type": "reference", "table": "cmdb_ci_server", "mandatory": true },
+    "timeout_minutes": { "type": "integer", "default": 10 }
+  },
+
+  "outputs": {
+    "enrolled": { "type": "boolean" },
+    "heartbeat_received": { "type": "boolean" },
+    "first_flow_received": { "type": "boolean" },
+    "agent_sys_id": { "type": "string" }
+  },
+
+  "steps": [
+    {
+      "id": "step_1_wait_for_agent",
+      "name": "Wait for Agent Record",
+      "type": "FLOW_LOGIC",
+      "subtype": "WAIT_FOR",
+      "description": "Poll for agent record linked to this server",
+      "wait_for": {
+        "table": "x_avnth_pathfinder_agent",
+        "condition": "server={{inputs.server_sys_id}}^status=Active",
+        "timeout_minutes": "{{inputs.timeout_minutes}}",
+        "poll_interval_seconds": 30
+      },
+      "on_found": "step_2_check_heartbeat",
+      "on_timeout": "step_4_fail"
+    },
+    {
+      "id": "step_2_check_heartbeat",
+      "name": "Check Heartbeat Received",
+      "type": "ACTION",
+      "action": {
+        "script": [
+          "var agent = new GlideRecord('x_avnth_pathfinder_agent');",
+          "agent.addQuery('server', inputs.server_sys_id);",
+          "agent.addQuery('status', 'Active');",
+          "agent.orderByDesc('enrolled_at');",
+          "agent.setLimit(1);",
+          "agent.query();",
+          "",
+          "if (agent.next()) {",
+          "  outputs.agent_sys_id = agent.getUniqueValue();",
+          "  outputs.enrolled = true;",
+          "  outputs.heartbeat_received = !agent.last_heartbeat.nil();",
+          "  outputs.first_flow_received = (parseInt(agent.flows_collected) > 0);",
+          "} else {",
+          "  outputs.enrolled = false;",
+          "  outputs.heartbeat_received = false;",
+          "  outputs.first_flow_received = false;",
+          "}"
+        ]
+      },
+      "next": "step_3_evaluate"
+    },
+    {
+      "id": "step_3_evaluate",
+      "name": "Evaluate Enrollment Status",
+      "type": "FLOW_LOGIC",
+      "subtype": "IF",
+      "condition": "outputs.enrolled && outputs.heartbeat_received",
+      "if_true": "end",
+      "if_false": "step_4_fail"
+    },
+    {
+      "id": "step_4_fail",
+      "name": "Enrollment Failed",
+      "type": "ACTION",
+      "action": {
+        "script": [
+          "outputs.enrolled = false;",
+          "outputs.heartbeat_received = false;",
+          "gs.error('Pathfinder: Agent enrollment verification failed for server ' + inputs.server_sys_id);"
+        ]
+      },
+      "raises_error": true
+    }
+  ]
+}

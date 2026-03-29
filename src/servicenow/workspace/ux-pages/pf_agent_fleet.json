@@ -1,0 +1,83 @@
+{
+  "_comment": "sys_ux_page — Agent Fleet monitoring with header KPIs",
+  "sys_ux_page": {
+    "id": "pf_agent_fleet",
+    "title": "Agent Fleet",
+    "category": "list"
+  },
+
+  "data_resources": [
+    {
+      "id": "dr_active_count",
+      "type": "record_count",
+      "table": "x_avnth_pathfinder_agent",
+      "condition": "status=Active"
+    },
+    {
+      "id": "dr_stale_count",
+      "type": "record_count",
+      "table": "x_avnth_pathfinder_agent",
+      "condition": "status=Stale"
+    },
+    {
+      "id": "dr_os_distribution",
+      "type": "record_aggregate",
+      "table": "x_avnth_pathfinder_agent",
+      "condition": "status=Active",
+      "group_by": "os_type",
+      "aggregate": "COUNT"
+    },
+    {
+      "id": "dr_version_distribution",
+      "type": "record_aggregate",
+      "table": "x_avnth_pathfinder_agent",
+      "condition": "status=Active",
+      "group_by": "agent_version",
+      "aggregate": "COUNT"
+    }
+  ],
+
+  "component_tree": {
+    "root": {
+      "component": "now-container",
+      "properties": { "direction": "column", "gap": "lg" },
+      "children": [
+        {
+          "_comment": "Header KPIs + mini charts",
+          "component": "now-container",
+          "properties": { "direction": "row", "gap": "md", "wrap": true },
+          "children": [
+            { "component": "now-highlighted-value", "properties": { "label": "Active", "value": "{{dr_active_count.count}}", "variant": "positive", "size": "md" } },
+            { "component": "now-highlighted-value", "properties": { "label": "Stale", "value": "{{dr_stale_count.count}}", "variant": "warning", "size": "md" } },
+            { "component": "now-chart-donut", "properties": { "chart_title": "OS Distribution", "data": "{{dr_os_distribution}}", "height": 150 } },
+            { "component": "now-chart-bar", "properties": { "chart_title": "Version Distribution", "data": "{{dr_version_distribution}}", "height": 150 } }
+          ]
+        },
+        {
+          "_comment": "Agent list",
+          "component": "now-record-list-connected",
+          "properties": {
+            "table": "x_avnth_pathfinder_agent",
+            "columns": [
+              { "field": "hostname", "label": "Hostname" },
+              { "field": "agent_id", "label": "Agent ID", "display": "mono" },
+              { "field": "status", "label": "Status", "display": "pill",
+                "pill_variant_map": { "Active": "positive", "Stale": "warning", "Decommissioned": "neutral" } },
+              { "field": "os_type", "label": "OS" },
+              { "field": "agent_version", "label": "Version" },
+              { "field": "coverage_tier", "label": "Tier" },
+              { "field": "last_heartbeat", "label": "Last Heartbeat", "display": "relative_time" },
+              { "field": "flows_collected", "label": "Flows" }
+            ],
+            "enable_search": true,
+            "search_fields": "hostname,agent_id",
+            "page_size": 25,
+            "order_by": "last_heartbeat",
+            "order_direction": "desc",
+            "row_actions": ["pf_decommission_agent"]
+          }
+        }
+      ]
+    }
+  }
+}

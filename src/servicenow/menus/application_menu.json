@@ -1,0 +1,143 @@
+{
+  "application_menu": {
+    "title": "Pathfinder",
+    "scope": "x_avnth_pathfinder",
+    "description": "Integration discovery, health monitoring, and CMDB governance",
+    "order": 100,
+    "roles": "x_avnth_pathfinder.admin,x_avnth_pathfinder.analyst,x_avnth_pathfinder.viewer",
+    "active": true
+  },
+
+  "modules": [
+    {
+      "title": "Workspace",
+      "order": 100,
+      "type": "url",
+      "url": "/now/x_avnth/pathfinder",
+      "icon": "home",
+      "hint": "Open Pathfinder workspace (recommended)"
+    },
+    {
+      "title": "--- INTEGRATIONS ---",
+      "order": 200,
+      "type": "separator"
+    },
+    {
+      "title": "All Integrations",
+      "order": 210,
+      "type": "list",
+      "table": "x_avnth_cmdb_ci_integration",
+      "filter": "",
+      "icon": "connection"
+    },
+    {
+      "title": "Critical Integrations",
+      "order": 220,
+      "type": "list",
+      "table": "x_avnth_cmdb_ci_integration",
+      "filter": "health_status=Critical",
+      "icon": "warning-triangle"
+    },
+    {
+      "title": "Unmapped (EA)",
+      "order": 230,
+      "type": "list",
+      "table": "x_avnth_cmdb_ci_integration",
+      "filter": "ea_status=Unmapped",
+      "icon": "merge"
+    },
+    {
+      "title": "All Interfaces",
+      "order": 240,
+      "type": "list",
+      "table": "x_avnth_cmdb_ci_interface",
+      "filter": ""
+    },
+    {
+      "title": "--- AGENTS ---",
+      "order": 300,
+      "type": "separator"
+    },
+    {
+      "title": "All Agents",
+      "order": 310,
+      "type": "list",
+      "table": "x_avnth_pathfinder_agent",
+      "filter": "",
+      "icon": "monitoring"
+    },
+    {
+      "title": "Stale Agents",
+      "order": 320,
+      "type": "list",
+      "table": "x_avnth_pathfinder_agent",
+      "filter": "status=Stale",
+      "icon": "warning"
+    },
+    {
+      "title": "--- COVERAGE ---",
+      "order": 400,
+      "type": "separator"
+    },
+    {
+      "title": "Coverage Gaps",
+      "order": 410,
+      "type": "list",
+      "table": "x_avnth_coverage_gap",
+      "filter": "remediation_status=Open",
+      "icon": "shield-warning"
+    },
+    {
+      "title": "All Coverage Gaps",
+      "order": 420,
+      "type": "list",
+      "table": "x_avnth_coverage_gap",
+      "filter": ""
+    },
+    {
+      "title": "--- EA RECONCILIATION ---",
+      "order": 500,
+      "type": "separator"
+    },
+    {
+      "title": "EA Mappings",
+      "order": 510,
+      "type": "list",
+      "table": "x_avnth_integration_ea_map",
+      "filter": ""
+    },
+    {
+      "title": "Pending Suggestions",
+      "order": 520,
+      "type": "list",
+      "table": "x_avnth_integration_ea_map",
+      "filter": "mapping_status=Suggested"
+    },
+    {
+      "title": "--- HEALTH ---",
+      "order": 600,
+      "type": "separator"
+    },
+    {
+      "title": "Health Logs",
+      "order": 610,
+      "type": "list",
+      "table": "x_avnth_integration_health_log",
+      "filter": "",
+      "roles": "x_avnth_pathfinder.admin"
+    },
+    {
+      "title": "--- ADMIN ---",
+      "order": 900,
+      "type": "separator",
+      "roles": "x_avnth_pathfinder.admin"
+    },
+    {
+      "title": "System Properties",
+      "order": 910,
+      "type": "url",
+      "url": "/sys_properties_list.do?sysparm_query=nameLIKEx_avnth",
+      "roles": "x_avnth_pathfinder.admin"
+    }
+  ]
+}

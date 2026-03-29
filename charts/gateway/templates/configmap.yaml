@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pathfinder-gateway.fullname" . }}-config
+  labels:
+    {{- include "pathfinder-gateway.labels" . | nindent 4 }}
+data:
+  gateway.yaml: |
+    server:
+      port: {{ .Values.config.server.port }}
+      tls: {{ .Values.config.server.tls }}
+    database:
+      max_connections: {{ .Values.config.database.maxConnections }}
+    servicenow:
+      sync_interval: {{ .Values.config.servicenow.syncInterval }}
+      batch_size: {{ .Values.config.servicenow.batchSize }}
+    classification:
+      confidence_threshold: {{ .Values.config.classification.confidenceThreshold }}
+    logging:
+      level: {{ .Values.config.logging.level }}
+      format: {{ .Values.config.logging.format }}

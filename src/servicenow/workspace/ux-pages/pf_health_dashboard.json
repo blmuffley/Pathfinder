@@ -1,0 +1,183 @@
+{
+  "_comment": "sys_ux_page — Health Dashboard with time-series and analytics",
+  "sys_ux_page": {
+    "id": "pf_health_dashboard",
+    "title": "Health Dashboard",
+    "category": "dashboard"
+  },
+
+  "data_resources": [
+    {
+      "id": "dr_health_dist",
+      "type": "record_aggregate",
+      "table": "x_avnth_cmdb_ci_integration",
+      "group_by": "health_status",
+      "aggregate": "COUNT"
+    },
+    {
+      "id": "dr_avg_health",
+      "type": "record_aggregate",
+      "table": "x_avnth_cmdb_ci_integration",
+      "condition": "health_scoreISNOTEMPTY",
+      "aggregate": "AVG",
+      "field": "health_score"
+    },
+    {
+      "id": "dr_critical_list",
+      "type": "record_list",
+      "table": "x_avnth_cmdb_ci_integration",
+      "condition": "health_status=Critical",
+      "fields": "name,health_score,integration_type,last_observed,criticality",
+      "order_by": "health_score",
+      "limit": 20
+    }
+  ],
+
+  "component_tree": {
+    "root": {
+      "component": "now-container",
+      "properties": { "direction": "column", "gap": "lg" },
+      "children": [
+        {
+          "_comment": "Time range filter",
+          "component": "now-container",
+          "properties": { "direction": "row", "gap": "sm", "justify": "end" },
+          "children": [
+            {
+              "component": "now-dropdown",
+              "properties": {
+                "label": "Time Range",
+                "items": [
+                  { "label": "24 Hours", "value": "1" },
+                  { "label": "7 Days", "value": "7" },
+                  { "label": "30 Days", "value": "30" },
+                  { "label": "90 Days", "value": "90" }
+                ],
+                "selected": "7"
+              },
+              "events": {
+                "NOW_DROPDOWN#ITEM_CLICKED": {
+                  "action": "UPDATE_STATE",
+                  "payload": { "time_range_days": "{{event.payload.item.value}}" }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "_comment": "Row 1: Trend chart + distribution",
+          "component": "now-container",
+          "properties": { "direction": "row", "gap": "md" },
+          "children": [
+            {
+              "component": "now-chart-line",
+              "properties": {
+                "chart_title": "Average Health Score Trend",
+                "table": "x_avnth_integration_health_log",
+                "query": "recorded_at>=javascript:gs.daysAgoStart({{state.time_range_days || 7}})",
+                "group_by": "metric_type",
+                "aggregate": "AVG",
+                "aggregate_field": "metric_value",
+                "trend_field": "recorded_at",
+                "height": 300,
+                "flex": 2
+              }
+            },
+            {
+              "component": "now-chart-donut",
+              "properties": {
+                "chart_title": "Health Distribution",
+                "data": "{{dr_health_dist}}",
+                "height": 300,
+                "flex": 1,
+                "color_map": {
+                  "Healthy": "#22c55e",
+                  "Degraded": "#f59e0b",
+                  "Critical": "#ef4444",
+                  "Unknown": "#6b7280"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "_comment": "Row 2: Metric sparklines",
+          "component": "now-container",
+          "properties": { "direction": "row", "gap": "md" },
+          "children": [
+            {
+              "component": "now-chart-area",
+              "properties": {
+                "chart_title": "Availability",
+                "table": "x_avnth_integration_health_log",
+                "query": "metric_type=Availability^recorded_at>=javascript:gs.daysAgoStart({{state.time_range_days || 7}})",
+                "aggregate": "AVG",
+                "aggregate_field": "metric_value",
+                "trend_field": "recorded_at",
+                "height": 150,
+                "color": "#22c55e"
+              }
+            },
+            {
+              "component": "now-chart-area",
+              "properties": {
+                "chart_title": "Latency (ms)",
+                "table": "x_avnth_integration_health_log",
+                "query": "metric_type=Latency^recorded_at>=javascript:gs.daysAgoStart({{state.time_range_days || 7}})",
+                "aggregate": "AVG",
+                "aggregate_field": "metric_value",
+                "trend_field": "recorded_at",
+                "height": 150,
+                "color": "#3b82f6"
+              }
+            },
+            {
+              "component": "now-chart-area",
+              "properties": {
+                "chart_title": "Error Rate (%)",
+                "table": "x_avnth_integration_health_log",
+                "query": "metric_type=ErrorRate^recorded_at>=javascript:gs.daysAgoStart({{state.time_range_days || 7}})",
+                "aggregate": "AVG",
+                "aggregate_field": "metric_value",
+                "trend_field": "recorded_at",
+                "height": 150,
+                "color": "#ef4444"
+              }
+            },
+            {
+              "component": "now-chart-area",
+              "properties": {
+                "chart_title": "Throughput (req/s)",
+                "table": "x_avnth_integration_health_log",
+                "query": "metric_type=Throughput^recorded_at>=javascript:gs.daysAgoStart({{state.time_range_days || 7}})",
+                "aggregate": "AVG",
+                "aggregate_field": "metric_value",
+                "trend_field": "recorded_at",
+                "height": 150,
+                "color": "#8b5cf6"
+              }
+            }
+          ]
+        },
+        {
+          "_comment": "Row 3: Critical integrations list",
+          "component": "now-record-list-connected",
+          "properties": {
+            "table": "x_avnth_cmdb_ci_integration",
+            "query": "health_status=Critical^ORDERBYhealth_score",
+            "title": "Critical Integrations",
+            "columns": "name,health_score,integration_type,last_observed,criticality",
+            "page_size": 20,
+            "enable_row_click": true
+          },
+          "events": {
+            "NOW_RECORD_LIST_CONNECTED#ROW_CLICKED": {
+              "action": "NAVIGATE",
+              "payload": { "route": "integrations/{{event.payload.sys_id}}" }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

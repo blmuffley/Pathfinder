@@ -1,0 +1,161 @@
+{
+  "form_variants": [
+    {
+      "table": "x_avnth_cmdb_ci_integration",
+      "variant": "workspace_default",
+      "framework": "Polaris",
+      "layout": {
+        "header": {
+          "primary_field": "name",
+          "secondary_fields": ["health_status", "health_score", "integration_type"],
+          "contextual_actions": ["pf_refresh_ai_summary"]
+        },
+        "sections": [
+          {
+            "label": "AI Summary",
+            "layout": "single_column",
+            "collapsed": false,
+            "fields": [
+              { "field": "ai_summary", "display": "rich_text", "full_width": true }
+            ]
+          },
+          {
+            "label": "Classification",
+            "layout": "two_column",
+            "fields": [
+              { "field": "source_ci", "column": 1 },
+              { "field": "target_ci", "column": 2 },
+              { "field": "integration_type", "column": 1 },
+              { "field": "classification_confidence", "column": 2, "display": "progress_bar" },
+              { "field": "discovery_method", "column": 1 }
+            ]
+          },
+          {
+            "label": "Health & Telemetry",
+            "layout": "two_column",
+            "fields": [
+              { "field": "health_status", "column": 1, "display": "pill" },
+              { "field": "health_score", "column": 2, "display": "progress_bar" },
+              { "field": "first_discovered", "column": 1 },
+              { "field": "last_observed", "column": 2, "display": "relative_time" },
+              { "field": "flow_count", "column": 1 }
+            ]
+          },
+          {
+            "label": "Governance",
+            "layout": "two_column",
+            "fields": [
+              { "field": "criticality", "column": 1 },
+              { "field": "data_classification", "column": 2 },
+              { "field": "owner", "column": 1 },
+              { "field": "support_group", "column": 2 },
+              { "field": "ea_status", "column": 1 },
+              { "field": "ea_relationship", "column": 2 }
+            ]
+          }
+        ],
+        "related_lists": [
+          {
+            "table": "x_avnth_cmdb_ci_interface",
+            "relationship_field": "integration",
+            "label": "Interfaces",
+            "columns": ["name", "protocol", "port", "direction", "pattern", "flow_count", "error_rate"],
+            "default_sort": { "field": "flow_count", "direction": "desc" }
+          },
+          {
+            "table": "x_avnth_integration_health_log",
+            "relationship_field": "integration",
+            "label": "Health Logs",
+            "columns": ["metric_type", "metric_value", "unit", "recorded_at", "source"],
+            "default_sort": { "field": "recorded_at", "direction": "desc" },
+            "limit": 50
+          },
+          {
+            "table": "x_avnth_integration_ea_map",
+            "relationship_field": "integration",
+            "label": "EA Mappings",
+            "columns": ["ea_relationship", "mapping_status", "confidence", "match_reason", "mapped_by"],
+            "row_actions": ["pf_confirm_ea_mapping", "pf_reject_ea_mapping"]
+          }
+        ]
+      }
+    },
+    {
+      "table": "x_avnth_cmdb_ci_interface",
+      "variant": "workspace_default",
+      "framework": "Polaris",
+      "layout": {
+        "header": {
+          "primary_field": "name",
+          "secondary_fields": ["protocol", "port", "direction"]
+        },
+        "sections": [
+          {
+            "label": "Interface Details",
+            "layout": "two_column",
+            "fields": [
+              { "field": "integration", "column": 1 },
+              { "field": "protocol", "column": 1 },
+              { "field": "port", "column": 2 },
+              { "field": "direction", "column": 1 },
+              { "field": "pattern", "column": 2 },
+              { "field": "data_format", "column": 1 },
+              { "field": "process_name", "column": 2 }
+            ]
+          },
+          {
+            "label": "Metrics",
+            "layout": "two_column",
+            "fields": [
+              { "field": "flow_count", "column": 1 },
+              { "field": "avg_bytes_per_flow", "column": 2 },
+              { "field": "latency_p50_ms", "column": 1 },
+              { "field": "latency_p99_ms", "column": 2 },
+              { "field": "error_rate", "column": 1, "display": "progress_bar" },
+              { "field": "first_discovered", "column": 1 },
+              { "field": "last_observed", "column": 2, "display": "relative_time" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "table": "x_avnth_coverage_gap",
+      "variant": "workspace_default",
+      "framework": "Polaris",
+      "layout": {
+        "header": {
+          "primary_field": "server",
+          "secondary_fields": ["gap_type", "priority", "remediation_status"],
+          "contextual_actions": ["pf_create_remediation_cr", "pf_waive_coverage_gap"]
+        },
+        "sections": [
+          {
+            "label": "Gap Details",
+            "layout": "two_column",
+            "fields": [
+              { "field": "server", "column": 1 },
+              { "field": "gap_type", "column": 2 },
+              { "field": "required_tier", "column": 1 },
+              { "field": "current_tier", "column": 2 },
+              { "field": "priority", "column": 1 },
+              { "field": "detected_at", "column": 2 }
+            ]
+          },
+          {
+            "label": "Remediation",
+            "layout": "two_column",
+            "fields": [
+              { "field": "remediation_status", "column": 1 },
+              { "field": "remediation_method", "column": 2 },
+              { "field": "remediation_cr", "column": 1 },
+              { "field": "resolved_at", "column": 2 },
+              { "field": "waived_by", "column": 1 },
+              { "field": "waive_reason", "column": 2, "full_width": true }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "page": {
+    "id": "pf_coverage_gaps",
+    "title": "Coverage Gaps",
+    "description": "Kanban-style triage board for coverage gap remediation",
+    "type": "board",
+    "framework": "Polaris",
+    "layout": "kanban"
+  },
+
+  "board_config": {
+    "table": "x_avnth_coverage_gap",
+    "lane_field": "remediation_status",
+    "lanes": [
+      { "value": "Open", "label": "Open", "color": "critical", "wip_limit": null },
+      { "value": "InProgress", "label": "In Progress", "color": "warning", "wip_limit": 20 },
+      { "value": "Resolved", "label": "Resolved", "color": "positive", "collapsed": false },
+      { "value": "Waived", "label": "Waived", "color": "neutral", "collapsed": true },
+      { "value": "Failed", "label": "Failed", "color": "critical", "collapsed": false }
+    ],
+    "card_fields": {
+      "title": "server",
+      "subtitle": "gap_type",
+      "badge": "priority",
+      "footer": "detected_at",
+      "badge_colors": {
+        "Critical": "critical",
+        "High": "high",
+        "Medium": "warning",
+        "Low": "neutral"
+      }
+    },
+    "card_actions": [
+      { "label": "Create Change Request", "action": "create_related", "table": "change_request",
+        "field_map": {
+          "short_description": "'Deploy Pathfinder agent to ' + current.server.getDisplayValue()",
+          "category": "Software",
+          "cmdb_ci": "current.server"
+        },
+        "condition": "remediation_status=Open"
+      },
+      { "label": "Start Remediation", "action": "update_field", "field": "remediation_status", "value": "InProgress", "condition": "remediation_status=Open" },
+      { "label": "Mark Resolved", "action": "update_field", "field": "remediation_status", "value": "Resolved", "condition": "remediation_status=InProgress" },
+      { "label": "Waive", "action": "dialog", "dialog": "pf_waive_gap_dialog", "condition": "remediation_status=Open^ORremediation_status=InProgress" }
+    ],
+    "sort_within_lane": { "field": "priority", "direction": "asc" },
+    "filters": [
+      { "field": "gap_type", "type": "multi_select" },
+      { "field": "priority", "type": "multi_select" }
+    ]
+  },
+
+  "header_components": [
+    {
+      "type": "now-card-kpi",
+      "label": "Open Gaps",
+      "data_source": { "table": "x_avnth_coverage_gap", "aggregate": "COUNT", "condition": "remediation_status=Open" },
+      "color": "critical"
+    },
+    {
+      "type": "now-card-kpi",
+      "label": "Avg Days Open",
+      "data_source": { "table": "x_avnth_coverage_gap", "aggregate": "AVG", "field": "sys_created_on", "condition": "remediation_status=Open", "transform": "days_since" },
+      "color": "warning"
+    }
+  ],
+
+  "dialogs": {
+    "pf_waive_gap_dialog": {
+      "title": "Waive Coverage Gap",
+      "fields": [
+        { "field": "waive_reason", "label": "Reason for Waiver", "type": "textarea", "mandatory": true },
+        { "field": "waived_by", "label": "Waived By", "type": "reference", "table": "sys_user", "default": "current_user" }
+      ],
+      "on_submit": {
+        "update": {
+          "remediation_status": "Waived",
+          "waived_by": "{{waived_by}}",
+          "waive_reason": "{{waive_reason}}"
+        }
+      }
+    }
+  }
+}

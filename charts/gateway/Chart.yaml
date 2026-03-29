@@ -1,0 +1,13 @@
+apiVersion: v2
+name: pathfinder-gateway
+description: Pathfinder Gateway — gRPC server, classification engine, ServiceNow sync
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - pathfinder
+  - cmdb
+  - servicenow
+  - integration-discovery
+maintainers:
+  - name: Avennorth

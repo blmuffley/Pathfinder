@@ -1,0 +1,136 @@
+{
+  "_comment": "sys_trigger records — Scheduled Jobs for 8 CMDB Ops agents",
+  "scope": "x_avnth_pathfinder",
+
+  "scheduled_jobs": [
+    {
+      "name": "Pathfinder - Duplicate Detector",
+      "internal_name": "x_avnth_cmdb_ops_duplicate_detector",
+      "schedule": "0 2 * * *",
+      "schedule_display": "Daily at 02:00 UTC",
+      "max_runtime_minutes": 30,
+      "active": true,
+      "run_as": "system",
+      "script": [
+        "// Calls the CMDB Ops Agent API to run the duplicate_detector agent",
+        "var aiUrl = gs.getProperty('x_avnth.ai_engine_url', 'http://localhost:8082');",
+        "var autonomy = parseInt(gs.getProperty('x_avnth.cmdb_ops_autonomy_level', '1'));",
+        "var enabled = gs.getProperty('x_avnth.cmdb_ops_enabled', 'true');",
+        "if (enabled != 'true') { gs.info('Pathfinder CMDB Ops disabled — skipping'); return; }",
+        "",
+        "var integrations = _getIntegrationContext();",
+        "",
+        "var req = new sn_ws.RESTMessageV2();",
+        "req.setEndpoint(aiUrl + '/api/v1/run');",
+        "req.setHttpMethod('POST');",
+        "req.setRequestHeader('Content-Type', 'application/json');",
+        "req.setRequestBody(JSON.stringify({",
+        "  agent_name: 'duplicate_detector',",
+        "  autonomy_level: autonomy,",
+        "  context: { integrations: integrations }",
+        "}));",
+        "var resp = req.execute();",
+        "gs.info('Pathfinder Duplicate Detector: ' + resp.getStatusCode());"
+      ]
+    },
+    {
+      "name": "Pathfinder - Orphan Finder",
+      "internal_name": "x_avnth_cmdb_ops_orphan_finder",
+      "schedule": "30 2 * * *",
+      "schedule_display": "Daily at 02:30 UTC",
+      "max_runtime_minutes": 15,
+      "active": true,
+      "script_summary": "Calls CMDB Ops Agent /api/v1/run with agent_name=orphan_finder"
+    },
+    {
+      "name": "Pathfinder - Stale Record Reaper",
+      "internal_name": "x_avnth_cmdb_ops_stale_reaper",
+      "schedule": "0 3 * * *",
+      "schedule_display": "Daily at 03:00 UTC",
+      "max_runtime_minutes": 15,
+      "active": true,
+      "script_summary": "Calls CMDB Ops Agent /api/v1/run with agent_name=stale_record_reaper"
+    },
+    {
+      "name": "Pathfinder - Relationship Validator",
+      "internal_name": "x_avnth_cmdb_ops_relationship_validator",
+      "schedule": "0 4 * * 0",
+      "schedule_display": "Weekly Sunday at 04:00 UTC",
+      "max_runtime_minutes": 30,
+      "active": true,
+      "script_summary": "Calls CMDB Ops Agent /api/v1/run with agent_name=relationship_validator"
+    },
+    {
+      "name": "Pathfinder - Classification Auditor",
+      "internal_name": "x_avnth_cmdb_ops_classification_auditor",
+      "schedule": "0 4 * * *",
+      "schedule_display": "Daily at 04:00 UTC",
+      "max_runtime_minutes": 20,
+      "active": true,
+      "script_summary": "Calls CMDB Ops Agent /api/v1/run with agent_name=classification_auditor"
+    },
+    {
+      "name": "Pathfinder - Compliance Checker",
+      "internal_name": "x_avnth_cmdb_ops_compliance_checker",
+      "schedule": "0 5 * * *",
+      "schedule_display": "Daily at 05:00 UTC",
+      "max_runtime_minutes": 20,
+      "active": true,
+      "script_summary": "Calls CMDB Ops Agent /api/v1/run with agent_name=compliance_checker"
+    },
+    {
+      "name": "Pathfinder - Health Scorer",
+      "internal_name": "x_avnth_cmdb_ops_health_scorer",
+      "schedule": "0 */4 * * *",
+      "schedule_display": "Every 4 hours",
+      "max_runtime_minutes": 30,
+      "active": true,
+      "script_summary": "Calls CMDB Ops Agent /api/v1/run with agent_name=health_scorer"
+    },
+    {
+      "name": "Pathfinder - Remediation Orchestrator",
+      "internal_name": "x_avnth_cmdb_ops_orchestrator",
+      "schedule": "0 6 * * *",
+      "schedule_display": "Daily at 06:00 UTC (runs last)",
+      "max_runtime_minutes": 30,
+      "active": true,
+      "script_summary": "Calls CMDB Ops Agent /api/v1/run-all to coordinate all agents"
+    }
+  ],
+
+  "_helper_function": {
+    "name": "_getIntegrationContext",
+    "description": "Script Include that queries integration CIs and returns context array for CMDB Ops agents",
+    "script": [
+      "function _getIntegrationContext() {",
+      "  var integrations = [];",
+      "  var gr = new GlideRecord('x_avnth_cmdb_ci_integration');",
+      "  gr.addQuery('operational_status', '1');",
+      "  gr.setLimit(parseInt(gs.getProperty('x_avnth.max_cis_per_agent_run', '50')));",
+      "  gr.query();",
+      "  while (gr.next()) {",
+      "    integrations.push({",
+      "      sys_id: gr.getUniqueValue(),",
+      "      name: gr.getDisplayValue('name'),",
+      "      source_ci: gr.source_ci.toString(),",
+      "      target_ci: gr.target_ci.toString(),",
+      "      source_app: gr.source_ci.getDisplayValue(),",
+      "      target_app: gr.target_ci.getDisplayValue(),",
+      "      integration_type: gr.integration_type.toString(),",
+      "      classification_confidence: parseFloat(gr.classification_confidence),",
+      "      flow_count: parseInt(gr.flow_count),",
+      "      health_score: gr.health_score.nil() ? null : parseInt(gr.health_score),",
+      "      health_status: gr.health_status.toString(),",
+      "      last_observed: gr.last_observed.toString(),",
+      "      criticality: gr.criticality.toString(),",
+      "      owner: gr.owner.toString(),",
+      "      support_group: gr.support_group.toString(),",
+      "      data_classification: gr.data_classification.toString(),",
+      "      ea_status: gr.ea_status.toString()",
+      "    });",
+      "  }",
+      "  return integrations;",
+      "}"
+    ]
+  }
+}

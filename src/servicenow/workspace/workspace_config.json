@@ -1,0 +1,97 @@
+{
+  "workspace": {
+    "name": "Pathfinder",
+    "sys_id_prefix": "x_avnth_pf_ws",
+    "scope": "x_avnth_pathfinder",
+    "title": "Pathfinder Integration Intelligence",
+    "description": "CMDB-first integration discovery, health monitoring, and governance workspace",
+    "icon": "network-wired",
+    "roles": ["x_avnth_pathfinder.admin", "x_avnth_pathfinder.analyst", "x_avnth_pathfinder.viewer"],
+    "url_path": "/now/x_avnth/pathfinder",
+    "framework": "Next Experience (Polaris)",
+    "builder": "UI Builder",
+    "design_system": "Polaris"
+  },
+
+  "navigation": {
+    "primary": [
+      {
+        "id": "nav_overview",
+        "label": "Overview",
+        "icon": "home-outline",
+        "page": "pf_overview",
+        "order": 100,
+        "default": true
+      },
+      {
+        "id": "nav_integrations",
+        "label": "Integrations",
+        "icon": "connection-outline",
+        "page": "pf_integration_list",
+        "order": 200,
+        "badge_source": "x_avnth_cmdb_ci_integration",
+        "badge_condition": "health_status=Critical"
+      },
+      {
+        "id": "nav_agents",
+        "label": "Agent Fleet",
+        "icon": "monitoring-outline",
+        "page": "pf_agent_fleet",
+        "order": 300,
+        "badge_source": "x_avnth_pathfinder_agent",
+        "badge_condition": "status=Stale"
+      },
+      {
+        "id": "nav_coverage",
+        "label": "Coverage Gaps",
+        "icon": "shield-warning-outline",
+        "page": "pf_coverage_gaps",
+        "order": 400,
+        "badge_source": "x_avnth_coverage_gap",
+        "badge_condition": "remediation_status=Open"
+      },
+      {
+        "id": "nav_ea_recon",
+        "label": "EA Reconciliation",
+        "icon": "merge-outline",
+        "page": "pf_ea_reconciliation",
+        "order": 500
+      }
+    ],
+    "secondary": [
+      {
+        "id": "nav_health_dashboard",
+        "label": "Health Dashboard",
+        "icon": "chart-line-outline",
+        "page": "pf_health_dashboard",
+        "order": 600
+      },
+      {
+        "id": "nav_settings",
+        "label": "Settings",
+        "icon": "settings-outline",
+        "page": "pf_settings",
+        "order": 900,
+        "roles": ["x_avnth_pathfinder.admin"]
+      }
+    ]
+  },
+
+  "roles": [
+    {
+      "name": "x_avnth_pathfinder.admin",
+      "title": "Pathfinder Administrator",
+      "description": "Full access to all Pathfinder configuration and operations"
+    },
+    {
+      "name": "x_avnth_pathfinder.analyst",
+      "title": "Integration Analyst",
+      "description": "View and manage integrations, confirm EA mappings, triage coverage gaps"
+    },
+    {
+      "name": "x_avnth_pathfinder.viewer",
+      "title": "Pathfinder Viewer",
+      "description": "Read-only access to Pathfinder workspace"
+    }
+  ]
+}

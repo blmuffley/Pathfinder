@@ -1,0 +1,181 @@
+{
+  "page": {
+    "id": "pf_overview",
+    "title": "Overview",
+    "description": "Pathfinder workspace landing page — KPI tiles, health distribution, recent activity",
+    "type": "landing",
+    "framework": "Polaris",
+    "layout": "fluid"
+  },
+
+  "sections": [
+    {
+      "id": "kpi_row",
+      "type": "row",
+      "order": 100,
+      "columns": 4,
+      "components": [
+        {
+          "type": "now-card-kpi",
+          "label": "Total Integrations",
+          "data_source": {
+            "table": "x_avnth_cmdb_ci_integration",
+            "aggregate": "COUNT",
+            "condition": "operational_status=1"
+          },
+          "icon": "connection-outline",
+          "trend": { "compare": "7d" }
+        },
+        {
+          "type": "now-card-kpi",
+          "label": "Healthy",
+          "data_source": {
+            "table": "x_avnth_cmdb_ci_integration",
+            "aggregate": "COUNT",
+            "condition": "health_status=Healthy"
+          },
+          "color": "positive",
+          "icon": "check-circle-outline"
+        },
+        {
+          "type": "now-card-kpi",
+          "label": "Critical",
+          "data_source": {
+            "table": "x_avnth_cmdb_ci_integration",
+            "aggregate": "COUNT",
+            "condition": "health_status=Critical"
+          },
+          "color": "critical",
+          "icon": "warning-triangle-outline"
+        },
+        {
+          "type": "now-card-kpi",
+          "label": "Active Agents",
+          "data_source": {
+            "table": "x_avnth_pathfinder_agent",
+            "aggregate": "COUNT",
+            "condition": "status=Active"
+          },
+          "icon": "monitoring-outline"
+        }
+      ]
+    },
+    {
+      "id": "kpi_row_2",
+      "type": "row",
+      "order": 150,
+      "columns": 4,
+      "components": [
+        {
+          "type": "now-card-kpi",
+          "label": "Open Coverage Gaps",
+          "data_source": {
+            "table": "x_avnth_coverage_gap",
+            "aggregate": "COUNT",
+            "condition": "remediation_status=Open"
+          },
+          "color": "warning",
+          "icon": "shield-warning-outline"
+        },
+        {
+          "type": "now-card-kpi",
+          "label": "Avg Health Score",
+          "data_source": {
+            "table": "x_avnth_cmdb_ci_integration",
+            "aggregate": "AVG",
+            "field": "health_score",
+            "condition": "health_scoreISNOTEMPTY"
+          },
+          "format": "integer",
+          "icon": "heart-pulse-outline"
+        },
+        {
+          "type": "now-card-kpi",
+          "label": "EA Mapped %",
+          "data_source": {
+            "table": "x_avnth_cmdb_ci_integration",
+            "aggregate": "PERCENTAGE",
+            "condition": "ea_status=Mapped"
+          },
+          "format": "percent",
+          "icon": "merge-outline"
+        },
+        {
+          "type": "now-card-kpi",
+          "label": "Total Flows (24h)",
+          "data_source": {
+            "table": "x_avnth_cmdb_ci_integration",
+            "aggregate": "SUM",
+            "field": "flow_count"
+          },
+          "format": "abbreviated",
+          "icon": "data-flow-outline"
+        }
+      ]
+    },
+    {
+      "id": "charts_row",
+      "type": "row",
+      "order": 200,
+      "columns": 2,
+      "components": [
+        {
+          "type": "now-chart-donut",
+          "label": "Health Distribution",
+          "data_source": {
+            "table": "x_avnth_cmdb_ci_integration",
+            "group_by": "health_status",
+            "aggregate": "COUNT"
+          },
+          "colors": {
+            "Healthy": "#22c55e",
+            "Degraded": "#f59e0b",
+            "Critical": "#ef4444",
+            "Unknown": "#6b7280"
+          }
+        },
+        {
+          "type": "now-chart-donut",
+          "label": "Integration Types",
+          "data_source": {
+            "table": "x_avnth_cmdb_ci_integration",
+            "group_by": "integration_type",
+            "aggregate": "COUNT"
+          }
+        }
+      ]
+    },
+    {
+      "id": "recent_activity",
+      "type": "row",
+      "order": 300,
+      "columns": 2,
+      "components": [
+        {
+          "type": "now-list",
+          "label": "Recently Discovered Integrations",
+          "data_source": {
+            "table": "x_avnth_cmdb_ci_integration",
+            "fields": ["name", "integration_type", "health_status", "classification_confidence"],
+            "order_by": "first_discovered",
+            "order_direction": "desc",
+            "limit": 10
+          },
+          "click_action": "navigate_to_record"
+        },
+        {
+          "type": "now-list",
+          "label": "Critical Coverage Gaps",
+          "data_source": {
+            "table": "x_avnth_coverage_gap",
+            "fields": ["server", "gap_type", "priority", "detected_at"],
+            "condition": "remediation_status=Open",
+            "order_by": "priority",
+            "limit": 10
+          },
+          "click_action": "navigate_to_record"
+        }
+      ]
+    }
+  ]
+}

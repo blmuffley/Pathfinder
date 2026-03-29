@@ -1,0 +1,141 @@
+{
+  "page": {
+    "id": "pf_integration_list",
+    "title": "Integrations",
+    "description": "Integration CI explorer with split-view detail panel",
+    "type": "list",
+    "framework": "Polaris",
+    "layout": "split-content"
+  },
+
+  "list_config": {
+    "table": "x_avnth_cmdb_ci_integration",
+    "columns": [
+      { "field": "name", "label": "Integration", "width": "auto", "sortable": true },
+      { "field": "integration_type", "label": "Type", "width": 120, "sortable": true, "pill": true },
+      { "field": "health_status", "label": "Health", "width": 100, "sortable": true, "pill": true,
+        "pill_colors": {
+          "Healthy": "positive",
+          "Degraded": "warning",
+          "Critical": "critical",
+          "Unknown": "neutral"
+        }
+      },
+      { "field": "health_score", "label": "Score", "width": 80, "sortable": true, "format": "progress_bar" },
+      { "field": "classification_confidence", "label": "Confidence", "width": 90, "sortable": true, "format": "percent" },
+      { "field": "flow_count", "label": "Flows", "width": 80, "sortable": true, "format": "abbreviated" },
+      { "field": "last_observed", "label": "Last Seen", "width": 130, "sortable": true, "format": "relative_time" },
+      { "field": "ea_status", "label": "EA", "width": 90, "sortable": true, "pill": true }
+    ],
+    "default_sort": { "field": "last_observed", "direction": "desc" },
+    "search_fields": ["name", "source_ci", "target_ci"],
+    "filters": [
+      { "field": "health_status", "type": "multi_select" },
+      { "field": "integration_type", "type": "multi_select" },
+      { "field": "ea_status", "type": "multi_select" },
+      { "field": "criticality", "type": "multi_select" },
+      { "field": "discovery_method", "type": "multi_select" }
+    ],
+    "row_actions": [
+      { "label": "View Details", "action": "open_detail_panel" },
+      { "label": "Set Criticality", "action": "update_field", "field": "criticality" },
+      { "label": "Assign Owner", "action": "update_field", "field": "owner" }
+    ],
+    "bulk_actions": [
+      { "label": "Set Criticality", "action": "bulk_update", "field": "criticality" },
+      { "label": "Assign Support Group", "action": "bulk_update", "field": "support_group" }
+    ]
+  },
+
+  "detail_panel": {
+    "layout": "tabbed",
+    "tabs": [
+      {
+        "id": "overview",
+        "label": "Overview",
+        "sections": [
+          {
+            "type": "record_header",
+            "fields": ["name", "health_status", "health_score", "integration_type"]
+          },
+          {
+            "type": "ai_summary",
+            "field": "ai_summary",
+            "label": "AI Summary",
+            "empty_state": "No AI summary generated yet. Available after Intelligence Engine processes this integration."
+          },
+          {
+            "type": "field_group",
+            "label": "Classification",
+            "fields": ["source_ci", "target_ci", "integration_type", "classification_confidence", "discovery_method"]
+          },
+          {
+            "type": "field_group",
+            "label": "Governance",
+            "fields": ["criticality", "data_classification", "owner", "support_group", "ea_status"]
+          },
+          {
+            "type": "field_group",
+            "label": "Telemetry",
+            "fields": ["first_discovered", "last_observed", "flow_count"]
+          }
+        ]
+      },
+      {
+        "id": "interfaces",
+        "label": "Interfaces",
+        "sections": [
+          {
+            "type": "related_list",
+            "table": "x_avnth_cmdb_ci_interface",
+            "relationship_field": "integration",
+            "columns": ["protocol", "port", "direction", "pattern", "flow_count", "latency_p50_ms", "error_rate", "last_observed"],
+            "empty_state": "No interfaces discovered yet."
+          }
+        ]
+      },
+      {
+        "id": "health",
+        "label": "Health",
+        "sections": [
+          {
+            "type": "chart_time_series",
+            "label": "Health Score Trend",
+            "data_source": {
+              "table": "x_avnth_integration_health_log",
+              "filter_field": "integration",
+              "metric_field": "metric_value",
+              "group_by": "metric_type",
+              "time_field": "recorded_at",
+              "period": "30d"
+            }
+          }
+        ]
+      },
+      {
+        "id": "ea",
+        "label": "EA Mapping",
+        "sections": [
+          {
+            "type": "related_list",
+            "table": "x_avnth_integration_ea_map",
+            "relationship_field": "integration",
+            "columns": ["ea_relationship", "mapping_status", "confidence", "match_reason", "mapped_by"],
+            "empty_state": "No EA mapping suggestions available.",
+            "row_actions": [
+              { "label": "Confirm", "action": "update_field", "field": "mapping_status", "value": "Confirmed", "condition": "mapping_status=Suggested" },
+              { "label": "Reject", "action": "update_field", "field": "mapping_status", "value": "Rejected", "condition": "mapping_status=Suggested" }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "activity",
+        "label": "Activity",
+        "sections": [
+          { "type": "activity_stream" }
+        ]
+      }
+    ]
+  }
+}

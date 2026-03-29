@@ -1,0 +1,208 @@
+{
+  "_comment": "sys_declarative_action_assignment records for Pathfinder workspace",
+
+  "actions": [
+    {
+      "sys_id_suffix": "confirm_ea",
+      "action_name": "pf_confirm_ea_mapping",
+      "label": "Confirm Match",
+      "table": "x_avnth_integration_ea_map",
+      "form_conditions": "mapping_status=Suggested",
+      "action_type": "UPDATE_RECORD",
+      "icon": "check-circle-outline",
+      "variant": "primary",
+      "order": 100,
+      "roles": "x_avnth_pathfinder.admin,x_avnth_pathfinder.analyst",
+      "client_script": "",
+      "server_script": {
+        "script": [
+          "var gr = new GlideRecord('x_avnth_integration_ea_map');",
+          "if (gr.get(sysId)) {",
+          "  gr.mapping_status = 'Confirmed';",
+          "  gr.mapped_by = gs.getUserID();",
+          "  gr.mapped_at = new GlideDateTime();",
+          "  gr.update();",
+          "  // Update parent integration ea_status",
+          "  var integ = new GlideRecord('x_avnth_cmdb_ci_integration');",
+          "  if (integ.get(gr.integration)) {",
+          "    integ.ea_status = 'Mapped';",
+          "    integ.ea_relationship = gr.ea_relationship;",
+          "    integ.update();",
+          "  }",
+          "}"
+        ]
+      },
+      "success_message": "EA mapping confirmed."
+    },
+    {
+      "sys_id_suffix": "reject_ea",
+      "action_name": "pf_reject_ea_mapping",
+      "label": "Reject Match",
+      "table": "x_avnth_integration_ea_map",
+      "form_conditions": "mapping_status=Suggested",
+      "action_type": "UPDATE_RECORD",
+      "icon": "close-circle-outline",
+      "variant": "secondary-destructive",
+      "order": 200,
+      "roles": "x_avnth_pathfinder.admin,x_avnth_pathfinder.analyst",
+      "server_script": {
+        "script": [
+          "var gr = new GlideRecord('x_avnth_integration_ea_map');",
+          "if (gr.get(sysId)) {",
+          "  gr.mapping_status = 'Rejected';",
+          "  gr.mapped_by = gs.getUserID();",
+          "  gr.mapped_at = new GlideDateTime();",
+          "  gr.update();",
+          "}"
+        ]
+      },
+      "success_message": "EA mapping rejected."
+    },
+    {
+      "sys_id_suffix": "decommission_agent",
+      "action_name": "pf_decommission_agent",
+      "label": "Decommission Agent",
+      "table": "x_avnth_pathfinder_agent",
+      "form_conditions": "status!=Decommissioned",
+      "action_type": "UPDATE_RECORD",
+      "icon": "power-off-outline",
+      "variant": "secondary-destructive",
+      "order": 300,
+      "roles": "x_avnth_pathfinder.admin",
+      "confirmation": {
+        "title": "Decommission Agent?",
+        "message": "This will mark the agent as decommissioned and may create a coverage gap for the linked server."
+      },
+      "server_script": {
+        "script": [
+          "var gr = new GlideRecord('x_avnth_pathfinder_agent');",
+          "if (gr.get(sysId)) {",
+          "  gr.status = 'Decommissioned';",
+          "  gr.update();",
+          "}"
+        ]
+      },
+      "success_message": "Agent decommissioned."
+    },
+    {
+      "sys_id_suffix": "create_cr",
+      "action_name": "pf_create_remediation_cr",
+      "label": "Create Change Request",
+      "table": "x_avnth_coverage_gap",
+      "form_conditions": "remediation_status=Open^remediation_crISEMPTY",
+      "action_type": "CREATE_RELATED_RECORD",
+      "icon": "document-add-outline",
+      "variant": "primary",
+      "order": 100,
+      "roles": "x_avnth_pathfinder.admin,x_avnth_pathfinder.analyst",
+      "server_script": {
+        "script": [
+          "var gap = new GlideRecord('x_avnth_coverage_gap');",
+          "if (!gap.get(sysId)) return;",
+          "",
+          "var cr = new GlideRecord('change_request');",
+          "cr.initialize();",
+          "cr.short_description = 'Deploy Pathfinder agent to ' + gap.server.getDisplayValue();",
+          "cr.description = 'Coverage gap: ' + gap.gap_type + '\\nServer: ' + gap.server.getDisplayValue() + '\\nRequired tier: ' + gap.required_tier + '\\nPriority: ' + gap.priority;",
+          "cr.category = 'Software';",
+          "cr.cmdb_ci = gap.server;",
+          "cr.priority = (gap.priority == 'Critical') ? '1' : (gap.priority == 'High') ? '2' : '3';",
+          "var assignGroup = gs.getProperty('x_avnth.deploy_assignment_group');",
+          "if (assignGroup) cr.assignment_group = assignGroup;",
+          "var crSysId = cr.insert();",
+          "",
+          "gap.remediation_cr = crSysId;",
+          "gap.remediation_status = 'InProgress';",
+          "gap.remediation_method = 'ChangeRequest';",
+          "gap.update();"
+        ]
+      },
+      "success_message": "Change request created."
+    },
+    {
+      "sys_id_suffix": "waive_gap",
+      "action_name": "pf_waive_coverage_gap",
+      "label": "Waive Gap",
+      "table": "x_avnth_coverage_gap",
+      "form_conditions": "remediation_status=Open^ORremediation_status=InProgress",
+      "action_type": "FORM_DIALOG",
+      "icon": "shield-check-outline",
+      "variant": "secondary",
+      "order": 200,
+      "roles": "x_avnth_pathfinder.admin",
+      "dialog": {
+        "title": "Waive Coverage Gap",
+        "size": "sm",
+        "fields": [
+          {
+            "name": "waive_reason",
+            "label": "Reason for waiver",
+            "type": "textarea",
+            "mandatory": true,
+            "placeholder": "Explain why this server does not need an agent..."
+          }
+        ],
+        "confirm_label": "Waive",
+        "cancel_label": "Cancel"
+      },
+      "server_script": {
+        "script": [
+          "var gr = new GlideRecord('x_avnth_coverage_gap');",
+          "if (gr.get(sysId)) {",
+          "  gr.remediation_status = 'Waived';",
+          "  gr.waived_by = gs.getUserID();",
+          "  gr.waive_reason = inputs.waive_reason;",
+          "  gr.update();",
+          "}"
+        ]
+      },
+      "success_message": "Coverage gap waived."
+    },
+    {
+      "sys_id_suffix": "refresh_ai",
+      "action_name": "pf_refresh_ai_summary",
+      "label": "Refresh AI Summary",
+      "table": "x_avnth_cmdb_ci_integration",
+      "form_conditions": "",
+      "action_type": "REST_CALL",
+      "icon": "sparkle-outline",
+      "variant": "secondary",
+      "order": 100,
+      "roles": "x_avnth_pathfinder.admin,x_avnth_pathfinder.analyst",
+      "server_script": {
+        "script": [
+          "var gr = new GlideRecord('x_avnth_cmdb_ci_integration');",
+          "if (!gr.get(sysId)) return;",
+          "",
+          "var aiUrl = gs.getProperty('x_avnth.ai_engine_url', 'http://localhost:8080');",
+          "var req = new sn_ws.RESTMessageV2();",
+          "req.setEndpoint(aiUrl + '/api/v1/analyze');",
+          "req.setHttpMethod('POST');",
+          "req.setRequestHeader('Content-Type', 'application/json');",
+          "req.setRequestBody(JSON.stringify({",
+          "  analysis_type: 'summarize',",
+          "  integration: {",
+          "    source_app: gr.source_ci.getDisplayValue(),",
+          "    target_app: gr.target_ci.getDisplayValue(),",
+          "    integration_type: gr.integration_type.toString(),",
+          "    classification_confidence: parseFloat(gr.classification_confidence),",
+          "    flow_count: parseInt(gr.flow_count),",
+          "    health_score: parseInt(gr.health_score),",
+          "    health_status: gr.health_status.toString()",
+          "  }",
+          "}));",
+          "",
+          "var resp = req.execute();",
+          "if (resp.getStatusCode() == 200) {",
+          "  var body = JSON.parse(resp.getBody());",
+          "  if (body.result && body.result.summary) {",
+          "    gr.ai_summary = body.result.summary;",
+          "    gr.update();",
+          "  }",
+          "}"
+        ]
+      },
+      "success_message": "AI summary refreshed."
+    }
+  ]
+}

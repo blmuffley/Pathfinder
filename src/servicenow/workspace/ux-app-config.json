@@ -1,0 +1,148 @@
+{
+  "_comment": "UX Application record — creates the Configurable Workspace shell in UI Builder",
+  "sys_ux_app_config": {
+    "title": "Pathfinder",
+    "scope": "x_avnth_pathfinder",
+    "url_path": "x_avnth/pathfinder",
+    "description": "CMDB-first integration discovery, health monitoring, and governance",
+    "icon": "network-wired-outline",
+    "landing_page": "pf_overview",
+    "app_shell": "workspace",
+    "chrome": {
+      "header": {
+        "title": "Pathfinder",
+        "subtitle": "Integration Intelligence",
+        "show_global_search": true
+      },
+      "sidebar": {
+        "collapsible": true,
+        "default_state": "expanded",
+        "width": "240px"
+      }
+    },
+    "roles": {
+      "access": ["x_avnth_pathfinder.admin", "x_avnth_pathfinder.analyst", "x_avnth_pathfinder.viewer"],
+      "admin": ["x_avnth_pathfinder.admin"]
+    },
+    "theme": {
+      "brand_color": "#39FF14",
+      "brand_text_color": "#0E0E0C"
+    }
+  },
+
+  "sys_ux_app_route": [
+    {
+      "path": "",
+      "page": "pf_overview",
+      "title": "Overview"
+    },
+    {
+      "path": "integrations",
+      "page": "pf_integration_list",
+      "title": "Integrations"
+    },
+    {
+      "path": "integrations/:sys_id",
+      "page": "pf_integration_record",
+      "title": "Integration Detail"
+    },
+    {
+      "path": "agents",
+      "page": "pf_agent_fleet",
+      "title": "Agent Fleet"
+    },
+    {
+      "path": "coverage-gaps",
+      "page": "pf_coverage_gaps",
+      "title": "Coverage Gaps"
+    },
+    {
+      "path": "ea-reconciliation",
+      "page": "pf_ea_reconciliation",
+      "title": "EA Reconciliation"
+    },
+    {
+      "path": "health",
+      "page": "pf_health_dashboard",
+      "title": "Health Dashboard"
+    },
+    {
+      "path": "settings",
+      "page": "pf_settings",
+      "title": "Settings",
+      "roles": ["x_avnth_pathfinder.admin"]
+    }
+  ],
+
+  "sys_ux_app_menu": [
+    {
+      "label": "Overview",
+      "icon": "home-outline",
+      "route": "",
+      "order": 100,
+      "section": "primary",
+      "badge": null
+    },
+    {
+      "label": "Integrations",
+      "icon": "connection-outline",
+      "route": "integrations",
+      "order": 200,
+      "section": "primary",
+      "badge": {
+        "table": "x_avnth_cmdb_ci_integration",
+        "condition": "health_status=Critical",
+        "type": "count",
+        "style": "critical"
+      }
+    },
+    {
+      "label": "Agent Fleet",
+      "icon": "monitoring-outline",
+      "route": "agents",
+      "order": 300,
+      "section": "primary",
+      "badge": {
+        "table": "x_avnth_pathfinder_agent",
+        "condition": "status=Stale",
+        "type": "count",
+        "style": "warning"
+      }
+    },
+    {
+      "label": "Coverage Gaps",
+      "icon": "shield-warning-outline",
+      "route": "coverage-gaps",
+      "order": 400,
+      "section": "primary",
+      "badge": {
+        "table": "x_avnth_coverage_gap",
+        "condition": "remediation_status=Open",
+        "type": "count",
+        "style": "critical"
+      }
+    },
+    {
+      "label": "EA Reconciliation",
+      "icon": "merge-outline",
+      "route": "ea-reconciliation",
+      "order": 500,
+      "section": "primary"
+    },
+    {
+      "label": "Health Dashboard",
+      "icon": "chart-line-outline",
+      "route": "health",
+      "order": 600,
+      "section": "secondary"
+    },
+    {
+      "label": "Settings",
+      "icon": "settings-outline",
+      "route": "settings",
+      "order": 900,
+      "section": "secondary",
+      "roles": ["x_avnth_pathfinder.admin"]
+    }
+  ]
+}

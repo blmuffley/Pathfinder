@@ -60,3 +60,4 @@ Thumbs.db
 # Build artifacts
 /bin/
 /tmp/
+docs/prototypes/workspace-app/node_modules/

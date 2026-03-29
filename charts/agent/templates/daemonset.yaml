@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "pathfinder-agent.fullname" . }}
+  labels:
+    {{- include "pathfinder-agent.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "pathfinder-agent.selectorLabels" . | nindent 6 }}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        {{- include "pathfinder-agent.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      hostNetwork: {{ .Values.hostNetwork }}
+      hostPID: {{ .Values.hostPID }}
+      dnsPolicy: ClusterFirstWithHostNet
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      containers:
+        - name: agent
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --gateway
+            - {{ .Values.gateway.address }}
+          env:
+            - name: PF_GATEWAY_ADDRESS
+              value: {{ .Values.gateway.address }}
+            - name: PF_ENROLLMENT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.enrollment.tokenSecret }}
+                  key: {{ .Values.enrollment.tokenKey }}
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          securityContext:
+            privileged: {{ .Values.securityContext.privileged }}
+            capabilities:
+              add:
+                {{- toYaml .Values.securityContext.capabilities.add | nindent 16 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: sys-kernel
+              mountPath: /sys/kernel
+              readOnly: true
+            - name: bpf-maps
+              mountPath: /sys/fs/bpf
+            - name: agent-state
+              mountPath: /var/lib/pathfinder
+      volumes:
+        - name: sys-kernel
+          hostPath:
+            path: /sys/kernel
+        - name: bpf-maps
+          hostPath:
+            path: /sys/fs/bpf
+        - name: agent-state
+          hostPath:
+            path: /var/lib/pathfinder
+            type: DirectoryOrCreate
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

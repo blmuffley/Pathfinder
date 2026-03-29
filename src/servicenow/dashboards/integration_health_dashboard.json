@@ -1,0 +1,123 @@
+{
+  "dashboard": {
+    "id": "pf_integration_health",
+    "title": "Integration Health Dashboard",
+    "scope": "x_avnth_pathfinder",
+    "description": "Real-time health monitoring for all discovered integrations",
+    "workspace_page": "pf_health_dashboard",
+    "refresh_interval": 300
+  },
+
+  "widgets": [
+    {
+      "id": "health_distribution",
+      "type": "donut_chart",
+      "title": "Health Status Distribution",
+      "position": { "row": 0, "col": 0, "width": 4, "height": 2 },
+      "data_source": {
+        "table": "x_avnth_cmdb_ci_integration",
+        "group_by": "health_status",
+        "aggregate": "COUNT",
+        "condition": "operational_status=1"
+      },
+      "colors": {
+        "Healthy": "#22c55e",
+        "Degraded": "#f59e0b",
+        "Critical": "#ef4444",
+        "Unknown": "#6b7280"
+      }
+    },
+    {
+      "id": "avg_health_trend",
+      "type": "time_series",
+      "title": "Average Health Score (30 days)",
+      "position": { "row": 0, "col": 4, "width": 8, "height": 2 },
+      "data_source": {
+        "table": "x_avnth_integration_health_log",
+        "aggregate": "AVG",
+        "field": "metric_value",
+        "group_by": "metric_type",
+        "time_field": "recorded_at",
+        "period": "30d",
+        "interval": "1d"
+      }
+    },
+    {
+      "id": "critical_integrations",
+      "type": "list",
+      "title": "Critical Integrations",
+      "position": { "row": 2, "col": 0, "width": 6, "height": 3 },
+      "data_source": {
+        "table": "x_avnth_cmdb_ci_integration",
+        "condition": "health_status=Critical",
+        "fields": ["name", "health_score", "integration_type", "last_observed", "criticality"],
+        "order_by": "health_score",
+        "order_direction": "asc",
+        "limit": 20
+      }
+    },
+    {
+      "id": "score_by_type",
+      "type": "bar_chart",
+      "title": "Avg Health Score by Integration Type",
+      "position": { "row": 2, "col": 6, "width": 6, "height": 3 },
+      "data_source": {
+        "table": "x_avnth_cmdb_ci_integration",
+        "group_by": "integration_type",
+        "aggregate": "AVG",
+        "field": "health_score",
+        "condition": "health_scoreISNOTEMPTY"
+      }
+    },
+    {
+      "id": "availability_sparkline",
+      "type": "single_score",
+      "title": "Avg Availability",
+      "position": { "row": 5, "col": 0, "width": 3, "height": 1 },
+      "data_source": {
+        "table": "x_avnth_integration_health_log",
+        "condition": "metric_type=Availability^recorded_at>=javascript:gs.daysAgoStart(7)",
+        "aggregate": "AVG",
+        "field": "metric_value"
+      },
+      "format": "percent",
+      "threshold": { "warning": 99.0, "critical": 95.0 }
+    },
+    {
+      "id": "error_rate_sparkline",
+      "type": "single_score",
+      "title": "Avg Error Rate",
+      "position": { "row": 5, "col": 3, "width": 3, "height": 1 },
+      "data_source": {
+        "table": "x_avnth_integration_health_log",
+        "condition": "metric_type=ErrorRate^recorded_at>=javascript:gs.daysAgoStart(7)",
+        "aggregate": "AVG",
+        "field": "metric_value"
+      },
+      "format": "percent",
+      "threshold": { "warning": 1.0, "critical": 5.0 },
+      "invert_threshold": true
+    },
+    {
+      "id": "ea_reconciliation_progress",
+      "type": "progress_bar",
+      "title": "EA Reconciliation Progress",
+      "position": { "row": 5, "col": 6, "width": 3, "height": 1 },
+      "data_source": {
+        "numerator": { "table": "x_avnth_cmdb_ci_integration", "aggregate": "COUNT", "condition": "ea_status=Mapped" },
+        "denominator": { "table": "x_avnth_cmdb_ci_integration", "aggregate": "COUNT" }
+      }
+    },
+    {
+      "id": "discovery_trend",
+      "type": "single_score",
+      "title": "New Integrations (7d)",
+      "position": { "row": 5, "col": 9, "width": 3, "height": 1 },
+      "data_source": {
+        "table": "x_avnth_cmdb_ci_integration",
+        "condition": "first_discovered>=javascript:gs.daysAgoStart(7)",
+        "aggregate": "COUNT"
+      }
+    }
+  ]
+}

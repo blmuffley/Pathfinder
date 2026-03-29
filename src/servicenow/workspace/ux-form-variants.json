@@ -1,0 +1,150 @@
+{
+  "_comment": "sys_ux_form_variant records — workspace form layouts for Polaris",
+
+  "form_variants": [
+    {
+      "table": "x_avnth_cmdb_ci_integration",
+      "variant_name": "Pathfinder Workspace",
+      "is_default_workspace_form": true,
+      "header": {
+        "primary_field": "name",
+        "secondary_fields": [
+          { "field": "health_status", "display": "pill", "variant_map": { "Healthy": "positive", "Degraded": "warning", "Critical": "critical", "Unknown": "neutral" } },
+          { "field": "health_score", "display": "progress" },
+          { "field": "integration_type", "display": "pill" }
+        ],
+        "actions": ["pf_refresh_ai_summary"]
+      },
+      "sections": [
+        {
+          "label": "AI Summary",
+          "collapsed": false,
+          "layout": "single_column",
+          "fields": [
+            { "field": "ai_summary", "display": "rich_text", "span": "full" }
+          ]
+        },
+        {
+          "label": "Classification",
+          "layout": "two_column",
+          "fields": [
+            { "field": "source_ci", "column": 1 },
+            { "field": "target_ci", "column": 2 },
+            { "field": "integration_type", "column": 1 },
+            { "field": "classification_confidence", "column": 2, "display": "progress" },
+            { "field": "discovery_method", "column": 1 }
+          ]
+        },
+        {
+          "label": "Health & Telemetry",
+          "layout": "two_column",
+          "fields": [
+            { "field": "health_status", "column": 1 },
+            { "field": "health_score", "column": 2, "display": "progress" },
+            { "field": "first_discovered", "column": 1 },
+            { "field": "last_observed", "column": 2, "display": "relative_time" },
+            { "field": "flow_count", "column": 1 }
+          ]
+        },
+        {
+          "label": "Governance",
+          "layout": "two_column",
+          "fields": [
+            { "field": "criticality", "column": 1 },
+            { "field": "data_classification", "column": 2 },
+            { "field": "owner", "column": 1 },
+            { "field": "support_group", "column": 2 },
+            { "field": "ea_status", "column": 1 },
+            { "field": "ea_relationship", "column": 2 }
+          ]
+        }
+      ],
+      "related_lists": [
+        { "table": "x_avnth_cmdb_ci_interface", "relationship_field": "integration", "label": "Interfaces" },
+        { "table": "x_avnth_integration_health_log", "relationship_field": "integration", "label": "Health Logs" },
+        { "table": "x_avnth_integration_ea_map", "relationship_field": "integration", "label": "EA Mappings" }
+      ]
+    },
+    {
+      "table": "x_avnth_cmdb_ci_interface",
+      "variant_name": "Pathfinder Workspace",
+      "is_default_workspace_form": true,
+      "header": {
+        "primary_field": "name",
+        "secondary_fields": [
+          { "field": "protocol", "display": "pill" },
+          { "field": "port" },
+          { "field": "direction", "display": "pill" }
+        ]
+      },
+      "sections": [
+        {
+          "label": "Interface Details",
+          "layout": "two_column",
+          "fields": [
+            { "field": "integration", "column": 1 },
+            { "field": "protocol", "column": 1 },
+            { "field": "port", "column": 2 },
+            { "field": "direction", "column": 1 },
+            { "field": "pattern", "column": 2 },
+            { "field": "data_format", "column": 1 },
+            { "field": "process_name", "column": 2 }
+          ]
+        },
+        {
+          "label": "Metrics",
+          "layout": "two_column",
+          "fields": [
+            { "field": "flow_count", "column": 1 },
+            { "field": "avg_bytes_per_flow", "column": 2 },
+            { "field": "latency_p50_ms", "column": 1 },
+            { "field": "latency_p99_ms", "column": 2 },
+            { "field": "error_rate", "column": 1 },
+            { "field": "first_discovered", "column": 1 },
+            { "field": "last_observed", "column": 2 }
+          ]
+        }
+      ]
+    },
+    {
+      "table": "x_avnth_coverage_gap",
+      "variant_name": "Pathfinder Workspace",
+      "is_default_workspace_form": true,
+      "header": {
+        "primary_field": "server",
+        "secondary_fields": [
+          { "field": "gap_type", "display": "pill" },
+          { "field": "priority", "display": "pill", "variant_map": { "Critical": "critical", "High": "high", "Medium": "warning", "Low": "neutral" } },
+          { "field": "remediation_status", "display": "pill" }
+        ],
+        "actions": ["pf_create_remediation_cr", "pf_waive_coverage_gap"]
+      },
+      "sections": [
+        {
+          "label": "Gap Details",
+          "layout": "two_column",
+          "fields": [
+            { "field": "server", "column": 1 },
+            { "field": "gap_type", "column": 2 },
+            { "field": "required_tier", "column": 1 },
+            { "field": "current_tier", "column": 2 },
+            { "field": "priority", "column": 1 },
+            { "field": "detected_at", "column": 2 }
+          ]
+        },
+        {
+          "label": "Remediation",
+          "layout": "two_column",
+          "fields": [
+            { "field": "remediation_status", "column": 1 },
+            { "field": "remediation_method", "column": 2 },
+            { "field": "remediation_cr", "column": 1 },
+            { "field": "resolved_at", "column": 2 },
+            { "field": "waived_by", "column": 1 },
+            { "field": "waive_reason", "column": 2, "span": "full" }
+          ]
+        }
+      ]
+    }
+  ]
+}

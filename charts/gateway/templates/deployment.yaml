@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pathfinder-gateway.fullname" . }}
+  labels:
+    {{- include "pathfinder-gateway.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "pathfinder-gateway.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "pathfinder-gateway.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      containers:
+        - name: gateway
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --config
+            - /etc/pathfinder/gateway.yaml
+          ports:
+            - name: grpc
+              containerPort: {{ .Values.config.server.port }}
+              protocol: TCP
+          env:
+            - name: PF_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.urlSecret }}
+                  key: {{ .Values.database.urlKey }}
+            - name: PF_SN_INSTANCE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.servicenow.instanceSecret }}
+                  key: {{ .Values.servicenow.instanceKey }}
+            - name: PF_SN_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.servicenow.instanceSecret }}
+                  key: {{ .Values.servicenow.clientIdKey }}
+            - name: PF_SN_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.servicenow.instanceSecret }}
+                  key: {{ .Values.servicenow.clientSecretKey }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/pathfinder
+              readOnly: true
+          livenessProbe:
+            tcpSocket:
+              port: grpc
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: grpc
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "pathfinder-gateway.fullname" . }}-config
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

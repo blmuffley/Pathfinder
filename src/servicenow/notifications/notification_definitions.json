@@ -1,0 +1,181 @@
+{
+  "_comment": "sys_notification records — Email/Event notifications for Pathfinder",
+  "scope": "x_avnth_pathfinder",
+
+  "events": [
+    {
+      "name": "x_avnth.coverage_gap.detected",
+      "table": "x_avnth_coverage_gap",
+      "description": "Fired when a new coverage gap is created",
+      "fired_by": "Business Rule on INSERT"
+    },
+    {
+      "name": "x_avnth.coverage_gap.remediation_failed",
+      "table": "x_avnth_coverage_gap",
+      "description": "Fired when automated remediation fails",
+      "fired_by": "Flow Designer remediation flow"
+    },
+    {
+      "name": "x_avnth.integration.health_critical",
+      "table": "x_avnth_cmdb_ci_integration",
+      "description": "Fired when an integration's health status changes to Critical",
+      "fired_by": "Business Rule on health_status change"
+    },
+    {
+      "name": "x_avnth.agent.stale",
+      "table": "x_avnth_pathfinder_agent",
+      "description": "Fired when an agent's status changes to Stale",
+      "fired_by": "Business Rule on status change"
+    },
+    {
+      "name": "x_avnth.cmdb_ops.action_required",
+      "table": "x_avnth_cmdb_ci_integration",
+      "description": "Fired when CMDB Ops agent creates a recommendation requiring approval",
+      "fired_by": "CMDB Ops Agent API callback"
+    }
+  ],
+
+  "notifications": [
+    {
+      "name": "Pathfinder - Critical Coverage Gap Detected",
+      "event": "x_avnth.coverage_gap.detected",
+      "condition": "priority=Critical^ORpriority=High",
+      "recipients": {
+        "type": "group_property",
+        "property": "x_avnth.deploy_assignment_group"
+      },
+      "subject": "Pathfinder: {{priority}} coverage gap on {{server.name}}",
+      "body_template": [
+        "A {{priority}} coverage gap has been detected by Pathfinder.",
+        "",
+        "Server: {{server.name}} ({{server.ip_address}})",
+        "Gap Type: {{gap_type}}",
+        "Required Tier: {{required_tier}}",
+        "Current Tier: {{current_tier}}",
+        "Detected: {{detected_at}}",
+        "",
+        "{{#if auto_deploy_enabled}}",
+        "Auto-remediation has been initiated.",
+        "{{else}}",
+        "Manual remediation required. Open the Pathfinder workspace to triage:",
+        "{{instance_url}}/now/x_avnth/pathfinder/coverage-gaps",
+        "{{/if}}"
+      ],
+      "active": true
+    },
+    {
+      "name": "Pathfinder - Remediation Failed",
+      "event": "x_avnth.coverage_gap.remediation_failed",
+      "recipients": {
+        "type": "email_property",
+        "property": "x_avnth.notify_on_failure"
+      },
+      "subject": "Pathfinder: Agent deployment FAILED on {{server.name}}",
+      "body_template": [
+        "Automated agent deployment failed for the following coverage gap:",
+        "",
+        "Server: {{server.name}}",
+        "Gap Type: {{gap_type}}",
+        "Remediation Method: {{remediation_method}}",
+        "Change Request: {{remediation_cr.number}}",
+        "",
+        "The gap has been marked as 'Failed'. Manual intervention required.",
+        "",
+        "Triage in workspace: {{instance_url}}/now/x_avnth/pathfinder/coverage-gaps"
+      ],
+      "active": true
+    },
+    {
+      "name": "Pathfinder - Integration Health Critical",
+      "event": "x_avnth.integration.health_critical",
+      "recipients": {
+        "type": "field",
+        "fields": ["owner", "support_group"]
+      },
+      "subject": "Pathfinder: Integration {{name}} health is CRITICAL (score: {{health_score}})",
+      "body_template": [
+        "The health of integration '{{name}}' has degraded to Critical.",
+        "",
+        "Source: {{source_ci.name}}",
+        "Target: {{target_ci.name}}",
+        "Type: {{integration_type}}",
+        "Health Score: {{health_score}}/100",
+        "Last Observed: {{last_observed}}",
+        "",
+        "{{#if ai_summary}}",
+        "AI Analysis:",
+        "{{ai_summary}}",
+        "{{/if}}",
+        "",
+        "View in workspace: {{instance_url}}/now/x_avnth/pathfinder/integrations/{{sys_id}}"
+      ],
+      "active": true
+    },
+    {
+      "name": "Pathfinder - Agent Stale",
+      "event": "x_avnth.agent.stale",
+      "recipients": {
+        "type": "group_property",
+        "property": "x_avnth.deploy_assignment_group"
+      },
+      "subject": "Pathfinder: Agent {{hostname}} is STALE (no heartbeat)",
+      "body_template": [
+        "Pathfinder agent '{{hostname}}' has not sent a heartbeat.",
+        "",
+        "Agent ID: {{agent_id}}",
+        "OS: {{os_type}}",
+        "Last Heartbeat: {{last_heartbeat}}",
+        "Coverage Tier: {{coverage_tier}}",
+        "",
+        "This may indicate the agent process has stopped or the server is unreachable.",
+        "",
+        "View in workspace: {{instance_url}}/now/x_avnth/pathfinder/agents"
+      ],
+      "active": true
+    },
+    {
+      "name": "Pathfinder - CMDB Ops Action Required",
+      "event": "x_avnth.cmdb_ops.action_required",
+      "recipients": {
+        "type": "role",
+        "roles": ["x_avnth_pathfinder.analyst"]
+      },
+      "subject": "Pathfinder: CMDB quality action required — {{short_description}}",
+      "body_template": [
+        "A CMDB Ops agent has identified an issue requiring review:",
+        "",
+        "{{short_description}}",
+        "",
+        "Review recommendations in the Pathfinder workspace:",
+        "{{instance_url}}/now/x_avnth/pathfinder/integrations"
+      ],
+      "active": true
+    }
+  ],
+
+  "business_rules_for_events": [
+    {
+      "name": "Fire Coverage Gap Detected Event",
+      "table": "x_avnth_coverage_gap",
+      "when": "after",
+      "insert": true,
+      "script": "gs.eventQueue('x_avnth.coverage_gap.detected', current, current.server, current.priority);"
+    },
+    {
+      "name": "Fire Integration Health Critical Event",
+      "table": "x_avnth_cmdb_ci_integration",
+      "when": "after",
+      "update": true,
+      "condition": "current.health_status == 'Critical' && current.health_status.changes()",
+      "script": "gs.eventQueue('x_avnth.integration.health_critical', current, current.source_ci, current.target_ci);"
+    },
+    {
+      "name": "Fire Agent Stale Event",
+      "table": "x_avnth_pathfinder_agent",
+      "when": "after",
+      "update": true,
+      "condition": "current.status == 'Stale' && current.status.changes()",
+      "script": "gs.eventQueue('x_avnth.agent.stale', current, current.hostname, current.agent_id);"
+    }
+  ]
+}

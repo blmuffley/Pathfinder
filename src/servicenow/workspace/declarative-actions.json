@@ -1,0 +1,129 @@
+{
+  "declarative_actions": [
+    {
+      "id": "pf_confirm_ea_mapping",
+      "label": "Confirm EA Mapping",
+      "table": "x_avnth_integration_ea_map",
+      "condition": "mapping_status=Suggested",
+      "action_type": "UPDATE_RECORD",
+      "payload": {
+        "mapping_status": "Confirmed",
+        "mapped_by": "{{gs.getUserID()}}",
+        "mapped_at": "{{new GlideDateTime()}}"
+      },
+      "success_message": "EA mapping confirmed.",
+      "icon": "check-circle-outline",
+      "style": "primary",
+      "roles": ["x_avnth_pathfinder.admin", "x_avnth_pathfinder.analyst"]
+    },
+    {
+      "id": "pf_reject_ea_mapping",
+      "label": "Reject EA Mapping",
+      "table": "x_avnth_integration_ea_map",
+      "condition": "mapping_status=Suggested",
+      "action_type": "UPDATE_RECORD",
+      "payload": {
+        "mapping_status": "Rejected",
+        "mapped_by": "{{gs.getUserID()}}",
+        "mapped_at": "{{new GlideDateTime()}}"
+      },
+      "success_message": "EA mapping rejected.",
+      "icon": "close-circle-outline",
+      "style": "secondary-destructive",
+      "roles": ["x_avnth_pathfinder.admin", "x_avnth_pathfinder.analyst"]
+    },
+    {
+      "id": "pf_decommission_agent",
+      "label": "Decommission Agent",
+      "table": "x_avnth_pathfinder_agent",
+      "condition": "status!=Decommissioned",
+      "action_type": "UPDATE_RECORD",
+      "confirmation": {
+        "title": "Decommission Agent?",
+        "message": "This will mark the agent as decommissioned and may create a coverage gap. Continue?"
+      },
+      "payload": {
+        "status": "Decommissioned"
+      },
+      "success_message": "Agent decommissioned.",
+      "icon": "power-off-outline",
+      "style": "secondary-destructive",
+      "roles": ["x_avnth_pathfinder.admin"]
+    },
+    {
+      "id": "pf_create_remediation_cr",
+      "label": "Create Change Request",
+      "table": "x_avnth_coverage_gap",
+      "condition": "remediation_status=Open^remediation_crISEMPTY",
+      "action_type": "CREATE_RECORD",
+      "target_table": "change_request",
+      "payload": {
+        "short_description": "Deploy Pathfinder agent to {{current.server.getDisplayValue()}}",
+        "description": "Coverage gap detected: {{current.gap_type}} on server {{current.server.getDisplayValue()}}.\nRequired tier: {{current.required_tier}}, Current tier: {{current.current_tier}}.",
+        "category": "Software",
+        "cmdb_ci": "{{current.server}}",
+        "priority": "{{current.priority == 'Critical' ? '1' : current.priority == 'High' ? '2' : '3'}}"
+      },
+      "post_action": {
+        "update_source": {
+          "remediation_cr": "{{result.sys_id}}",
+          "remediation_status": "InProgress",
+          "remediation_method": "ChangeRequest"
+        }
+      },
+      "success_message": "Change request created.",
+      "icon": "document-add-outline",
+      "style": "primary",
+      "roles": ["x_avnth_pathfinder.admin", "x_avnth_pathfinder.analyst"]
+    },
+    {
+      "id": "pf_waive_coverage_gap",
+      "label": "Waive Gap",
+      "table": "x_avnth_coverage_gap",
+      "condition": "remediation_status=Open^ORremediation_status=InProgress",
+      "action_type": "FORM_DIALOG",
+      "dialog": {
+        "title": "Waive Coverage Gap",
+        "fields": [
+          { "name": "waive_reason", "label": "Reason for waiver", "type": "textarea", "mandatory": true }
+        ]
+      },
+      "payload": {
+        "remediation_status": "Waived",
+        "waived_by": "{{gs.getUserID()}}",
+        "waive_reason": "{{dialog.waive_reason}}"
+      },
+      "success_message": "Coverage gap waived.",
+      "icon": "shield-check-outline",
+      "style": "secondary",
+      "roles": ["x_avnth_pathfinder.admin"]
+    },
+    {
+      "id": "pf_refresh_ai_summary",
+      "label": "Refresh AI Summary",
+      "table": "x_avnth_cmdb_ci_integration",
+      "action_type": "REST_CALL",
+      "endpoint": {
+        "url": "{{PF_AI_ENGINE_URL}}/api/v1/summarize",
+        "method": "POST",
+        "body": {
+          "integration_sys_id": "{{current.sys_id}}",
+          "source": "{{current.source_ci.getDisplayValue()}}",
+          "target": "{{current.target_ci.getDisplayValue()}}",
+          "type": "{{current.integration_type}}",
+          "flow_count": "{{current.flow_count}}",
+          "health_score": "{{current.health_score}}"
+        }
+      },
+      "post_action": {
+        "update_source": {
+          "ai_summary": "{{response.summary}}"
+        }
+      },
+      "success_message": "AI summary refreshed.",
+      "icon": "sparkle-outline",
+      "style": "secondary",
+      "roles": ["x_avnth_pathfinder.admin", "x_avnth_pathfinder.analyst"]
+    }
+  ]
+}

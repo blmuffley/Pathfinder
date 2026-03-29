@@ -1,6 +1,7 @@
 version: "3.9"
 
 services:
+  # --- Infrastructure ---
   postgres:
     image: postgres:16-alpine
     environment:
@@ -11,7 +12,13 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pathfinder"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
+  # --- Tier 2: Gateway ---
   gateway:
     build:
       context: .
@@ -21,18 +28,52 @@ services:
     environment:
       PF_DB_URL: postgres://pathfinder:localdev@postgres:5432/pathfinder?sslmode=disable
       PF_SN_INSTANCE: ${PF_SN_INSTANCE:-https://mock-sn.localhost}
+      PF_SN_CLIENT_ID: ${PF_SN_CLIENT_ID:-}
+      PF_SN_CLIENT_SECRET: ${PF_SN_CLIENT_SECRET:-}
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
+  # --- Tier 3: Intelligence Layer ---
   ai-engine:
     build:
-      context: .
-      dockerfile: src/intelligence/shared-ai-engine/Dockerfile
+      context: src/intelligence/shared-ai-engine
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     environment:
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
-      PF_DB_URL: postgres://pathfinder:localdev@postgres:5432/pathfinder?sslmode=disable
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      PORT: 8080
+
+  integration-intelligence:
+    build:
+      context: src/intelligence/integration-intelligence
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      PORT: 8081
+      AI_ENGINE_URL: http://ai-engine:8080
+    depends_on:
+      - ai-engine
+
+  cmdb-ops-agent:
+    build:
+      context: src/intelligence/cmdb-ops-agent
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      PORT: 8082
+
+  service-map:
+    build:
+      context: src/intelligence/service-map-suite
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      PORT: 8083
 
 volumes:
   pgdata:

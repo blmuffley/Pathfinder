@@ -1,0 +1,69 @@
+{
+  "page": {
+    "id": "pf_agent_fleet",
+    "title": "Agent Fleet",
+    "description": "Agent status grid, heartbeat monitoring, version distribution",
+    "type": "list",
+    "framework": "Polaris",
+    "layout": "split-content"
+  },
+
+  "list_config": {
+    "table": "x_avnth_pathfinder_agent",
+    "columns": [
+      { "field": "hostname", "label": "Hostname", "width": "auto", "sortable": true },
+      { "field": "agent_id", "label": "Agent ID", "width": 220, "sortable": true, "mono": true },
+      { "field": "status", "label": "Status", "width": 100, "sortable": true, "pill": true,
+        "pill_colors": {
+          "Active": "positive",
+          "Stale": "warning",
+          "Decommissioned": "neutral"
+        }
+      },
+      { "field": "os_type", "label": "OS", "width": 90, "sortable": true },
+      { "field": "agent_version", "label": "Version", "width": 100, "sortable": true },
+      { "field": "coverage_tier", "label": "Tier", "width": 60, "sortable": true },
+      { "field": "last_heartbeat", "label": "Last Heartbeat", "width": 140, "sortable": true, "format": "relative_time" },
+      { "field": "flows_collected", "label": "Flows", "width": 80, "sortable": true, "format": "abbreviated" },
+      { "field": "deployment_model", "label": "Model", "width": 100, "sortable": true }
+    ],
+    "default_sort": { "field": "last_heartbeat", "direction": "desc" },
+    "search_fields": ["hostname", "agent_id"],
+    "filters": [
+      { "field": "status", "type": "multi_select" },
+      { "field": "os_type", "type": "multi_select" },
+      { "field": "deployment_model", "type": "multi_select" },
+      { "field": "coverage_tier", "type": "range" }
+    ],
+    "row_actions": [
+      { "label": "Decommission", "action": "update_field", "field": "status", "value": "Decommissioned", "condition": "status!=Decommissioned", "confirm": true }
+    ]
+  },
+
+  "header_components": [
+    {
+      "type": "now-card-kpi",
+      "label": "Active",
+      "data_source": { "table": "x_avnth_pathfinder_agent", "aggregate": "COUNT", "condition": "status=Active" },
+      "color": "positive"
+    },
+    {
+      "type": "now-card-kpi",
+      "label": "Stale",
+      "data_source": { "table": "x_avnth_pathfinder_agent", "aggregate": "COUNT", "condition": "status=Stale" },
+      "color": "warning"
+    },
+    {
+      "type": "now-chart-donut",
+      "label": "OS Distribution",
+      "size": "small",
+      "data_source": { "table": "x_avnth_pathfinder_agent", "group_by": "os_type", "aggregate": "COUNT", "condition": "status=Active" }
+    },
+    {
+      "type": "now-chart-bar",
+      "label": "Version Distribution",
+      "size": "small",
+      "data_source": { "table": "x_avnth_pathfinder_agent", "group_by": "agent_version", "aggregate": "COUNT", "condition": "status=Active" }
+    }
+  ]
+}

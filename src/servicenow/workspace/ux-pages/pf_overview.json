@@ -1,0 +1,209 @@
+{
+  "_comment": "sys_ux_page — Overview Landing Page for Pathfinder Workspace",
+  "sys_ux_page": {
+    "id": "pf_overview",
+    "title": "Overview",
+    "category": "landing",
+    "macroponent": "x_avnth_pf_overview_page"
+  },
+
+  "data_resources": [
+    {
+      "id": "dr_integration_count",
+      "type": "record_count",
+      "table": "x_avnth_cmdb_ci_integration",
+      "condition": "operational_status=1"
+    },
+    {
+      "id": "dr_healthy_count",
+      "type": "record_count",
+      "table": "x_avnth_cmdb_ci_integration",
+      "condition": "health_status=Healthy"
+    },
+    {
+      "id": "dr_critical_count",
+      "type": "record_count",
+      "table": "x_avnth_cmdb_ci_integration",
+      "condition": "health_status=Critical"
+    },
+    {
+      "id": "dr_active_agents",
+      "type": "record_count",
+      "table": "x_avnth_pathfinder_agent",
+      "condition": "status=Active"
+    },
+    {
+      "id": "dr_open_gaps",
+      "type": "record_count",
+      "table": "x_avnth_coverage_gap",
+      "condition": "remediation_status=Open"
+    },
+    {
+      "id": "dr_health_distribution",
+      "type": "record_aggregate",
+      "table": "x_avnth_cmdb_ci_integration",
+      "group_by": "health_status",
+      "aggregate": "COUNT"
+    },
+    {
+      "id": "dr_type_distribution",
+      "type": "record_aggregate",
+      "table": "x_avnth_cmdb_ci_integration",
+      "group_by": "integration_type",
+      "aggregate": "COUNT"
+    },
+    {
+      "id": "dr_recent_integrations",
+      "type": "record_list",
+      "table": "x_avnth_cmdb_ci_integration",
+      "fields": "name,integration_type,health_status,classification_confidence,first_discovered",
+      "order_by": "first_discovered",
+      "order_direction": "desc",
+      "limit": 10
+    },
+    {
+      "id": "dr_critical_gaps",
+      "type": "record_list",
+      "table": "x_avnth_coverage_gap",
+      "fields": "server,gap_type,priority,detected_at",
+      "condition": "remediation_status=Open",
+      "order_by": "priority",
+      "limit": 10
+    }
+  ],
+
+  "component_tree": {
+    "root": {
+      "component": "now-template-card-assist-layout-2col",
+      "children": [
+        {
+          "_slot": "header",
+          "component": "now-heading",
+          "properties": { "label": "Pathfinder Overview", "variant": "header-secondary" }
+        },
+        {
+          "_slot": "content",
+          "component": "now-template-card-assist-layout-grid",
+          "children": [
+            {
+              "_comment": "Row 1: KPI tiles",
+              "component": "now-container",
+              "properties": { "direction": "row", "gap": "md" },
+              "children": [
+                {
+                  "component": "now-highlighted-value",
+                  "properties": {
+                    "label": "Total Integrations",
+                    "value": "{{dr_integration_count.count}}",
+                    "variant": "primary",
+                    "size": "lg"
+                  }
+                },
+                {
+                  "component": "now-highlighted-value",
+                  "properties": {
+                    "label": "Healthy",
+                    "value": "{{dr_healthy_count.count}}",
+                    "variant": "positive",
+                    "size": "lg"
+                  }
+                },
+                {
+                  "component": "now-highlighted-value",
+                  "properties": {
+                    "label": "Critical",
+                    "value": "{{dr_critical_count.count}}",
+                    "variant": "critical",
+                    "size": "lg"
+                  }
+                },
+                {
+                  "component": "now-highlighted-value",
+                  "properties": {
+                    "label": "Active Agents",
+                    "value": "{{dr_active_agents.count}}",
+                    "variant": "secondary",
+                    "size": "lg"
+                  }
+                },
+                {
+                  "component": "now-highlighted-value",
+                  "properties": {
+                    "label": "Open Gaps",
+                    "value": "{{dr_open_gaps.count}}",
+                    "variant": "warning",
+                    "size": "lg"
+                  }
+                }
+              ]
+            },
+            {
+              "_comment": "Row 2: Charts",
+              "component": "now-container",
+              "properties": { "direction": "row", "gap": "md" },
+              "children": [
+                {
+                  "component": "now-chart-donut",
+                  "properties": {
+                    "chart_title": "Health Distribution",
+                    "data": "{{dr_health_distribution}}",
+                    "height": 250,
+                    "color_map": {
+                      "Healthy": "#22c55e",
+                      "Degraded": "#f59e0b",
+                      "Critical": "#ef4444",
+                      "Unknown": "#6b7280"
+                    }
+                  }
+                },
+                {
+                  "component": "now-chart-donut",
+                  "properties": {
+                    "chart_title": "Integration Types",
+                    "data": "{{dr_type_distribution}}",
+                    "height": 250
+                  }
+                }
+              ]
+            },
+            {
+              "_comment": "Row 3: Lists",
+              "component": "now-container",
+              "properties": { "direction": "row", "gap": "md" },
+              "children": [
+                {
+                  "component": "now-record-list-connected",
+                  "properties": {
+                    "table": "x_avnth_cmdb_ci_integration",
+                    "columns": "name,integration_type,health_status,classification_confidence",
+                    "title": "Recently Discovered",
+                    "query": "ORDERBYDESCfirst_discovered",
+                    "page_size": 10,
+                    "enable_row_click": true
+                  },
+                  "events": {
+                    "NOW_RECORD_LIST_CONNECTED#ROW_CLICKED": {
+                      "action": "NAVIGATE",
+                      "payload": { "route": "integrations/{{event.payload.sys_id}}" }
+                    }
+                  }
+                },
+                {
+                  "component": "now-record-list-connected",
+                  "properties": {
+                    "table": "x_avnth_coverage_gap",
+                    "columns": "server,gap_type,priority,detected_at",
+                    "title": "Critical Gaps",
+                    "query": "remediation_status=Open^ORDERBYpriority",
+                    "page_size": 10,
+                    "enable_row_click": true
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

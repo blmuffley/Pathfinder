@@ -1,0 +1,244 @@
+{
+  "_comment": "sys_ux_page — Integration Explorer with split-view detail panel",
+  "sys_ux_page": {
+    "id": "pf_integration_list",
+    "title": "Integrations",
+    "category": "list",
+    "macroponent": "x_avnth_pf_integration_list_page"
+  },
+
+  "data_resources": [
+    {
+      "id": "dr_integrations",
+      "type": "record_list",
+      "table": "x_avnth_cmdb_ci_integration",
+      "fields": "name,integration_type,health_status,health_score,classification_confidence,flow_count,last_observed,ea_status,criticality",
+      "order_by": "last_observed",
+      "order_direction": "desc",
+      "page_size": 25,
+      "interactive": true
+    },
+    {
+      "id": "dr_selected_integration",
+      "type": "record_detail",
+      "table": "x_avnth_cmdb_ci_integration",
+      "sys_id": "{{state.selected_sys_id}}",
+      "fields": "name,source_ci,target_ci,integration_type,classification_confidence,discovery_method,health_status,health_score,ai_summary,ea_status,ea_relationship,criticality,data_classification,owner,support_group,first_discovered,last_observed,flow_count"
+    },
+    {
+      "id": "dr_interfaces",
+      "type": "record_list",
+      "table": "x_avnth_cmdb_ci_interface",
+      "condition": "integration={{state.selected_sys_id}}",
+      "fields": "protocol,port,direction,pattern,flow_count,latency_p50_ms,error_rate,last_observed",
+      "order_by": "flow_count",
+      "order_direction": "desc"
+    },
+    {
+      "id": "dr_health_logs",
+      "type": "record_list",
+      "table": "x_avnth_integration_health_log",
+      "condition": "integration={{state.selected_sys_id}}",
+      "fields": "metric_type,metric_value,unit,recorded_at,source",
+      "order_by": "recorded_at",
+      "order_direction": "desc",
+      "limit": 50
+    },
+    {
+      "id": "dr_ea_maps",
+      "type": "record_list",
+      "table": "x_avnth_integration_ea_map",
+      "condition": "integration={{state.selected_sys_id}}",
+      "fields": "ea_relationship,mapping_status,confidence,match_reason,mapped_by"
+    }
+  ],
+
+  "component_tree": {
+    "root": {
+      "component": "now-split-content",
+      "properties": {
+        "split_position": "40",
+        "collapsible_panel": true
+      },
+      "children": [
+        {
+          "_slot": "master",
+          "component": "now-container",
+          "children": [
+            {
+              "_comment": "Filter bar",
+              "component": "now-filter-connected",
+              "properties": {
+                "table": "x_avnth_cmdb_ci_integration",
+                "filters": [
+                  { "field": "health_status", "type": "multi_select" },
+                  { "field": "integration_type", "type": "multi_select" },
+                  { "field": "ea_status", "type": "multi_select" },
+                  { "field": "criticality", "type": "multi_select" }
+                ]
+              }
+            },
+            {
+              "_comment": "Integration list",
+              "component": "now-record-list-connected",
+              "properties": {
+                "table": "x_avnth_cmdb_ci_integration",
+                "columns": [
+                  { "field": "name", "label": "Integration" },
+                  { "field": "integration_type", "label": "Type", "display": "pill" },
+                  { "field": "health_status", "label": "Health", "display": "pill",
+                    "pill_variant_map": { "Healthy": "positive", "Degraded": "warning", "Critical": "critical", "Unknown": "neutral" }
+                  },
+                  { "field": "health_score", "label": "Score", "display": "progress" },
+                  { "field": "flow_count", "label": "Flows" },
+                  { "field": "last_observed", "label": "Last Seen", "display": "relative_time" }
+                ],
+                "enable_row_click": true,
+                "enable_search": true,
+                "search_fields": "name,source_ci,target_ci"
+              },
+              "events": {
+                "NOW_RECORD_LIST_CONNECTED#ROW_CLICKED": {
+                  "action": "UPDATE_STATE",
+                  "payload": { "selected_sys_id": "{{event.payload.sys_id}}" }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "_slot": "detail",
+          "component": "now-tabs",
+          "properties": {
+            "selected_tab": "overview",
+            "variant": "default"
+          },
+          "children": [
+            {
+              "_comment": "Tab: Overview",
+              "component": "now-tab",
+              "properties": { "id": "overview", "label": "Overview", "icon": "info-outline" },
+              "children": [
+                {
+                  "component": "now-record-header",
+                  "properties": {
+                    "table": "x_avnth_cmdb_ci_integration",
+                    "sys_id": "{{state.selected_sys_id}}",
+                    "primary_field": "name",
+                    "secondary_fields": ["health_status", "health_score", "integration_type"]
+                  }
+                },
+                {
+                  "_comment": "AI Summary card",
+                  "component": "now-card",
+                  "properties": { "size": "lg", "interaction": "none" },
+                  "children": [
+                    {
+                      "component": "now-heading",
+                      "properties": { "label": "AI Summary", "variant": "header-tertiary" }
+                    },
+                    {
+                      "component": "now-rich-text",
+                      "properties": {
+                        "html": "{{dr_selected_integration.ai_summary || '<em>No AI summary generated yet.</em>'}}"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "component": "now-record-form-section-connected",
+                  "properties": {
+                    "table": "x_avnth_cmdb_ci_integration",
+                    "sys_id": "{{state.selected_sys_id}}",
+                    "label": "Classification",
+                    "fields": "source_ci,target_ci,integration_type,classification_confidence,discovery_method",
+                    "layout": "two_column"
+                  }
+                },
+                {
+                  "component": "now-record-form-section-connected",
+                  "properties": {
+                    "table": "x_avnth_cmdb_ci_integration",
+                    "sys_id": "{{state.selected_sys_id}}",
+                    "label": "Governance",
+                    "fields": "criticality,data_classification,owner,support_group,ea_status",
+                    "layout": "two_column"
+                  }
+                }
+              ]
+            },
+            {
+              "_comment": "Tab: Interfaces",
+              "component": "now-tab",
+              "properties": { "id": "interfaces", "label": "Interfaces", "icon": "data-flow-outline" },
+              "children": [
+                {
+                  "component": "now-record-list-connected",
+                  "properties": {
+                    "table": "x_avnth_cmdb_ci_interface",
+                    "query": "integration={{state.selected_sys_id}}",
+                    "columns": "protocol,port,direction,pattern,flow_count,latency_p50_ms,error_rate,last_observed",
+                    "page_size": 20,
+                    "empty_state": "No interfaces discovered for this integration."
+                  }
+                }
+              ]
+            },
+            {
+              "_comment": "Tab: Health",
+              "component": "now-tab",
+              "properties": { "id": "health", "label": "Health", "icon": "heart-pulse-outline" },
+              "children": [
+                {
+                  "component": "now-chart-line",
+                  "properties": {
+                    "chart_title": "Health Metrics (30 days)",
+                    "table": "x_avnth_integration_health_log",
+                    "query": "integration={{state.selected_sys_id}}^recorded_at>=javascript:gs.daysAgoStart(30)",
+                    "group_by": "metric_type",
+                    "aggregate": "AVG",
+                    "aggregate_field": "metric_value",
+                    "trend_field": "recorded_at",
+                    "height": 300
+                  }
+                }
+              ]
+            },
+            {
+              "_comment": "Tab: EA Mapping",
+              "component": "now-tab",
+              "properties": { "id": "ea", "label": "EA Mapping", "icon": "merge-outline" },
+              "children": [
+                {
+                  "component": "now-record-list-connected",
+                  "properties": {
+                    "table": "x_avnth_integration_ea_map",
+                    "query": "integration={{state.selected_sys_id}}",
+                    "columns": "ea_relationship,mapping_status,confidence,match_reason,mapped_by",
+                    "page_size": 10,
+                    "empty_state": "No EA mapping suggestions available.",
+                    "row_actions": ["pf_confirm_ea_mapping", "pf_reject_ea_mapping"]
+                  }
+                }
+              ]
+            },
+            {
+              "_comment": "Tab: Activity",
+              "component": "now-tab",
+              "properties": { "id": "activity", "label": "Activity", "icon": "history-outline" },
+              "children": [
+                {
+                  "component": "now-record-activity-connected",
+                  "properties": {
+                    "table": "x_avnth_cmdb_ci_integration",
+                    "sys_id": "{{state.selected_sys_id}}"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -279,3 +279,43 @@ The Gateway deduplicates before creating CIs:
 3. **Integration-level:** Match (source_app, target_app) pairs to existing Integration CIs.
 
 New CIs are only created when no match exists. Updates increment counters and refresh `last_observed`.
+
+---
+
+## 9. Workspace — Polaris UI Builder
+
+The Pathfinder scoped app uses a **Configurable Workspace** built with the ServiceNow **Polaris design framework** and **UI Builder**. All UI components follow the Next Experience standard.
+
+### 9.1 Workspace Pages
+
+| Page | Type | Layout | Purpose |
+|------|------|--------|---------|
+| Overview | Landing | Fluid | KPI tiles, health distribution donuts, recent activity lists |
+| Integration Explorer | List | Split-content | Filterable list + tabbed detail panel (Overview, Interfaces, Health, EA, Activity) |
+| Agent Fleet | List | Split-content | Agent status grid with header KPIs and OS/version distribution charts |
+| Coverage Gaps | Board | Kanban | Swim lanes: Open → InProgress → Resolved / Waived / Failed |
+| EA Reconciliation | Custom | Two-panel | Left: unmapped integrations; Right: AI match suggestions with confirm/reject |
+| Health Dashboard | Dashboard | Fluid | Time-series charts, metric sparklines, heatmap, anomaly list |
+
+### 9.2 Declarative Actions
+
+All actions are implemented as **Declarative Actions** (no client scripts):
+- Confirm / Reject EA Mapping
+- Decommission Agent (with confirmation dialog)
+- Create Change Request for coverage gap
+- Waive Coverage Gap (with reason dialog)
+- Refresh AI Summary (REST call to Intelligence Engine)
+
+### 9.3 Roles
+
+| Role | Access |
+|------|--------|
+| `x_avnth_pathfinder.admin` | Full access, settings, decommission, waive |
+| `x_avnth_pathfinder.analyst` | Manage integrations, confirm EA, triage gaps |
+| `x_avnth_pathfinder.viewer` | Read-only workspace access |
+
+### 9.4 Diagrams
+
+- ERD: `docs/diagrams/09-servicenow-data-model.svg`
+- Workspace navigation: `docs/diagrams/10-workspace-navigation.svg`
+- Workspace definition files: `src/servicenow/workspace/`

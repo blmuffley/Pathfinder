@@ -1,0 +1,130 @@
+{
+  "_comment": "sys_ux_page — EA Reconciliation two-panel view",
+  "sys_ux_page": {
+    "id": "pf_ea_reconciliation",
+    "title": "EA Reconciliation",
+    "category": "custom"
+  },
+
+  "data_resources": [
+    {
+      "id": "dr_unmapped_count",
+      "type": "record_count",
+      "table": "x_avnth_cmdb_ci_integration",
+      "condition": "ea_status=Unmapped"
+    },
+    {
+      "id": "dr_mapped_count",
+      "type": "record_count",
+      "table": "x_avnth_cmdb_ci_integration",
+      "condition": "ea_status=Mapped"
+    },
+    {
+      "id": "dr_disputed_count",
+      "type": "record_count",
+      "table": "x_avnth_cmdb_ci_integration",
+      "condition": "ea_status=Disputed"
+    },
+    {
+      "id": "dr_unmapped_list",
+      "type": "record_list",
+      "table": "x_avnth_cmdb_ci_integration",
+      "condition": "ea_status=Unmapped",
+      "fields": "name,integration_type,classification_confidence,flow_count,last_observed",
+      "order_by": "flow_count",
+      "order_direction": "desc",
+      "interactive": true
+    },
+    {
+      "id": "dr_suggestions",
+      "type": "record_list",
+      "table": "x_avnth_integration_ea_map",
+      "condition": "integration={{state.selected_integration}}",
+      "fields": "ea_relationship,confidence,match_reason,mapping_status,mapped_by"
+    }
+  ],
+
+  "component_tree": {
+    "root": {
+      "component": "now-container",
+      "properties": { "direction": "column", "gap": "lg" },
+      "children": [
+        {
+          "_comment": "Progress bar header",
+          "component": "now-container",
+          "properties": { "direction": "row", "gap": "md" },
+          "children": [
+            { "component": "now-highlighted-value", "properties": { "label": "Unmapped", "value": "{{dr_unmapped_count.count}}", "variant": "warning" } },
+            { "component": "now-highlighted-value", "properties": { "label": "Mapped", "value": "{{dr_mapped_count.count}}", "variant": "positive" } },
+            { "component": "now-highlighted-value", "properties": { "label": "Disputed", "value": "{{dr_disputed_count.count}}", "variant": "critical" } }
+          ]
+        },
+        {
+          "_comment": "Two-panel layout",
+          "component": "now-split-content",
+          "properties": { "split_position": "50" },
+          "children": [
+            {
+              "_slot": "master",
+              "component": "now-container",
+              "children": [
+                { "component": "now-heading", "properties": { "label": "Unmapped Integrations", "variant": "header-tertiary" } },
+                {
+                  "component": "now-record-list-connected",
+                  "properties": {
+                    "table": "x_avnth_cmdb_ci_integration",
+                    "query": "ea_status=Unmapped^ORDERBYDESCflow_count",
+                    "columns": "name,integration_type,classification_confidence,flow_count,last_observed",
+                    "enable_row_click": true,
+                    "page_size": 15
+                  },
+                  "events": {
+                    "NOW_RECORD_LIST_CONNECTED#ROW_CLICKED": {
+                      "action": "UPDATE_STATE",
+                      "payload": { "selected_integration": "{{event.payload.sys_id}}" }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "_slot": "detail",
+              "component": "now-container",
+              "children": [
+                { "component": "now-heading", "properties": { "label": "EA Match Suggestions", "variant": "header-tertiary" } },
+                {
+                  "_comment": "Empty state when nothing selected",
+                  "component": "now-empty-state",
+                  "properties": {
+                    "label": "Select an unmapped integration",
+                    "message": "Click an integration on the left to see EA match suggestions.",
+                    "icon": "merge-outline"
+                  },
+                  "visible_when": "!state.selected_integration"
+                },
+                {
+                  "_comment": "Suggestion cards",
+                  "component": "now-record-list-connected",
+                  "properties": {
+                    "table": "x_avnth_integration_ea_map",
+                    "query": "integration={{state.selected_integration}}",
+                    "columns": [
+                      { "field": "ea_relationship", "label": "EA Relationship" },
+                      { "field": "confidence", "label": "Confidence", "display": "progress" },
+                      { "field": "match_reason", "label": "Match Reason" },
+                      { "field": "mapping_status", "label": "Status", "display": "pill",
+                        "pill_variant_map": { "Confirmed": "positive", "Suggested": "warning", "Rejected": "neutral" } }
+                    ],
+                    "row_actions": ["pf_confirm_ea_mapping", "pf_reject_ea_mapping"],
+                    "empty_state": "No EA match suggestions found."
+                  },
+                  "visible_when": "state.selected_integration"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "flow": {
+    "name": "x_avnth_coverage_gap_remediation",
+    "scope": "x_avnth_pathfinder",
+    "label": "Pathfinder Coverage Gap Remediation",
+    "description": "Self-healing loop: detects coverage gaps and remediates by deploying agents",
+    "trigger": {
+      "type": "record_insert",
+      "table": "x_avnth_coverage_gap",
+      "condition": "remediation_status=Open"
+    }
+  },
+
+  "steps": [
+    {
+      "id": "1_evaluate",
+      "name": "Evaluate Auto-Deploy",
+      "type": "decision",
+      "description": "Check if auto-deploy is enabled and gap qualifies",
+      "conditions": [
+        {
+          "label": "Auto-deploy enabled & priority ≤ Medium",
+          "condition": "gs.getProperty('x_avnth.auto_deploy_enabled') == 'true' && (current.priority == 'Medium' || current.priority == 'Low')",
+          "goto": "2_prerequisites"
+        },
+        {
+          "label": "Manual remediation required",
+          "condition": "default",
+          "goto": "3a_create_normal_cr"
+        }
+      ]
+    },
+    {
+      "id": "2_prerequisites",
+      "name": "Check Prerequisites",
+      "type": "action",
+      "action": "x_avnth_check_deploy_prerequisites",
+      "description": "Verify server is reachable, OS is supported, not in change freeze",
+      "inputs": {
+        "server": "{{trigger.current.server}}",
+        "gap_type": "{{trigger.current.gap_type}}"
+      },
+      "outputs": {
+        "reachable": "boolean",
+        "os_supported": "boolean",
+        "change_freeze": "boolean"
+      },
+      "on_success": "3b_create_standard_cr",
+      "on_failure": "3a_create_normal_cr"
+    },
+    {
+      "id": "3a_create_normal_cr",
+      "name": "Create Normal Change Request",
+      "type": "action",
+      "action": "create_record",
+      "table": "change_request",
+      "values": {
+        "short_description": "Deploy Pathfinder agent to {{trigger.current.server.name}}",
+        "description": "Coverage gap detected: {{trigger.current.gap_type}}.\nServer: {{trigger.current.server.name}}\nRequired tier: {{trigger.current.required_tier}}\nPriority: {{trigger.current.priority}}",
+        "type": "Normal",
+        "category": "Software",
+        "cmdb_ci": "{{trigger.current.server}}",
+        "priority": "{{trigger.current.priority == 'Critical' ? '1' : '2'}}",
+        "assignment_group": "{{gs.getProperty('x_avnth.deploy_assignment_group')}}"
+      },
+      "post_action": {
+        "update_trigger": {
+          "remediation_cr": "{{result.sys_id}}",
+          "remediation_status": "InProgress",
+          "remediation_method": "ChangeRequest"
+        }
+      },
+      "goto": "end"
+    },
+    {
+      "id": "3b_create_standard_cr",
+      "name": "Create Standard Change Request (Auto-Approved)",
+      "type": "action",
+      "action": "create_record",
+      "table": "change_request",
+      "values": {
+        "short_description": "Auto-deploy Pathfinder agent to {{trigger.current.server.name}}",
+        "type": "Standard",
+        "category": "Software",
+        "cmdb_ci": "{{trigger.current.server}}",
+        "state": "Implement"
+      },
+      "post_action": {
+        "update_trigger": {
+          "remediation_cr": "{{result.sys_id}}",
+          "remediation_status": "InProgress",
+          "remediation_method": "AutoDeploy"
+        }
+      },
+      "goto": "4_deploy"
+    },
+    {
+      "id": "4_deploy",
+      "name": "Deploy Agent",
+      "type": "subflow",
+      "subflow": "x_avnth_deploy_agent",
+      "description": "Deploy agent based on OS type",
+      "inputs": {
+        "server": "{{trigger.current.server}}",
+        "os_type": "{{trigger.current.server.os}}",
+        "tier": "{{trigger.current.required_tier}}"
+      },
+      "deployment_methods": {
+        "linux": "Ansible playbook or RPM/DEB package push",
+        "windows": "SCCM deployment or WinRM MSI install",
+        "kubernetes": "Apply DaemonSet manifest to cluster"
+      },
+      "on_success": "5_verify",
+      "on_failure": "6_fail"
+    },
+    {
+      "id": "5_verify",
+      "name": "Verify Enrollment",
+      "type": "action",
+      "action": "x_avnth_verify_agent_enrollment",
+      "description": "Wait for agent to enroll and send first heartbeat",
+      "timeout": "10m",
+      "checks": [
+        {"check": "Agent record exists in x_avnth_pathfinder_agent", "required": true},
+        {"check": "First heartbeat received", "required": true},
+        {"check": "First flow data received", "required": false}
+      ],
+      "on_success": "7_close",
+      "on_failure": "6_fail"
+    },
+    {
+      "id": "6_fail",
+      "name": "Mark Failed",
+      "type": "action",
+      "action": "update_record",
+      "table": "x_avnth_coverage_gap",
+      "values": {
+        "remediation_status": "Failed"
+      },
+      "notifications": {
+        "event": "x_avnth.coverage_gap.remediation_failed",
+        "recipients": "{{gs.getProperty('x_avnth.notify_on_failure')}}"
+      },
+      "goto": "end"
+    },
+    {
+      "id": "7_close",
+      "name": "Close Gap",
+      "type": "action",
+      "action": "update_record",
+      "table": "x_avnth_coverage_gap",
+      "values": {
+        "remediation_status": "Resolved",
+        "resolved_at": "{{new GlideDateTime()}}",
+        "remediation_method": "{{trigger.current.remediation_method}}"
+      },
+      "post_action": {
+        "close_cr": {
+          "state": "Closed",
+          "close_code": "Successful",
+          "close_notes": "Pathfinder agent successfully deployed and verified."
+        }
+      },
+      "goto": "end"
+    }
+  ]
+}

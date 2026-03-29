@@ -1,0 +1,91 @@
+{
+  "page": {
+    "id": "pf_ea_reconciliation",
+    "title": "EA Reconciliation",
+    "description": "Side-by-side view of discovered integrations vs EA-managed relationships",
+    "type": "custom",
+    "framework": "Polaris",
+    "layout": "two-panel"
+  },
+
+  "panels": {
+    "left": {
+      "title": "Unmapped Integrations",
+      "description": "Discovered integrations not yet linked to EA relationships",
+      "type": "list",
+      "table": "x_avnth_cmdb_ci_integration",
+      "condition": "ea_status=Unmapped",
+      "columns": [
+        { "field": "name", "label": "Integration", "width": "auto" },
+        { "field": "integration_type", "label": "Type", "width": 100, "pill": true },
+        { "field": "classification_confidence", "label": "Conf.", "width": 70, "format": "percent" },
+        { "field": "flow_count", "label": "Flows", "width": 70, "format": "abbreviated" },
+        { "field": "last_observed", "label": "Last Seen", "width": 120, "format": "relative_time" }
+      ],
+      "default_sort": { "field": "flow_count", "direction": "desc" },
+      "on_row_select": "load_suggestions"
+    },
+
+    "right": {
+      "title": "EA Match Suggestions",
+      "description": "AI-suggested matches from EA relationship records",
+      "type": "dynamic",
+      "empty_state": "Select an unmapped integration to see suggested EA matches.",
+      "data_source": {
+        "table": "x_avnth_integration_ea_map",
+        "filter_field": "integration",
+        "filter_value": "{{selected_integration}}"
+      },
+      "suggestion_card": {
+        "fields": [
+          { "field": "ea_relationship", "label": "EA Relationship", "display_value": true },
+          { "field": "confidence", "label": "Match Confidence", "format": "percent_bar" },
+          { "field": "match_reason", "label": "Why This Match" },
+          { "field": "mapping_status", "label": "Status", "pill": true }
+        ],
+        "actions": [
+          { "label": "Confirm Match", "icon": "check-outline", "action": "update_field", "field": "mapping_status", "value": "Confirmed", "style": "primary", "condition": "mapping_status=Suggested" },
+          { "label": "Reject", "icon": "close-outline", "action": "update_field", "field": "mapping_status", "value": "Rejected", "style": "secondary", "condition": "mapping_status=Suggested" }
+        ]
+      },
+      "no_suggestions": {
+        "message": "No EA matches found for this integration.",
+        "action": {
+          "label": "Create Manual Mapping",
+          "type": "create_record",
+          "table": "x_avnth_integration_ea_map",
+          "prefill": { "integration": "{{selected_integration}}", "mapping_status": "Confirmed" }
+        }
+      }
+    }
+  },
+
+  "header_components": [
+    {
+      "type": "now-card-kpi",
+      "label": "Unmapped",
+      "data_source": { "table": "x_avnth_cmdb_ci_integration", "aggregate": "COUNT", "condition": "ea_status=Unmapped" },
+      "color": "warning"
+    },
+    {
+      "type": "now-card-kpi",
+      "label": "Mapped",
+      "data_source": { "table": "x_avnth_cmdb_ci_integration", "aggregate": "COUNT", "condition": "ea_status=Mapped" },
+      "color": "positive"
+    },
+    {
+      "type": "now-card-kpi",
+      "label": "Disputed",
+      "data_source": { "table": "x_avnth_cmdb_ci_integration", "aggregate": "COUNT", "condition": "ea_status=Disputed" },
+      "color": "critical"
+    },
+    {
+      "type": "now-progress-bar",
+      "label": "Reconciliation Progress",
+      "data_source": {
+        "numerator": { "table": "x_avnth_cmdb_ci_integration", "aggregate": "COUNT", "condition": "ea_status=Mapped" },
+        "denominator": { "table": "x_avnth_cmdb_ci_integration", "aggregate": "COUNT" }
+      }
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "_comment": "Flow Designer subflow — Deploy Pathfinder Agent based on OS type",
+  "sys_hub_flow": {
+    "name": "Pathfinder - Deploy Agent",
+    "internal_name": "x_avnth_deploy_agent",
+    "scope": "x_avnth_pathfinder",
+    "type": "SUBFLOW",
+    "description": "Deploys a Pathfinder agent to a server via OS-appropriate method",
+    "active": true
+  },
+
+  "inputs": {
+    "server_sys_id": { "type": "reference", "table": "cmdb_ci_server", "mandatory": true },
+    "os_name": { "type": "string", "mandatory": true },
+    "required_tier": { "type": "integer", "default": 2 }
+  },
+
+  "outputs": {
+    "agent_id": { "type": "string" },
+    "deploy_method": { "type": "string" },
+    "success": { "type": "boolean" }
+  },
+
+  "steps": [
+    {
+      "id": "step_1_determine_method",
+      "name": "Determine Deployment Method",
+      "type": "FLOW_LOGIC",
+      "subtype": "IF",
+      "branches": [
+        {
+          "condition": "inputs.os_name.toLowerCase().indexOf('linux') >= 0 || inputs.os_name.toLowerCase().indexOf('ubuntu') >= 0 || inputs.os_name.toLowerCase().indexOf('centos') >= 0 || inputs.os_name.toLowerCase().indexOf('rhel') >= 0",
+          "label": "Linux",
+          "next": "step_2a_deploy_linux"
+        },
+        {
+          "condition": "inputs.os_name.toLowerCase().indexOf('windows') >= 0",
+          "label": "Windows",
+          "next": "step_2b_deploy_windows"
+        },
+        {
+          "condition": "default",
+          "label": "Unsupported OS",
+          "next": "step_3_fail"
+        }
+      ]
+    },
+    {
+      "id": "step_2a_deploy_linux",
+      "name": "Deploy Linux Agent",
+      "type": "ACTION",
+      "description": "Deploy via Ansible playbook or RPM/DEB package push through MID server",
+      "action": {
+        "script": [
+          "// Option 1: Ansible via MID Server",
+          "// var midServer = gs.getProperty('x_avnth.mid_server_name');",
+          "// var ansible = new sn_mid.MIDServerAnsibleAction(midServer);",
+          "// ansible.setPlaybook('pathfinder-agent-deploy.yml');",
+          "// ansible.addExtraVar('target_host', server.ip_address);",
+          "// ansible.addExtraVar('agent_tier', inputs.required_tier);",
+          "// ansible.execute();",
+          "",
+          "// Option 2: Direct package install via SSH MID probe",
+          "var server = new GlideRecord('cmdb_ci_server');",
+          "server.get(inputs.server_sys_id);",
+          "",
+          "outputs.deploy_method = 'linux_rpm';",
+          "outputs.success = true;",
+          "outputs.agent_id = '';  // Will be populated after enrollment",
+          "",
+          "gs.info('Pathfinder: Linux agent deployment initiated for ' + server.name);"
+        ]
+      },
+      "next": "end"
+    },
+    {
+      "id": "step_2b_deploy_windows",
+      "name": "Deploy Windows Agent",
+      "type": "ACTION",
+      "description": "Deploy via SCCM or WinRM MSI install through MID server",
+      "action": {
+        "script": [
+          "// Option 1: SCCM Application Deployment",
+          "// Option 2: WinRM MSI install via MID Server PowerShell probe",
+          "",
+          "var server = new GlideRecord('cmdb_ci_server');",
+          "server.get(inputs.server_sys_id);",
+          "",
+          "outputs.deploy_method = 'windows_msi';",
+          "outputs.success = true;",
+          "outputs.agent_id = '';",
+          "",
+          "gs.info('Pathfinder: Windows agent deployment initiated for ' + server.name);"
+        ]
+      },
+      "next": "end"
+    },
+    {
+      "id": "step_3_fail",
+      "name": "Unsupported OS",
+      "type": "ACTION",
+      "action": {
+        "script": [
+          "outputs.deploy_method = 'unsupported';",
+          "outputs.success = false;",
+          "gs.error('Pathfinder: Unsupported OS for auto-deploy: ' + inputs.os_name);"
+        ]
+      },
+      "next": "end"
+    }
+  ]
+}

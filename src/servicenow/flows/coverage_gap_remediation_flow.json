@@ -1,0 +1,254 @@
+{
+  "_comment": "Flow Designer flow — sys_hub_flow record for coverage gap self-healing",
+  "sys_hub_flow": {
+    "name": "Pathfinder - Coverage Gap Remediation",
+    "internal_name": "x_avnth_coverage_gap_remediation",
+    "scope": "x_avnth_pathfinder",
+    "description": "Self-healing loop: evaluates, deploys agents, and closes coverage gaps automatically",
+    "active": true,
+    "run_as": "System",
+    "trigger": {
+      "type": "RECORD",
+      "table": "x_avnth_coverage_gap",
+      "event": "INSERT",
+      "condition": "remediation_status=Open"
+    }
+  },
+
+  "stages": [
+    {
+      "id": "stage_evaluate",
+      "name": "Evaluate",
+      "order": 100,
+      "steps": [
+        {
+          "id": "step_1_check_auto_deploy",
+          "name": "Check Auto-Deploy Enabled",
+          "type": "FLOW_LOGIC",
+          "subtype": "IF",
+          "condition": {
+            "script": "var enabled = gs.getProperty('x_avnth.auto_deploy_enabled', 'false');",
+            "expression": "enabled == 'true' && (fd_data.trigger.current.priority == 'Medium' || fd_data.trigger.current.priority == 'Low')"
+          },
+          "if_true": "step_2_check_prerequisites",
+          "if_false": "step_3a_create_normal_cr"
+        }
+      ]
+    },
+    {
+      "id": "stage_prerequisite",
+      "name": "Prerequisites",
+      "order": 200,
+      "steps": [
+        {
+          "id": "step_2_check_prerequisites",
+          "name": "Check Server Prerequisites",
+          "type": "ACTION",
+          "action": {
+            "name": "x_avnth_check_deploy_prerequisites",
+            "inputs": {
+              "server_sys_id": "{{fd_data.trigger.current.server}}",
+              "gap_type": "{{fd_data.trigger.current.gap_type}}"
+            },
+            "script": [
+              "// Check 1: Server is reachable (ping or SSH)",
+              "var server = new GlideRecord('cmdb_ci_server');",
+              "server.get(inputs.server_sys_id);",
+              "var ip = server.ip_address.toString();",
+              "",
+              "outputs.server_name = server.name.toString();",
+              "outputs.os_name = server.os_name.toString();",
+              "outputs.reachable = true;  // Placeholder — real impl would do MID server probe",
+              "",
+              "// Check 2: OS is supported (Linux, Windows, or K8s node)",
+              "var os = server.os_name.toString().toLowerCase();",
+              "outputs.os_supported = (os.indexOf('linux') >= 0 || os.indexOf('windows') >= 0 || os.indexOf('ubuntu') >= 0 || os.indexOf('centos') >= 0 || os.indexOf('rhel') >= 0);",
+              "",
+              "// Check 3: Not in change freeze",
+              "var freezeProp = gs.getProperty('x_avnth.change_freeze_active', 'false');",
+              "outputs.change_freeze = (freezeProp == 'true');",
+              "",
+              "outputs.can_auto_deploy = outputs.reachable && outputs.os_supported && !outputs.change_freeze;"
+            ]
+          },
+          "outputs": {
+            "server_name": "string",
+            "os_name": "string",
+            "reachable": "boolean",
+            "os_supported": "boolean",
+            "change_freeze": "boolean",
+            "can_auto_deploy": "boolean"
+          },
+          "next": {
+            "if_true": "step_3b_create_standard_cr",
+            "if_false": "step_3a_create_normal_cr",
+            "condition": "{{outputs.can_auto_deploy}}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "stage_change_request",
+      "name": "Change Request",
+      "order": 300,
+      "steps": [
+        {
+          "id": "step_3a_create_normal_cr",
+          "name": "Create Normal Change Request",
+          "type": "ACTION",
+          "action": {
+            "name": "sn_devops.create_record",
+            "table": "change_request",
+            "values": {
+              "short_description": "Deploy Pathfinder agent to {{fd_data.trigger.current.server.name}}",
+              "description": "Coverage gap detected by Pathfinder self-healing loop.\n\nGap Type: {{fd_data.trigger.current.gap_type}}\nServer: {{fd_data.trigger.current.server.name}}\nRequired Tier: {{fd_data.trigger.current.required_tier}}\nCurrent Tier: {{fd_data.trigger.current.current_tier}}\nPriority: {{fd_data.trigger.current.priority}}\nDetected: {{fd_data.trigger.current.detected_at}}",
+              "type": "Normal",
+              "category": "Software",
+              "cmdb_ci": "{{fd_data.trigger.current.server}}",
+              "priority": "{{fd_data.trigger.current.priority == 'Critical' ? '1' : fd_data.trigger.current.priority == 'High' ? '2' : '3'}}",
+              "assignment_group": "{{gs.getProperty('x_avnth.deploy_assignment_group')}}"
+            }
+          },
+          "post_actions": [
+            {
+              "type": "UPDATE_RECORD",
+              "table": "x_avnth_coverage_gap",
+              "sys_id": "{{fd_data.trigger.current.sys_id}}",
+              "values": {
+                "remediation_cr": "{{step_3a_create_normal_cr.record_sys_id}}",
+                "remediation_status": "InProgress",
+                "remediation_method": "ChangeRequest"
+              }
+            }
+          ],
+          "next": "end"
+        },
+        {
+          "id": "step_3b_create_standard_cr",
+          "name": "Create Standard Change Request (Auto-Approved)",
+          "type": "ACTION",
+          "action": {
+            "name": "sn_devops.create_record",
+            "table": "change_request",
+            "values": {
+              "short_description": "Auto-deploy Pathfinder agent to {{fd_data.trigger.current.server.name}}",
+              "description": "Automated coverage gap remediation.\n\nGap Type: {{fd_data.trigger.current.gap_type}}\nServer: {{fd_data.trigger.current.server.name}}",
+              "type": "Standard",
+              "category": "Software",
+              "cmdb_ci": "{{fd_data.trigger.current.server}}",
+              "state": "Implement"
+            }
+          },
+          "post_actions": [
+            {
+              "type": "UPDATE_RECORD",
+              "table": "x_avnth_coverage_gap",
+              "sys_id": "{{fd_data.trigger.current.sys_id}}",
+              "values": {
+                "remediation_cr": "{{step_3b_create_standard_cr.record_sys_id}}",
+                "remediation_status": "InProgress",
+                "remediation_method": "AutoDeploy"
+              }
+            }
+          ],
+          "next": "step_4_deploy"
+        }
+      ]
+    },
+    {
+      "id": "stage_deploy",
+      "name": "Deploy",
+      "order": 400,
+      "steps": [
+        {
+          "id": "step_4_deploy",
+          "name": "Deploy Agent",
+          "type": "SUBFLOW",
+          "subflow": "x_avnth_deploy_agent",
+          "inputs": {
+            "server_sys_id": "{{fd_data.trigger.current.server}}",
+            "os_name": "{{step_2_check_prerequisites.outputs.os_name}}",
+            "required_tier": "{{fd_data.trigger.current.required_tier}}"
+          },
+          "timeout_seconds": 600,
+          "on_success": "step_5_verify",
+          "on_error": "step_6_mark_failed"
+        }
+      ]
+    },
+    {
+      "id": "stage_verify",
+      "name": "Verify",
+      "order": 500,
+      "steps": [
+        {
+          "id": "step_5_verify",
+          "name": "Verify Agent Enrollment",
+          "type": "SUBFLOW",
+          "subflow": "x_avnth_verify_enrollment",
+          "inputs": {
+            "server_sys_id": "{{fd_data.trigger.current.server}}",
+            "timeout_minutes": 10
+          },
+          "on_success": "step_7_close_gap",
+          "on_error": "step_6_mark_failed"
+        }
+      ]
+    },
+    {
+      "id": "stage_close",
+      "name": "Close",
+      "order": 600,
+      "steps": [
+        {
+          "id": "step_6_mark_failed",
+          "name": "Mark Failed",
+          "type": "ACTION",
+          "action": {
+            "name": "sn_devops.update_record",
+            "table": "x_avnth_coverage_gap",
+            "sys_id": "{{fd_data.trigger.current.sys_id}}",
+            "values": {
+              "remediation_status": "Failed"
+            }
+          },
+          "post_actions": [
+            {
+              "type": "NOTIFICATION",
+              "event": "x_avnth.coverage_gap.remediation_failed",
+              "record": "{{fd_data.trigger.current.sys_id}}"
+            }
+          ],
+          "next": "end"
+        },
+        {
+          "id": "step_7_close_gap",
+          "name": "Close Gap",
+          "type": "ACTION",
+          "action": {
+            "name": "sn_devops.update_record",
+            "table": "x_avnth_coverage_gap",
+            "sys_id": "{{fd_data.trigger.current.sys_id}}",
+            "values": {
+              "remediation_status": "Resolved",
+              "resolved_at": "{{new GlideDateTime()}}"
+            }
+          },
+          "post_actions": [
+            {
+              "type": "UPDATE_RECORD",
+              "table": "change_request",
+              "sys_id": "{{fd_data.trigger.current.remediation_cr}}",
+              "values": {
+                "state": "Closed",
+                "close_code": "Successful",
+                "close_notes": "Pathfinder agent deployed and verified by self-healing loop."
+              }
+            }
+          ],
+          "next": "end"
+        }
+      ]
+    }
+  ]
+}

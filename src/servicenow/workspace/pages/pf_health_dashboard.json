@@ -1,0 +1,169 @@
+{
+  "page": {
+    "id": "pf_health_dashboard",
+    "title": "Health Dashboard",
+    "description": "Time-series health metrics, anomaly highlights, and trend analysis",
+    "type": "dashboard",
+    "framework": "Polaris",
+    "layout": "fluid"
+  },
+
+  "filter_bar": {
+    "global_filters": [
+      { "field": "time_range", "type": "time_picker", "default": "7d", "options": ["24h", "7d", "30d", "90d"] },
+      { "field": "integration_type", "type": "multi_select", "table": "x_avnth_cmdb_ci_integration" },
+      { "field": "health_status", "type": "multi_select", "table": "x_avnth_cmdb_ci_integration" },
+      { "field": "criticality", "type": "multi_select", "table": "x_avnth_cmdb_ci_integration" }
+    ]
+  },
+
+  "sections": [
+    {
+      "id": "health_overview",
+      "type": "row",
+      "order": 100,
+      "columns": 3,
+      "components": [
+        {
+          "type": "now-chart-line",
+          "label": "Average Health Score Trend",
+          "span": 2,
+          "data_source": {
+            "table": "x_avnth_integration_health_log",
+            "aggregate": "AVG",
+            "field": "metric_value",
+            "group_by": "metric_type",
+            "time_field": "recorded_at",
+            "time_range": "{{time_range}}"
+          },
+          "y_axis": { "label": "Score", "min": 0, "max": 100 }
+        },
+        {
+          "type": "now-chart-donut",
+          "label": "Current Health Distribution",
+          "data_source": {
+            "table": "x_avnth_cmdb_ci_integration",
+            "group_by": "health_status",
+            "aggregate": "COUNT"
+          },
+          "colors": {
+            "Healthy": "#22c55e",
+            "Degraded": "#f59e0b",
+            "Critical": "#ef4444",
+            "Unknown": "#6b7280"
+          }
+        }
+      ]
+    },
+    {
+      "id": "metric_breakdown",
+      "type": "row",
+      "order": 200,
+      "columns": 4,
+      "components": [
+        {
+          "type": "now-chart-sparkline",
+          "label": "Availability",
+          "data_source": {
+            "table": "x_avnth_integration_health_log",
+            "condition": "metric_type=Availability",
+            "aggregate": "AVG",
+            "field": "metric_value",
+            "time_field": "recorded_at",
+            "time_range": "{{time_range}}"
+          },
+          "target_line": 99.9,
+          "format": "percent"
+        },
+        {
+          "type": "now-chart-sparkline",
+          "label": "Latency (p50)",
+          "data_source": {
+            "table": "x_avnth_integration_health_log",
+            "condition": "metric_type=Latency",
+            "aggregate": "AVG",
+            "field": "metric_value",
+            "time_field": "recorded_at",
+            "time_range": "{{time_range}}"
+          },
+          "unit": "ms"
+        },
+        {
+          "type": "now-chart-sparkline",
+          "label": "Error Rate",
+          "data_source": {
+            "table": "x_avnth_integration_health_log",
+            "condition": "metric_type=ErrorRate",
+            "aggregate": "AVG",
+            "field": "metric_value",
+            "time_field": "recorded_at",
+            "time_range": "{{time_range}}"
+          },
+          "format": "percent",
+          "threshold": { "warning": 1.0, "critical": 5.0 }
+        },
+        {
+          "type": "now-chart-sparkline",
+          "label": "Throughput",
+          "data_source": {
+            "table": "x_avnth_integration_health_log",
+            "condition": "metric_type=Throughput",
+            "aggregate": "AVG",
+            "field": "metric_value",
+            "time_field": "recorded_at",
+            "time_range": "{{time_range}}"
+          },
+          "unit": "req/s"
+        }
+      ]
+    },
+    {
+      "id": "anomalies",
+      "type": "row",
+      "order": 300,
+      "columns": 1,
+      "components": [
+        {
+          "type": "now-list",
+          "label": "Recent Anomalies & Status Changes",
+          "data_source": {
+            "table": "x_avnth_cmdb_ci_integration",
+            "condition": "health_statusCHANGED^ORhealth_score<60",
+            "fields": ["name", "health_status", "health_score", "integration_type", "last_observed"],
+            "order_by": "sys_updated_on",
+            "order_direction": "desc",
+            "limit": 20
+          },
+          "click_action": "navigate_to_record",
+          "highlight_rules": [
+            { "condition": "health_status=Critical", "style": "row-critical" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "heatmap",
+      "type": "row",
+      "order": 400,
+      "columns": 1,
+      "components": [
+        {
+          "type": "now-chart-heatmap",
+          "label": "Integration Health Heatmap (by Type × Criticality)",
+          "data_source": {
+            "table": "x_avnth_cmdb_ci_integration",
+            "x_axis": "integration_type",
+            "y_axis": "criticality",
+            "value": "health_score",
+            "aggregate": "AVG"
+          },
+          "color_scale": {
+            "min": "#ef4444",
+            "mid": "#f59e0b",
+            "max": "#22c55e"
+          }
+        }
+      ]
+    }
+  ]
+}

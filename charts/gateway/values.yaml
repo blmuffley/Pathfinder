@@ -1,0 +1,57 @@
+replicaCount: 2
+
+image:
+  repository: pathfinder-gateway
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8443
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+config:
+  server:
+    port: 8443
+    tls: false
+  database:
+    maxConnections: 25
+  servicenow:
+    syncInterval: 60s
+    batchSize: 50
+  classification:
+    confidenceThreshold: 0.8
+  logging:
+    level: info
+    format: json
+
+# Database connection — set via secret or env
+database:
+  urlSecret: pathfinder-db-credentials
+  urlKey: PF_DB_URL
+
+# ServiceNow credentials — set via secret
+servicenow:
+  instanceSecret: pathfinder-sn-credentials
+  instanceKey: PF_SN_INSTANCE
+  clientIdKey: PF_SN_CLIENT_ID
+  clientSecretKey: PF_SN_CLIENT_SECRET
+
+podAnnotations: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+serviceAccount:
+  create: true
+  name: pathfinder-gateway

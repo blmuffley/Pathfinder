@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 700" font-family="'DM Sans', 'Helvetica Neue', sans-serif">
+  <defs>
+    <filter id="s10"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1C1917" flood-opacity="0.08"/></filter>
+    <marker id="a10" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#39FF14"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="700" fill="#0E0E0C"/>
+
+  <text x="700" y="38" text-anchor="middle" font-family="'Syne', sans-serif" font-size="26" font-weight="800" fill="#FFFFFF">Pathfinder Workspace — Polaris UI Builder</text>
+  <text x="700" y="58" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.15em">NEXT EXPERIENCE CONFIGURABLE WORKSPACE — PAGE NAVIGATION MAP</text>
+
+  <!-- Nav sidebar -->
+  <rect x="30" y="80" width="200" height="580" rx="14" fill="#1C1917" stroke="#39FF14" stroke-width="1.5" filter="url(#s10)"/>
+  <rect x="30" y="80" width="200" height="36" rx="14" fill="#39FF14"/>
+  <rect x="30" y="106" width="200" height="10" fill="#39FF14"/>
+  <text x="130" y="104" text-anchor="middle" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#0E0E0C">Navigation</text>
+
+  <!-- Nav items -->
+  <rect x="45" y="130" width="170" height="28" rx="6" fill="#39FF1422"/>
+  <text x="60" y="149" font-family="'Space Mono', monospace" font-size="10" fill="#39FF14">⌂  Overview</text>
+
+  <rect x="45" y="168" width="170" height="28" rx="6" fill="transparent"/>
+  <text x="60" y="187" font-family="'Space Mono', monospace" font-size="10" fill="#FFFFFF">⇌  Integrations</text>
+  <circle cx="200" cy="182" r="8" fill="#ef4444"/>
+  <text x="200" y="186" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="8" font-weight="700" fill="#FFFFFF">3</text>
+
+  <rect x="45" y="206" width="170" height="28" rx="6" fill="transparent"/>
+  <text x="60" y="225" font-family="'Space Mono', monospace" font-size="10" fill="#FFFFFF">◉  Agent Fleet</text>
+  <circle cx="200" cy="220" r="8" fill="#f59e0b"/>
+  <text x="200" y="224" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="8" font-weight="700" fill="#0E0E0C">5</text>
+
+  <rect x="45" y="244" width="170" height="28" rx="6" fill="transparent"/>
+  <text x="60" y="263" font-family="'Space Mono', monospace" font-size="10" fill="#FFFFFF">▲  Coverage Gaps</text>
+  <circle cx="200" cy="258" r="8" fill="#ef4444"/>
+  <text x="200" y="262" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="8" font-weight="700" fill="#FFFFFF">12</text>
+
+  <rect x="45" y="282" width="170" height="28" rx="6" fill="transparent"/>
+  <text x="60" y="301" font-family="'Space Mono', monospace" font-size="10" fill="#FFFFFF">⊕  EA Reconciliation</text>
+
+  <line x1="45" y1="325" x2="215" y2="325" stroke="#A8A19444" stroke-width="1"/>
+
+  <rect x="45" y="340" width="170" height="28" rx="6" fill="transparent"/>
+  <text x="60" y="359" font-family="'Space Mono', monospace" font-size="10" fill="#A8A194">📈 Health Dashboard</text>
+
+  <rect x="45" y="378" width="170" height="28" rx="6" fill="transparent"/>
+  <text x="60" y="397" font-family="'Space Mono', monospace" font-size="10" fill="#A8A194">⚙  Settings</text>
+
+  <!-- Roles -->
+  <rect x="45" y="600" width="170" height="46" rx="6" fill="#A8A19411"/>
+  <text x="55" y="618" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">ROLES:</text>
+  <text x="55" y="632" font-family="'Space Mono', monospace" font-size="7" fill="#39FF14">admin | analyst | viewer</text>
+
+  <!-- ===== Page Cards ===== -->
+
+  <!-- Overview page -->
+  <rect x="260" y="80" width="520" height="180" rx="14" fill="#1C1917" stroke="#39FF14" stroke-width="1.5" filter="url(#s10)"/>
+  <text x="280" y="108" font-family="'Syne', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Overview (Landing)</text>
+  <text x="280" y="126" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">type: landing | layout: fluid</text>
+
+  <!-- KPI tiles mock -->
+  <rect x="280" y="140" width="110" height="45" rx="6" fill="#22c55e22" stroke="#22c55e" stroke-width="1"/>
+  <text x="335" y="158" text-anchor="middle" font-family="'Syne', sans-serif" font-size="18" font-weight="700" fill="#22c55e">142</text>
+  <text x="335" y="176" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="8" fill="#A8A194">Integrations</text>
+
+  <rect x="400" y="140" width="110" height="45" rx="6" fill="#22c55e22" stroke="#22c55e" stroke-width="1"/>
+  <text x="455" y="158" text-anchor="middle" font-family="'Syne', sans-serif" font-size="18" font-weight="700" fill="#22c55e">98</text>
+  <text x="455" y="176" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="8" fill="#A8A194">Healthy</text>
+
+  <rect x="520" y="140" width="110" height="45" rx="6" fill="#ef444422" stroke="#ef4444" stroke-width="1"/>
+  <text x="575" y="158" text-anchor="middle" font-family="'Syne', sans-serif" font-size="18" font-weight="700" fill="#ef4444">3</text>
+  <text x="575" y="176" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="8" fill="#A8A194">Critical</text>
+
+  <rect x="640" y="140" width="110" height="45" rx="6" fill="#39FF1422" stroke="#39FF14" stroke-width="1"/>
+  <text x="695" y="158" text-anchor="middle" font-family="'Syne', sans-serif" font-size="18" font-weight="700" fill="#39FF14">47</text>
+  <text x="695" y="176" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="8" fill="#A8A194">Active Agents</text>
+
+  <!-- Charts placeholders -->
+  <rect x="280" y="196" width="240" height="50" rx="6" fill="#A8A19411" stroke="#A8A19433" stroke-width="1"/>
+  <text x="400" y="225" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="9" fill="#A8A194">Health Distribution (Donut)</text>
+
+  <rect x="530" y="196" width="240" height="50" rx="6" fill="#A8A19411" stroke="#A8A19433" stroke-width="1"/>
+  <text x="650" y="225" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="9" fill="#A8A194">Integration Types (Donut)</text>
+
+  <!-- Integration List page -->
+  <rect x="260" y="275" width="520" height="95" rx="14" fill="#1C1917" stroke="#FFFFFF33" stroke-width="1" filter="url(#s10)"/>
+  <text x="280" y="303" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">Integration Explorer</text>
+  <text x="280" y="320" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">type: list | layout: split-content</text>
+  <text x="280" y="340" font-family="'DM Sans', sans-serif" font-size="9" fill="#A8A194">List + Detail Panel (tabbed: Overview, Interfaces, Health, EA, Activity)</text>
+  <text x="280" y="356" font-family="'DM Sans', sans-serif" font-size="9" fill="#39FF14">Filters: health_status, integration_type, ea_status, criticality</text>
+
+  <!-- Agent Fleet page -->
+  <rect x="260" y="385" width="520" height="75" rx="14" fill="#1C1917" stroke="#FFFFFF33" stroke-width="1" filter="url(#s10)"/>
+  <text x="280" y="413" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">Agent Fleet</text>
+  <text x="280" y="430" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">type: list | layout: split-content</text>
+  <text x="280" y="448" font-family="'DM Sans', sans-serif" font-size="9" fill="#A8A194">Header: KPIs + OS Donut + Version Bar | List: status, heartbeat, tier, flows</text>
+
+  <!-- Coverage Gaps page -->
+  <rect x="260" y="475" width="520" height="75" rx="14" fill="#1C1917" stroke="#FFFFFF33" stroke-width="1" filter="url(#s10)"/>
+  <text x="280" y="503" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">Coverage Gaps (Kanban)</text>
+  <text x="280" y="520" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">type: board | layout: kanban</text>
+  <text x="280" y="538" font-family="'DM Sans', sans-serif" font-size="9" fill="#A8A194">Lanes: Open → InProgress → Resolved | Waived | Failed</text>
+
+  <!-- EA Reconciliation page -->
+  <rect x="260" y="565" width="520" height="75" rx="14" fill="#1C1917" stroke="#FFFFFF33" stroke-width="1" filter="url(#s10)"/>
+  <text x="280" y="593" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">EA Reconciliation</text>
+  <text x="280" y="610" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">type: custom | layout: two-panel</text>
+  <text x="280" y="628" font-family="'DM Sans', sans-serif" font-size="9" fill="#A8A194">Left: Unmapped integrations | Right: AI match suggestions + confirm/reject</text>
+
+  <!-- ===== Right column: Actions + Artifacts ===== -->
+
+  <!-- Declarative Actions -->
+  <rect x="810" y="80" width="280" height="230" rx="14" fill="#1C1917" stroke="#A8A194" stroke-width="1" filter="url(#s10)"/>
+  <rect x="810" y="80" width="280" height="32" rx="14" fill="#A8A19444"/>
+  <rect x="810" y="104" width="280" height="8" fill="#A8A19444"/>
+  <text x="950" y="102" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">Declarative Actions</text>
+
+  <text x="830" y="132" font-family="'Space Mono', monospace" font-size="9" fill="#22c55e">✓ Confirm EA Mapping</text>
+  <text x="830" y="150" font-family="'Space Mono', monospace" font-size="9" fill="#ef4444">✗ Reject EA Mapping</text>
+  <text x="830" y="168" font-family="'Space Mono', monospace" font-size="9" fill="#f59e0b">⏻ Decommission Agent</text>
+  <text x="830" y="186" font-family="'Space Mono', monospace" font-size="9" fill="#FFFFFF">+ Create Change Request</text>
+  <text x="830" y="204" font-family="'Space Mono', monospace" font-size="9" fill="#FFFFFF">⊘ Waive Coverage Gap</text>
+  <text x="830" y="222" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14">✦ Refresh AI Summary</text>
+
+  <text x="830" y="260" font-family="'DM Sans', sans-serif" font-size="8" fill="#A8A194">Role-gated: admin, analyst</text>
+  <text x="830" y="275" font-family="'DM Sans', sans-serif" font-size="8" fill="#A8A194">Framework: Polaris Declarative Actions</text>
+  <text x="830" y="290" font-family="'DM Sans', sans-serif" font-size="8" fill="#A8A194">No client scripts — server-side only</text>
+
+  <!-- Form Variants -->
+  <rect x="810" y="325" width="280" height="155" rx="14" fill="#1C1917" stroke="#A8A194" stroke-width="1" filter="url(#s10)"/>
+  <rect x="810" y="325" width="280" height="32" rx="14" fill="#A8A19444"/>
+  <rect x="810" y="349" width="280" height="8" fill="#A8A19444"/>
+  <text x="950" y="347" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">Form Variants</text>
+
+  <text x="830" y="378" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14">Integration CI</text>
+  <text x="830" y="394" font-family="'DM Sans', sans-serif" font-size="8" fill="#A8A194">AI Summary → Classification → Health → Governance</text>
+  <text x="830" y="410" font-family="'DM Sans', sans-serif" font-size="8" fill="#A8A194">Related: Interfaces, Health Logs, EA Maps</text>
+
+  <text x="830" y="432" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14">Interface CI</text>
+  <text x="830" y="448" font-family="'DM Sans', sans-serif" font-size="8" fill="#A8A194">Details → Metrics (latency, error rate)</text>
+
+  <text x="830" y="466" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14">Coverage Gap</text>
+  <text x="830" y="480" font-family="'DM Sans', sans-serif" font-size="8" fill="#A8A194">Gap Details → Remediation (CR, waiver)</text>
+
+  <!-- Health Dashboard -->
+  <rect x="810" y="495" width="280" height="145" rx="14" fill="#1C1917" stroke="#A8A194" stroke-width="1" filter="url(#s10)"/>
+  <rect x="810" y="495" width="280" height="32" rx="14" fill="#A8A19444"/>
+  <rect x="810" y="519" width="280" height="8" fill="#A8A19444"/>
+  <text x="950" y="517" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">Health Dashboard</text>
+
+  <text x="830" y="548" font-family="'DM Sans', sans-serif" font-size="9" fill="#FFFFFF">• Avg Health Score Trend (line)</text>
+  <text x="830" y="564" font-family="'DM Sans', sans-serif" font-size="9" fill="#FFFFFF">• Availability / Latency / Error sparklines</text>
+  <text x="830" y="580" font-family="'DM Sans', sans-serif" font-size="9" fill="#FFFFFF">• Anomaly list (status changes)</text>
+  <text x="830" y="596" font-family="'DM Sans', sans-serif" font-size="9" fill="#FFFFFF">• Heatmap: Type × Criticality</text>
+  <text x="830" y="616" font-family="'DM Sans', sans-serif" font-size="8" fill="#A8A194">Filters: time range, type, status, criticality</text>
+  <text x="830" y="632" font-family="'DM Sans', sans-serif" font-size="8" fill="#A8A194">Data: x_avnth_integration_health_log</text>
+
+  <!-- Connection lines nav → pages -->
+  <line x1="230" y1="144" x2="260" y2="144" stroke="#39FF14" stroke-width="2" marker-end="url(#a10)"/>
+  <line x1="230" y1="182" x2="260" y2="320" stroke="#FFFFFF33" stroke-width="1"/>
+  <line x1="230" y1="220" x2="260" y2="420" stroke="#FFFFFF33" stroke-width="1"/>
+  <line x1="230" y1="258" x2="260" y2="510" stroke="#FFFFFF33" stroke-width="1"/>
+  <line x1="230" y1="296" x2="260" y2="600" stroke="#FFFFFF33" stroke-width="1"/>
+
+  <!-- Footer -->
+  <text x="700" y="685" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194" letter-spacing="0.1em">AVENNORTH PATHFINDER — POLARIS WORKSPACE ARCHITECTURE</text>
+</svg>

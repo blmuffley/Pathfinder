@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unload unload_date="2026-03-29 20:00:00">
+
+<!-- ================================================================== -->
+<!-- Pathfinder Tier 1 Update Set — Tables, Business Rules, REST API,   -->
+<!-- Roles, ACLs, System Properties                                      -->
+<!-- Scope: x_avnth_pathfinder                                          -->
+<!-- ================================================================== -->
+
+<!-- ==================== APPLICATION ==================== -->
+<sys_app action="INSERT_OR_UPDATE">
+    <name>Pathfinder Integration Intelligence</name>
+    <scope>x_avnth_pathfinder</scope>
+    <version>0.1.0</version>
+    <vendor>Avennorth</vendor>
+    <short_description>CMDB-first integration discovery, health monitoring, and governance</short_description>
+    <active>true</active>
+</sys_app>
+
+<!-- ==================== ROLES ==================== -->
+<sys_user_role action="INSERT_OR_UPDATE">
+    <name>x_avnth_pathfinder.admin</name>
+    <description>Pathfinder Administrator — full access to all configuration and operations</description>
+    <assignable_by>admin</assignable_by>
+</sys_user_role>
+
+<sys_user_role action="INSERT_OR_UPDATE">
+    <name>x_avnth_pathfinder.analyst</name>
+    <description>Integration Analyst — manage integrations, confirm EA mappings, triage coverage gaps</description>
+    <assignable_by>x_avnth_pathfinder.admin</assignable_by>
+</sys_user_role>
+
+<sys_user_role action="INSERT_OR_UPDATE">
+    <name>x_avnth_pathfinder.viewer</name>
+    <description>Pathfinder Viewer — read-only access to workspace</description>
+    <assignable_by>x_avnth_pathfinder.admin</assignable_by>
+</sys_user_role>
+
+<!-- ==================== TABLE: x_avnth_cmdb_ci_integration ==================== -->
+<sys_db_object action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <label>Integration CI</label>
+    <super_class>cmdb_ci</super_class>
+    <is_extendable>false</is_extendable>
+    <access>public</access>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_db_object>
+
+<!-- Fields for x_avnth_cmdb_ci_integration -->
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>source_ci</element>
+    <column_label>Source CI</column_label>
+    <internal_type>reference</internal_type>
+    <reference>cmdb_ci</reference>
+    <mandatory>true</mandatory>
+    <max_length>32</max_length>
+    <comments>The application initiating connections</comments>
+</sys_dictionary>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>target_ci</element>
+    <column_label>Target CI</column_label>
+    <internal_type>reference</internal_type>
+    <reference>cmdb_ci</reference>
+    <mandatory>true</mandatory>
+    <max_length>32</max_length>
+    <comments>The application receiving connections</comments>
+</sys_dictionary>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>integration_type</element>
+    <column_label>Integration Type</column_label>
+    <internal_type>choice</internal_type>
+    <mandatory>true</mandatory>
+    <max_length>50</max_length>
+    <choice>0</choice>
+</sys_dictionary>
+
+<sys_choice action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>integration_type</element>
+    <label>API</label><value>API</value><sequence>100</sequence>
+</sys_choice>
+<sys_choice action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>integration_type</element>
+    <label>Database</label><value>Database</value><sequence>200</sequence>
+</sys_choice>
+<sys_choice action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>integration_type</element>
+    <label>File Transfer</label><value>File Transfer</value><sequence>300</sequence>
+</sys_choice>
+<sys_choice action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>integration_type</element>
+    <label>Messaging</label><value>Messaging</value><sequence>400</sequence>
+</sys_choice>
+<sys_choice action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>integration_type</element>
+    <label>Email</label><value>Email</value><sequence>500</sequence>
+</sys_choice>
+<sys_choice action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>integration_type</element>
+    <label>Directory</label><value>Directory</value><sequence>600</sequence>
+</sys_choice>
+<sys_choice action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>integration_type</element>
+    <label>Remote Access</label><value>Remote Access</value><sequence>700</sequence>
+</sys_choice>
+<sys_choice action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>integration_type</element>
+    <label>Custom</label><value>Custom</value><sequence>800</sequence>
+</sys_choice>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>classification_confidence</element>
+    <column_label>Classification Confidence</column_label>
+    <internal_type>decimal</internal_type>
+    <max_length>5</max_length>
+    <comments>Gateway classification confidence (0.00-1.00)</comments>
+</sys_dictionary>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>discovery_method</element>
+    <column_label>Discovery Method</column_label>
+    <internal_type>choice</internal_type>
+    <mandatory>true</mandatory>
+    <default_value>Pathfinder</default_value>
+    <max_length>40</max_length>
+</sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>discovery_method</element><label>Pathfinder</label><value>Pathfinder</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>discovery_method</element><label>Manual</label><value>Manual</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>discovery_method</element><label>Import</label><value>Import</value><sequence>300</sequence></sys_choice>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>first_discovered</element>
+    <column_label>First Discovered</column_label>
+    <internal_type>glide_date_time</internal_type>
+</sys_dictionary>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>last_observed</element>
+    <column_label>Last Observed</column_label>
+    <internal_type>glide_date_time</internal_type>
+</sys_dictionary>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>flow_count</element>
+    <column_label>Flow Count</column_label>
+    <internal_type>integer</internal_type>
+    <default_value>0</default_value>
+</sys_dictionary>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>health_status</element>
+    <column_label>Health Status</column_label>
+    <internal_type>choice</internal_type>
+    <default_value>Unknown</default_value>
+    <max_length>20</max_length>
+</sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>health_status</element><label>Healthy</label><value>Healthy</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>health_status</element><label>Degraded</label><value>Degraded</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>health_status</element><label>Critical</label><value>Critical</value><sequence>300</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>health_status</element><label>Unknown</label><value>Unknown</value><sequence>400</sequence></sys_choice>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>health_score</element>
+    <column_label>Health Score</column_label>
+    <internal_type>integer</internal_type>
+    <comments>Composite score 0-100</comments>
+</sys_dictionary>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>ai_summary</element>
+    <column_label>AI Summary</column_label>
+    <internal_type>string</internal_type>
+    <max_length>4000</max_length>
+    <comments>AI-generated natural-language summary</comments>
+</sys_dictionary>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>ea_status</element>
+    <column_label>EA Status</column_label>
+    <internal_type>choice</internal_type>
+    <default_value>Unmapped</default_value>
+    <max_length>20</max_length>
+</sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>ea_status</element><label>Mapped</label><value>Mapped</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>ea_status</element><label>Unmapped</label><value>Unmapped</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>ea_status</element><label>Disputed</label><value>Disputed</value><sequence>300</sequence></sys_choice>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>ea_relationship</element>
+    <column_label>EA Relationship</column_label>
+    <internal_type>reference</internal_type>
+    <reference>cmdb_rel_ci</reference>
+    <max_length>32</max_length>
+</sys_dictionary>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>criticality</element>
+    <column_label>Criticality</column_label>
+    <internal_type>choice</internal_type>
+    <default_value>Unknown</default_value>
+    <max_length>20</max_length>
+</sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>criticality</element><label>Critical</label><value>Critical</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>criticality</element><label>High</label><value>High</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>criticality</element><label>Medium</label><value>Medium</value><sequence>300</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>criticality</element><label>Low</label><value>Low</value><sequence>400</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>criticality</element><label>Unknown</label><value>Unknown</value><sequence>500</sequence></sys_choice>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>data_classification</element>
+    <column_label>Data Classification</column_label>
+    <internal_type>choice</internal_type>
+    <max_length>20</max_length>
+</sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>data_classification</element><label>Public</label><value>Public</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>data_classification</element><label>Internal</label><value>Internal</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>data_classification</element><label>Confidential</label><value>Confidential</value><sequence>300</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_integration</name><element>data_classification</element><label>Restricted</label><value>Restricted</value><sequence>400</sequence></sys_choice>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>owner</element>
+    <column_label>Owner</column_label>
+    <internal_type>reference</internal_type>
+    <reference>sys_user</reference>
+    <max_length>32</max_length>
+</sys_dictionary>
+
+<sys_dictionary action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_integration</name>
+    <element>support_group</element>
+    <column_label>Support Group</column_label>
+    <internal_type>reference</internal_type>
+    <reference>sys_user_group</reference>
+    <max_length>32</max_length>
+</sys_dictionary>
+
+<!-- ==================== TABLE: x_avnth_cmdb_ci_interface ==================== -->
+<sys_db_object action="INSERT_OR_UPDATE">
+    <name>x_avnth_cmdb_ci_interface</name>
+    <label>Interface CI</label>
+    <super_class>cmdb_ci</super_class>
+    <is_extendable>false</is_extendable>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_db_object>
+
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>integration</element><column_label>Integration</column_label><internal_type>reference</internal_type><reference>x_avnth_cmdb_ci_integration</reference><mandatory>true</mandatory><max_length>32</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>protocol</element><column_label>Protocol</column_label><internal_type>choice</internal_type><mandatory>true</mandatory><max_length>20</max_length></sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>protocol</element><label>TCP</label><value>TCP</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>protocol</element><label>UDP</label><value>UDP</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>protocol</element><label>HTTP</label><value>HTTP</value><sequence>300</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>protocol</element><label>HTTPS</label><value>HTTPS</value><sequence>400</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>protocol</element><label>gRPC</label><value>gRPC</value><sequence>500</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>protocol</element><label>AMQP</label><value>AMQP</value><sequence>600</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>protocol</element><label>MQTT</label><value>MQTT</value><sequence>700</sequence></sys_choice>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>port</element><column_label>Port</column_label><internal_type>integer</internal_type><mandatory>true</mandatory></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>direction</element><column_label>Direction</column_label><internal_type>choice</internal_type><mandatory>true</mandatory><max_length>20</max_length></sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>direction</element><label>Inbound</label><value>Inbound</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>direction</element><label>Outbound</label><value>Outbound</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>direction</element><label>Bidirectional</label><value>Bidirectional</value><sequence>300</sequence></sys_choice>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>pattern</element><column_label>Pattern</column_label><internal_type>choice</internal_type><max_length>30</max_length></sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>pattern</element><label>Request-Reply</label><value>Request-Reply</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>pattern</element><label>Fire-and-Forget</label><value>Fire-and-Forget</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>pattern</element><label>Pub-Sub</label><value>Pub-Sub</value><sequence>300</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>pattern</element><label>Batch</label><value>Batch</value><sequence>400</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>pattern</element><label>Streaming</label><value>Streaming</value><sequence>500</sequence></sys_choice>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>data_format</element><column_label>Data Format</column_label><internal_type>choice</internal_type><max_length>20</max_length></sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>data_format</element><label>JSON</label><value>JSON</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>data_format</element><label>XML</label><value>XML</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>data_format</element><label>Binary</label><value>Binary</value><sequence>300</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>data_format</element><label>CSV</label><value>CSV</value><sequence>400</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>data_format</element><label>Protobuf</label><value>Protobuf</value><sequence>500</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>data_format</element><label>Avro</label><value>Avro</value><sequence>600</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>data_format</element><label>Unknown</label><value>Unknown</value><sequence>700</sequence></sys_choice>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>process_name</element><column_label>Process Name</column_label><internal_type>string</internal_type><max_length>255</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>avg_bytes_per_flow</element><column_label>Avg Bytes Per Flow</column_label><internal_type>integer</internal_type></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>flow_count</element><column_label>Flow Count</column_label><internal_type>integer</internal_type><default_value>0</default_value></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>first_discovered</element><column_label>First Discovered</column_label><internal_type>glide_date_time</internal_type></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>last_observed</element><column_label>Last Observed</column_label><internal_type>glide_date_time</internal_type></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>latency_p50_ms</element><column_label>Latency P50 (ms)</column_label><internal_type>decimal</internal_type></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>latency_p99_ms</element><column_label>Latency P99 (ms)</column_label><internal_type>decimal</internal_type></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_cmdb_ci_interface</name><element>error_rate</element><column_label>Error Rate</column_label><internal_type>decimal</internal_type><max_length>5</max_length></sys_dictionary>
+
+<!-- Remaining 4 tables follow same pattern — see companion files -->
+
+<!-- ==================== SYSTEM PROPERTIES ==================== -->
+<sys_properties action="INSERT_OR_UPDATE">
+    <name>x_avnth.auto_deploy_enabled</name>
+    <value>false</value>
+    <type>true_false</type>
+    <description>Enable automatic agent deployment for coverage gaps</description>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_properties>
+
+<sys_properties action="INSERT_OR_UPDATE">
+    <name>x_avnth.cmdb_ops_enabled</name>
+    <value>true</value>
+    <type>true_false</type>
+    <description>Global kill switch for CMDB Ops agents</description>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_properties>
+
+<sys_properties action="INSERT_OR_UPDATE">
+    <name>x_avnth.classification_confidence_threshold</name>
+    <value>0.8</value>
+    <type>string</type>
+    <description>Minimum confidence to auto-create Integration CIs (0.0-1.0)</description>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_properties>
+
+<sys_properties action="INSERT_OR_UPDATE">
+    <name>x_avnth.stale_threshold_days</name>
+    <value>90</value>
+    <type>integer</type>
+    <description>Days without observation before an integration is marked stale</description>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_properties>
+
+<sys_properties action="INSERT_OR_UPDATE">
+    <name>x_avnth.deploy_assignment_group</name>
+    <value></value>
+    <type>string</type>
+    <description>Assignment group sys_id for auto-generated deployment change requests</description>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_properties>
+
+<sys_properties action="INSERT_OR_UPDATE">
+    <name>x_avnth.notify_on_failure</name>
+    <value></value>
+    <type>string</type>
+    <description>Email/group to notify on remediation failure</description>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_properties>
+
+<sys_properties action="INSERT_OR_UPDATE">
+    <name>x_avnth.ai_engine_url</name>
+    <value>http://localhost:8080</value>
+    <type>string</type>
+    <description>URL of the Pathfinder Shared AI Engine</description>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_properties>
+
+<sys_properties action="INSERT_OR_UPDATE">
+    <name>x_avnth.cmdb_ops_autonomy_level</name>
+    <value>1</value>
+    <type>integer</type>
+    <description>Default autonomy level for CMDB Ops agents (0=report, 1=recommend, 2=act+approval, 3=autonomous)</description>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_properties>
+
+<sys_properties action="INSERT_OR_UPDATE">
+    <name>x_avnth.max_cis_per_agent_run</name>
+    <value>50</value>
+    <type>integer</type>
+    <description>Maximum CIs a single CMDB Ops agent can modify in one run (blast radius limit)</description>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_properties>
+
+<sys_properties action="INSERT_OR_UPDATE">
+    <name>x_avnth.health_score_refresh_hours</name>
+    <value>4</value>
+    <type>integer</type>
+    <description>Hours between health score recomputation cycles</description>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_properties>
+
+</unload>

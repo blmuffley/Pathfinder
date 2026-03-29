@@ -1,0 +1,174 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  go-gateway:
+    name: Gateway (Go)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: Build
+        run: cd src/gateway && go build -o /tmp/gateway ./cmd/
+      - name: Test
+        run: cd src/gateway && go test ./... -cover -coverprofile=coverage.out
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: gateway-coverage
+          path: src/gateway/coverage.out
+
+  go-agent-linux:
+    name: Agent Linux (Go)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: Build
+        run: cd src/agent/linux && go build -o /tmp/agent ./cmd/
+      - name: Test
+        run: cd src/agent/linux && go test ./... -cover
+
+  go-agent-windows:
+    name: Agent Windows (Go)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: Build (cross-compile)
+        run: cd src/agent/windows && GOOS=windows GOARCH=amd64 go build -o /tmp/agent.exe ./cmd/
+      - name: Build (linux stub)
+        run: cd src/agent/windows && go build -o /tmp/agent-winstub ./cmd/
+
+  go-agent-k8s:
+    name: Agent K8s (Go)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: Build
+        run: cd src/agent/k8s && go build -o /tmp/agent-k8s ./cmd/
+
+  go-shared:
+    name: Shared Client (Go)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: Build
+        run: cd src/agent/shared && go build ./...
+
+  python-ai-engine:
+    name: Shared AI Engine (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: cd src/intelligence/shared-ai-engine && pip install -r requirements.txt
+      - name: Test
+        run: cd src/intelligence/shared-ai-engine && python -m pytest tests/ -v --tb=short
+
+  python-integration-intelligence:
+    name: Integration Intelligence (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: cd src/intelligence/integration-intelligence && pip install -r requirements.txt
+      - name: Test
+        run: cd src/intelligence/integration-intelligence && python -m pytest tests/ -v --tb=short
+
+  python-cmdb-ops:
+    name: CMDB Ops Agent (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: cd src/intelligence/cmdb-ops-agent && pip install -r requirements.txt
+      - name: Test
+        run: cd src/intelligence/cmdb-ops-agent && python -m pytest tests/ -v --tb=short
+
+  python-service-map:
+    name: Service Map Intelligence (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: cd src/intelligence/service-map-suite && pip install -r requirements.txt
+      - name: Test
+        run: cd src/intelligence/service-map-suite && python -m pytest tests/ -v --tb=short
+
+  integration-test:
+    name: Integration Test (E2E)
+    runs-on: ubuntu-latest
+    needs: [go-gateway, go-agent-linux]
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: pathfinder
+          POSTGRES_USER: pathfinder
+          POSTGRES_PASSWORD: localdev
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: Start gateway
+        run: |
+          cd src/gateway
+          PF_DB_URL="postgres://pathfinder:localdev@localhost:5432/pathfinder?sslmode=disable" \
+            go run ./cmd/ --config ../../config/gateway-dev.yaml &
+          sleep 5
+      - name: Run integration tests
+        run: |
+          cd tests/integration
+          go mod tidy
+          go test -tags=integration -v -timeout 60s
+        env:
+          TEST_GATEWAY_ADDR: localhost:8443
+          TEST_DB_URL: postgres://pathfinder:localdev@localhost:5432/pathfinder?sslmode=disable
+
+  helm-lint:
+    name: Helm Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint gateway chart
+        run: helm lint charts/gateway/
+      - name: Lint agent chart
+        run: helm lint charts/agent/

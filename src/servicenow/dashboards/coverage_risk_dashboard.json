@@ -1,0 +1,118 @@
+{
+  "dashboard": {
+    "id": "pf_coverage_risk",
+    "title": "Coverage & Risk Dashboard",
+    "scope": "x_avnth_pathfinder",
+    "description": "Agent coverage gaps, application risk scores, and change impact analysis",
+    "workspace_page": "pf_coverage_gaps",
+    "refresh_interval": 300
+  },
+
+  "widgets": [
+    {
+      "id": "coverage_gauge",
+      "type": "gauge",
+      "title": "Overall Coverage",
+      "position": { "row": 0, "col": 0, "width": 3, "height": 2 },
+      "data_source": {
+        "numerator": { "table": "cmdb_ci_server", "aggregate": "COUNT", "condition": "operational_status=1^sys_idINx_avnth_pathfinder_agent.server" },
+        "denominator": { "table": "cmdb_ci_server", "aggregate": "COUNT", "condition": "operational_status=1" }
+      },
+      "thresholds": { "critical": 80, "warning": 90, "healthy": 95 }
+    },
+    {
+      "id": "gaps_by_type",
+      "type": "donut_chart",
+      "title": "Open Gaps by Type",
+      "position": { "row": 0, "col": 3, "width": 3, "height": 2 },
+      "data_source": {
+        "table": "x_avnth_coverage_gap",
+        "group_by": "gap_type",
+        "aggregate": "COUNT",
+        "condition": "remediation_status=Open"
+      }
+    },
+    {
+      "id": "gaps_by_priority",
+      "type": "bar_chart",
+      "title": "Open Gaps by Priority",
+      "position": { "row": 0, "col": 6, "width": 3, "height": 2 },
+      "data_source": {
+        "table": "x_avnth_coverage_gap",
+        "group_by": "priority",
+        "aggregate": "COUNT",
+        "condition": "remediation_status=Open"
+      },
+      "colors": { "Critical": "#ef4444", "High": "#f59e0b", "Medium": "#3b82f6", "Low": "#6b7280" }
+    },
+    {
+      "id": "remediation_funnel",
+      "type": "bar_chart",
+      "title": "Remediation Pipeline",
+      "position": { "row": 0, "col": 9, "width": 3, "height": 2 },
+      "data_source": {
+        "table": "x_avnth_coverage_gap",
+        "group_by": "remediation_status",
+        "aggregate": "COUNT"
+      }
+    },
+    {
+      "id": "risk_heatmap",
+      "type": "heatmap",
+      "title": "Application Risk Heatmap",
+      "position": { "row": 2, "col": 0, "width": 6, "height": 3 },
+      "description": "Risk by application, colored by score (red=high, green=low)",
+      "data_source": {
+        "api_endpoint": "/api/v1/risk",
+        "transform": "applications[].{name: app_name, value: overall_risk, level: risk_level}"
+      }
+    },
+    {
+      "id": "top_risk_apps",
+      "type": "list",
+      "title": "Top 10 Highest Risk Applications",
+      "position": { "row": 2, "col": 6, "width": 6, "height": 3 },
+      "data_source": {
+        "api_endpoint": "/api/v1/risk",
+        "transform": "applications[:10]",
+        "fields": ["app_name", "overall_risk", "risk_level", "integration_count", "explanation"]
+      }
+    },
+    {
+      "id": "coverage_trend",
+      "type": "time_series",
+      "title": "Coverage Trend (30 days)",
+      "position": { "row": 5, "col": 0, "width": 6, "height": 2 },
+      "data_source": {
+        "table": "x_avnth_coverage_gap",
+        "aggregate": "COUNT",
+        "group_by": "remediation_status",
+        "time_field": "detected_at",
+        "period": "30d"
+      }
+    },
+    {
+      "id": "mttr",
+      "type": "single_score",
+      "title": "Avg MTTR (days)",
+      "position": { "row": 5, "col": 6, "width": 3, "height": 2 },
+      "data_source": {
+        "table": "x_avnth_coverage_gap",
+        "condition": "remediation_status=Resolved",
+        "transform": "AVG(resolved_at - detected_at) in days"
+      }
+    },
+    {
+      "id": "auto_remediation_rate",
+      "type": "single_score",
+      "title": "Auto-Remediation Success",
+      "position": { "row": 5, "col": 9, "width": 3, "height": 2 },
+      "data_source": {
+        "numerator": { "table": "x_avnth_coverage_gap", "aggregate": "COUNT", "condition": "remediation_method=AutoDeploy^remediation_status=Resolved" },
+        "denominator": { "table": "x_avnth_coverage_gap", "aggregate": "COUNT", "condition": "remediation_method=AutoDeploy" }
+      },
+      "format": "percent",
+      "target": 90
+    }
+  ]
+}

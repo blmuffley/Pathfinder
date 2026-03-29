@@ -1,0 +1,62 @@
+image:
+  repository: pathfinder-agent
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+gateway:
+  address: pathfinder-gateway:8443
+  tls: false
+
+enrollment:
+  tokenSecret: pathfinder-enrollment
+  tokenKey: PF_ENROLLMENT_TOKEN
+
+capture:
+  interface: any
+  flushInterval: 10s
+  batchSize: 100
+
+heartbeat:
+  interval: 30s
+
+logging:
+  level: info
+  format: json
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 500m
+    memory: 128Mi
+
+# Tolerations: run on ALL nodes (including masters)
+tolerations:
+  - operator: Exists
+
+# Host networking required for eBPF capture
+hostNetwork: true
+hostPID: true
+
+# Security context for eBPF
+securityContext:
+  privileged: false
+  capabilities:
+    add:
+      - BPF
+      - PERFMON
+      - NET_ADMIN
+      - SYS_RESOURCE
+
+nodeSelector: {}
+
+serviceAccount:
+  create: true
+  name: pathfinder-agent
+  # RBAC for K8s API enrichment
+  rbac:
+    rules:
+      - apiGroups: [""]
+        resources: ["pods", "services", "endpoints"]
+        verbs: ["get", "list", "watch"]

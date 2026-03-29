@@ -1,0 +1,71 @@
+{
+  "_comment": "sys_ux_page — Coverage Gaps Kanban board",
+  "sys_ux_page": {
+    "id": "pf_coverage_gaps",
+    "title": "Coverage Gaps",
+    "category": "board"
+  },
+
+  "data_resources": [
+    {
+      "id": "dr_open_count",
+      "type": "record_count",
+      "table": "x_avnth_coverage_gap",
+      "condition": "remediation_status=Open"
+    },
+    {
+      "id": "dr_gaps",
+      "type": "record_list",
+      "table": "x_avnth_coverage_gap",
+      "fields": "server,gap_type,priority,remediation_status,detected_at,remediation_cr",
+      "order_by": "priority",
+      "interactive": true
+    }
+  ],
+
+  "component_tree": {
+    "root": {
+      "component": "now-container",
+      "properties": { "direction": "column", "gap": "lg" },
+      "children": [
+        {
+          "_comment": "Header KPIs",
+          "component": "now-container",
+          "properties": { "direction": "row", "gap": "md" },
+          "children": [
+            { "component": "now-highlighted-value", "properties": { "label": "Open Gaps", "value": "{{dr_open_count.count}}", "variant": "critical", "size": "md" } }
+          ]
+        },
+        {
+          "_comment": "Kanban board",
+          "component": "now-board-connected",
+          "properties": {
+            "table": "x_avnth_coverage_gap",
+            "lane_field": "remediation_status",
+            "lanes": [
+              { "value": "Open", "label": "Open", "color": "#ef4444" },
+              { "value": "InProgress", "label": "In Progress", "color": "#f59e0b", "wip_limit": 20 },
+              { "value": "Resolved", "label": "Resolved", "color": "#22c55e" },
+              { "value": "Waived", "label": "Waived", "color": "#6b7280", "collapsed": true },
+              { "value": "Failed", "label": "Failed", "color": "#ef4444" }
+            ],
+            "card": {
+              "title_field": "server",
+              "subtitle_field": "gap_type",
+              "badge_field": "priority",
+              "badge_variant_map": { "Critical": "critical", "High": "high", "Medium": "warning", "Low": "neutral" },
+              "footer_field": "detected_at",
+              "footer_display": "relative_time"
+            },
+            "sort_within_lane": { "field": "priority", "direction": "asc" },
+            "enable_drag_drop": true,
+            "card_actions": [
+              "pf_create_remediation_cr",
+              "pf_waive_coverage_gap"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

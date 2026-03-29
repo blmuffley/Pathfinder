@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unload unload_date="2026-03-29 20:00:00">
+
+<!-- ==================== TABLE: x_avnth_integration_health_log ==================== -->
+<sys_db_object action="INSERT_OR_UPDATE">
+    <name>x_avnth_integration_health_log</name>
+    <label>Integration Health Log</label>
+    <is_extendable>false</is_extendable>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_db_object>
+
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_integration_health_log</name><element>integration</element><column_label>Integration</column_label><internal_type>reference</internal_type><reference>x_avnth_cmdb_ci_integration</reference><mandatory>true</mandatory><max_length>32</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_integration_health_log</name><element>interface</element><column_label>Interface</column_label><internal_type>reference</internal_type><reference>x_avnth_cmdb_ci_interface</reference><max_length>32</max_length><comments>Optional — null means integration-level metric</comments></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_integration_health_log</name><element>metric_type</element><column_label>Metric Type</column_label><internal_type>choice</internal_type><mandatory>true</mandatory><max_length>30</max_length></sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_integration_health_log</name><element>metric_type</element><label>Latency</label><value>Latency</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_integration_health_log</name><element>metric_type</element><label>Throughput</label><value>Throughput</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_integration_health_log</name><element>metric_type</element><label>ErrorRate</label><value>ErrorRate</value><sequence>300</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_integration_health_log</name><element>metric_type</element><label>Availability</label><value>Availability</value><sequence>400</sequence></sys_choice>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_integration_health_log</name><element>metric_value</element><column_label>Metric Value</column_label><internal_type>decimal</internal_type><mandatory>true</mandatory></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_integration_health_log</name><element>unit</element><column_label>Unit</column_label><internal_type>string</internal_type><max_length>20</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_integration_health_log</name><element>recorded_at</element><column_label>Recorded At</column_label><internal_type>glide_date_time</internal_type><mandatory>true</mandatory></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_integration_health_log</name><element>source</element><column_label>Source</column_label><internal_type>choice</internal_type><default_value>Agent</default_value><max_length>20</max_length></sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_integration_health_log</name><element>source</element><label>Agent</label><value>Agent</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_integration_health_log</name><element>source</element><label>Gateway</label><value>Gateway</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_integration_health_log</name><element>source</element><label>Synthetic</label><value>Synthetic</value><sequence>300</sequence></sys_choice>
+
+<!-- ==================== TABLE: x_avnth_coverage_gap ==================== -->
+<sys_db_object action="INSERT_OR_UPDATE">
+    <name>x_avnth_coverage_gap</name>
+    <label>Coverage Gap</label>
+    <is_extendable>false</is_extendable>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_db_object>
+
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>server</element><column_label>Server</column_label><internal_type>reference</internal_type><reference>cmdb_ci_server</reference><mandatory>true</mandatory><max_length>32</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>gap_type</element><column_label>Gap Type</column_label><internal_type>choice</internal_type><mandatory>true</mandatory><max_length>20</max_length></sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>gap_type</element><label>NoAgent</label><value>NoAgent</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>gap_type</element><label>StaleAgent</label><value>StaleAgent</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>gap_type</element><label>WrongTier</label><value>WrongTier</value><sequence>300</sequence></sys_choice>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>required_tier</element><column_label>Required Tier</column_label><internal_type>integer</internal_type></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>current_tier</element><column_label>Current Tier</column_label><internal_type>integer</internal_type><default_value>0</default_value></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>detected_at</element><column_label>Detected At</column_label><internal_type>glide_date_time</internal_type><mandatory>true</mandatory></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>remediation_status</element><column_label>Remediation Status</column_label><internal_type>choice</internal_type><mandatory>true</mandatory><default_value>Open</default_value><max_length>20</max_length></sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>remediation_status</element><label>Open</label><value>Open</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>remediation_status</element><label>InProgress</label><value>InProgress</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>remediation_status</element><label>Resolved</label><value>Resolved</value><sequence>300</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>remediation_status</element><label>Waived</label><value>Waived</value><sequence>400</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>remediation_status</element><label>Failed</label><value>Failed</value><sequence>500</sequence></sys_choice>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>remediation_method</element><column_label>Remediation Method</column_label><internal_type>choice</internal_type><max_length>20</max_length></sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>remediation_method</element><label>AutoDeploy</label><value>AutoDeploy</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>remediation_method</element><label>ManualDeploy</label><value>ManualDeploy</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>remediation_method</element><label>ChangeRequest</label><value>ChangeRequest</value><sequence>300</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>remediation_method</element><label>Waived</label><value>Waived</value><sequence>400</sequence></sys_choice>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>remediation_cr</element><column_label>Remediation CR</column_label><internal_type>reference</internal_type><reference>change_request</reference><max_length>32</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>resolved_at</element><column_label>Resolved At</column_label><internal_type>glide_date_time</internal_type></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>waived_by</element><column_label>Waived By</column_label><internal_type>reference</internal_type><reference>sys_user</reference><max_length>32</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>waive_reason</element><column_label>Waive Reason</column_label><internal_type>string</internal_type><max_length>500</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>priority</element><column_label>Priority</column_label><internal_type>choice</internal_type><default_value>Medium</default_value><max_length>20</max_length></sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>priority</element><label>Critical</label><value>Critical</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>priority</element><label>High</label><value>High</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>priority</element><label>Medium</label><value>Medium</value><sequence>300</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_coverage_gap</name><element>priority</element><label>Low</label><value>Low</value><sequence>400</sequence></sys_choice>
+
+<!-- ==================== TABLE: x_avnth_pathfinder_agent ==================== -->
+<sys_db_object action="INSERT_OR_UPDATE">
+    <name>x_avnth_pathfinder_agent</name>
+    <label>Pathfinder Agent</label>
+    <is_extendable>false</is_extendable>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_db_object>
+
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>agent_id</element><column_label>Agent ID</column_label><internal_type>string</internal_type><mandatory>true</mandatory><unique>true</unique><max_length>64</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>hostname</element><column_label>Hostname</column_label><internal_type>string</internal_type><mandatory>true</mandatory><max_length>255</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>server</element><column_label>Server</column_label><internal_type>reference</internal_type><reference>cmdb_ci_server</reference><max_length>32</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>os_type</element><column_label>OS Type</column_label><internal_type>choice</internal_type><mandatory>true</mandatory><max_length>20</max_length></sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>os_type</element><label>Linux</label><value>Linux</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>os_type</element><label>Windows</label><value>Windows</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>os_type</element><label>Kubernetes</label><value>Kubernetes</value><sequence>300</sequence></sys_choice>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>agent_version</element><column_label>Agent Version</column_label><internal_type>string</internal_type><mandatory>true</mandatory><max_length>50</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>last_heartbeat</element><column_label>Last Heartbeat</column_label><internal_type>glide_date_time</internal_type></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>status</element><column_label>Status</column_label><internal_type>choice</internal_type><mandatory>true</mandatory><default_value>Active</default_value><max_length>20</max_length></sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>status</element><label>Active</label><value>Active</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>status</element><label>Stale</label><value>Stale</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>status</element><label>Decommissioned</label><value>Decommissioned</value><sequence>300</sequence></sys_choice>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>deployment_model</element><column_label>Deployment Model</column_label><internal_type>choice</internal_type><max_length>20</max_length></sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>deployment_model</element><label>Standalone</label><value>Standalone</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>deployment_model</element><label>Managed</label><value>Managed</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>deployment_model</element><label>SaaS</label><value>SaaS</value><sequence>300</sequence></sys_choice>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>coverage_tier</element><column_label>Coverage Tier</column_label><internal_type>integer</internal_type><default_value>2</default_value></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>enrolled_at</element><column_label>Enrolled At</column_label><internal_type>glide_date_time</internal_type><mandatory>true</mandatory></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_pathfinder_agent</name><element>flows_collected</element><column_label>Flows Collected</column_label><internal_type>integer</internal_type><default_value>0</default_value></sys_dictionary>
+
+<!-- ==================== TABLE: x_avnth_integration_ea_map ==================== -->
+<sys_db_object action="INSERT_OR_UPDATE">
+    <name>x_avnth_integration_ea_map</name>
+    <label>EA Reconciliation Map</label>
+    <is_extendable>false</is_extendable>
+    <sys_scope>x_avnth_pathfinder</sys_scope>
+</sys_db_object>
+
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_integration_ea_map</name><element>integration</element><column_label>Integration</column_label><internal_type>reference</internal_type><reference>x_avnth_cmdb_ci_integration</reference><mandatory>true</mandatory><max_length>32</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_integration_ea_map</name><element>ea_relationship</element><column_label>EA Relationship</column_label><internal_type>reference</internal_type><reference>cmdb_rel_ci</reference><mandatory>true</mandatory><max_length>32</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_integration_ea_map</name><element>mapping_status</element><column_label>Mapping Status</column_label><internal_type>choice</internal_type><mandatory>true</mandatory><default_value>Suggested</default_value><max_length>20</max_length></sys_dictionary>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_integration_ea_map</name><element>mapping_status</element><label>Confirmed</label><value>Confirmed</value><sequence>100</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_integration_ea_map</name><element>mapping_status</element><label>Suggested</label><value>Suggested</value><sequence>200</sequence></sys_choice>
+<sys_choice action="INSERT_OR_UPDATE"><name>x_avnth_integration_ea_map</name><element>mapping_status</element><label>Rejected</label><value>Rejected</value><sequence>300</sequence></sys_choice>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_integration_ea_map</name><element>confidence</element><column_label>Confidence</column_label><internal_type>decimal</internal_type><max_length>5</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_integration_ea_map</name><element>mapped_by</element><column_label>Mapped By</column_label><internal_type>reference</internal_type><reference>sys_user</reference><max_length>32</max_length></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_integration_ea_map</name><element>mapped_at</element><column_label>Mapped At</column_label><internal_type>glide_date_time</internal_type></sys_dictionary>
+<sys_dictionary action="INSERT_OR_UPDATE"><name>x_avnth_integration_ea_map</name><element>match_reason</element><column_label>Match Reason</column_label><internal_type>string</internal_type><max_length>1000</max_length></sys_dictionary>
+
+</unload>
