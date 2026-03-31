@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" font-family="'DM Sans', 'Helvetica Neue', sans-serif">
+  <defs>
+    <filter id="sb"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1C1917" flood-opacity="0.08"/></filter>
+    <marker id="ab" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#39FF14"/></marker>
+    <marker id="ao" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#ff8c40"/></marker>
+  </defs>
+  <rect width="1200" height="600" fill="#0E0E0C"/>
+  <text x="600" y="36" text-anchor="middle" font-family="'Syne', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">Pathfinder &#x2192; Bearing Integration</text>
+  <text x="600" y="54" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.15em">CONFIDENCE FEED &amp; FUSION FINDINGS — INTERNAL ARCHITECTURE</text>
+
+  <!-- Pathfinder Box -->
+  <rect x="40" y="80" width="480" height="420" rx="14" fill="#1C1917" stroke="#39FF14" stroke-width="2" filter="url(#sb)"/>
+  <text x="280" y="110" text-anchor="middle" font-family="'Syne', sans-serif" font-size="16" font-weight="700" fill="#39FF14">Pathfinder Gateway</text>
+
+  <!-- Subcomponents -->
+  <rect x="60" y="130" width="200" height="60" rx="8" fill="#0E0E0C" stroke="#39FF1444" stroke-width="1"/>
+  <text x="160" y="155" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">Classification Engine</text>
+  <text x="160" y="172" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">flows → integrations</text>
+
+  <rect x="300" y="130" width="200" height="60" rx="8" fill="#0E0E0C" stroke="#39FF1444" stroke-width="1"/>
+  <text x="400" y="155" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">SN Sync Client</text>
+  <text x="400" y="172" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">OAuth2 → REST API</text>
+
+  <!-- Bearing Publisher subcomponents -->
+  <rect x="60" y="210" width="440" height="270" rx="10" fill="#0E0E0C" stroke="#ff8c4066" stroke-width="1.5"/>
+  <text x="280" y="236" text-anchor="middle" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#ff8c40">Bearing Integration Module</text>
+
+  <rect x="80" y="255" width="190" height="50" rx="6" fill="#1C1917" stroke="#ff8c4044" stroke-width="1"/>
+  <text x="175" y="276" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#FFFFFF">CI-to-SysID Resolver</text>
+  <text x="175" y="293" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">SN CMDB cache + shadow IT hash</text>
+
+  <rect x="290" y="255" width="190" height="50" rx="6" fill="#1C1917" stroke="#ff8c4044" stroke-width="1"/>
+  <text x="385" y="276" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#FFFFFF">Traffic State Classifier</text>
+  <text x="385" y="293" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">active / idle / deprecated / unknown</text>
+
+  <rect x="80" y="320" width="190" height="50" rx="6" fill="#1C1917" stroke="#ff8c4044" stroke-width="1"/>
+  <text x="175" y="341" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#FFFFFF">Behavioral Classifier</text>
+  <text x="175" y="358" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">12 port rules → SN CI class</text>
+
+  <rect x="290" y="320" width="190" height="50" rx="6" fill="#1C1917" stroke="#ff8c4044" stroke-width="1"/>
+  <text x="385" y="341" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#FFFFFF">Relationship Confirmer</text>
+  <text x="385" y="358" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">CMDB rel + traffic → confirmed</text>
+
+  <rect x="80" y="390" width="400" height="40" rx="6" fill="#ff8c4015" stroke="#ff8c40" stroke-width="1.5"/>
+  <text x="280" y="415" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#ff8c40">Feed Publisher (POST every 24h)</text>
+
+  <!-- Arrow to Bearing -->
+  <line x1="520" y1="410" x2="640" y2="320" stroke="#ff8c40" stroke-width="2.5" marker-end="url(#ao)"/>
+  <text x="575" y="355" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#ff8c40">POST /api/webhooks/pathfinder</text>
+  <text x="575" y="370" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">X-Bearing-API-Key header</text>
+
+  <!-- Bearing Box -->
+  <rect x="650" y="80" width="510" height="420" rx="14" fill="#1C1917" stroke="#ff8c40" stroke-width="2" filter="url(#sb)"/>
+  <text x="905" y="110" text-anchor="middle" font-family="'Syne', sans-serif" font-size="16" font-weight="700" fill="#ff8c40">Avennorth Bearing</text>
+
+  <!-- Feed Processing -->
+  <rect x="670" y="130" width="230" height="50" rx="8" fill="#0E0E0C" stroke="#ff8c4044" stroke-width="1"/>
+  <text x="785" y="151" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">Confidence Feed Receiver</text>
+  <text x="785" y="168" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">Validate schema_version: "1.0"</text>
+
+  <rect x="920" y="130" width="220" height="50" rx="8" fill="#0E0E0C" stroke="#ff8c4044" stroke-width="1"/>
+  <text x="1030" y="151" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">CMDB State Comparator</text>
+  <text x="1030" y="168" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">Pathfinder data vs CMDB state</text>
+
+  <!-- Fusion Findings -->
+  <text x="905" y="210" text-anchor="middle" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Fusion Findings</text>
+
+  <rect x="670" y="225" width="225" height="42" rx="6" fill="#ef444420" stroke="#ef4444" stroke-width="1"/>
+  <text x="782" y="244" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#ef4444">CRITICAL: Shadow IT Detected</text>
+  <text x="782" y="258" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">Active traffic + no CMDB record</text>
+
+  <rect x="670" y="276" width="225" height="42" rx="6" fill="#ef444420" stroke="#ef4444" stroke-width="1"/>
+  <text x="782" y="295" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#ef4444">CRITICAL: Stale CI (Operational + Idle)</text>
+  <text x="782" y="309" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">CMDB says running, no traffic seen</text>
+
+  <rect x="915" y="225" width="225" height="42" rx="6" fill="#f59e0b20" stroke="#f59e0b" stroke-width="1"/>
+  <text x="1028" y="244" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#f59e0b">HIGH: CI Still In Use</text>
+  <text x="1028" y="258" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">CMDB says Retired + traffic active</text>
+
+  <rect x="915" y="276" width="225" height="42" rx="6" fill="#f59e0b20" stroke="#f59e0b" stroke-width="1"/>
+  <text x="1028" y="295" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#f59e0b">HIGH: Misclassified CI</text>
+  <text x="1028" y="309" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">PF suggests different class than CMDB</text>
+
+  <rect x="670" y="327" width="225" height="42" rx="6" fill="#3b82f620" stroke="#3b82f6" stroke-width="1"/>
+  <text x="782" y="346" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#3b82f6">MEDIUM: Stale Relationship</text>
+  <text x="782" y="360" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">CMDB rel exists, no traffic observed</text>
+
+  <!-- Coverage + Deployment Recs -->
+  <rect x="670" y="385" width="470" height="95" rx="8" fill="#0E0E0C" stroke="#A8A19444" stroke-width="1"/>
+  <text x="905" y="410" text-anchor="middle" font-family="'Syne', sans-serif" font-size="12" font-weight="700" fill="#A8A194">Coverage Analysis</text>
+  <text x="700" y="432" font-family="'DM Sans', sans-serif" font-size="10" fill="#FFFFFF">Coverage Zones: monitored vs unmonitored subnets</text>
+  <text x="700" y="450" font-family="'DM Sans', sans-serif" font-size="10" fill="#FFFFFF">Deployment Recommendations: where to add Pathfinder agents</text>
+  <text x="700" y="468" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Bearing generates Pathfinder deployment manifests for gaps</text>
+
+  <!-- Response -->
+  <text x="600" y="530" text-anchor="middle" font-family="'Space Mono', monospace" font-size="10" fill="#39FF14">Response: { "received": 150, "upserted": 148 }</text>
+
+  <!-- Footer -->
+  <text x="600" y="575" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194" letter-spacing="0.1em">AVENNORTH INTERNAL — PATHFINDER x BEARING INTEGRATION</text>
+</svg>

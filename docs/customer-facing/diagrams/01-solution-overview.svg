@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="'DM Sans', 'Helvetica Neue', sans-serif">
+  <defs>
+    <filter id="s1"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1C1917" flood-opacity="0.08"/></filter>
+    <marker id="ar" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#39FF14"/></marker>
+    <marker id="ag" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#A8A194"/></marker>
+    <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#39FF14;stop-opacity:0.12"/><stop offset="100%" style="stop-color:#39FF14;stop-opacity:0.03"/></linearGradient>
+  </defs>
+
+  <rect width="1200" height="700" fill="#0E0E0C"/>
+
+  <!-- Title -->
+  <text x="600" y="38" text-anchor="middle" font-family="'Syne', sans-serif" font-size="26" font-weight="800" fill="#FFFFFF">Avennorth Pathfinder</text>
+  <text x="600" y="58" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14" letter-spacing="0.15em">INTEGRATION DISCOVERY + INTELLIGENCE PLATFORM FOR SERVICENOW</text>
+
+  <!-- Step 1: Discover -->
+  <rect x="40" y="90" width="260" height="260" rx="14" fill="#1C1917" stroke="#39FF1444" stroke-width="1" filter="url(#s1)"/>
+  <rect x="40" y="90" width="260" height="36" rx="14" fill="#39FF14"/>
+  <rect x="40" y="116" width="260" height="10" fill="#39FF14"/>
+  <text x="170" y="114" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#0E0E0C">1. DISCOVER</text>
+  <circle cx="70" cy="158" r="6" fill="#39FF14"/><text x="84" y="162" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">eBPF agents on Linux</text>
+  <circle cx="70" cy="182" r="6" fill="#39FF14"/><text x="84" y="186" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">ETW agents on Windows</text>
+  <circle cx="70" cy="206" r="6" fill="#39FF14"/><text x="84" y="210" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">DaemonSet on Kubernetes</text>
+  <circle cx="70" cy="236" r="6" fill="#A8A194"/><text x="84" y="240" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Zero code changes</text>
+  <circle cx="70" cy="260" r="6" fill="#A8A194"/><text x="84" y="264" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">&lt;1% CPU overhead</text>
+  <circle cx="70" cy="284" r="6" fill="#A8A194"/><text x="84" y="288" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Kernel-level observation</text>
+  <text x="170" y="335" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">Agents capture every connection</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="300" y1="220" x2="350" y2="220" stroke="#39FF14" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="325" y="210" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">gRPC</text>
+
+  <!-- Step 2: Classify -->
+  <rect x="360" y="90" width="260" height="260" rx="14" fill="#1C1917" stroke="#39FF1444" stroke-width="1" filter="url(#s1)"/>
+  <rect x="360" y="90" width="260" height="36" rx="14" fill="#39FF14"/>
+  <rect x="360" y="116" width="260" height="10" fill="#39FF14"/>
+  <text x="490" y="114" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#0E0E0C">2. CLASSIFY</text>
+  <circle cx="390" cy="158" r="6" fill="#39FF14"/><text x="404" y="162" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">Port + process rules (40+)</text>
+  <circle cx="390" cy="182" r="6" fill="#39FF14"/><text x="404" y="186" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">Confidence scoring (0-100%)</text>
+  <circle cx="390" cy="206" r="6" fill="#39FF14"/><text x="404" y="210" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">Integration type: API, DB, MQ...</text>
+  <circle cx="390" cy="236" r="6" fill="#A8A194"/><text x="404" y="240" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Direction detection</text>
+  <circle cx="390" cy="260" r="6" fill="#A8A194"/><text x="404" y="264" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Pattern: request-reply, pub-sub...</text>
+  <circle cx="390" cy="284" r="6" fill="#A8A194"/><text x="404" y="288" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Noise filtering at configurable threshold</text>
+  <text x="490" y="335" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">Gateway classifies every flow</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="620" y1="220" x2="670" y2="220" stroke="#39FF14" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="645" y="210" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">REST</text>
+
+  <!-- Step 3: Enrich -->
+  <rect x="680" y="90" width="260" height="260" rx="14" fill="#1C1917" stroke="#39FF1444" stroke-width="1" filter="url(#s1)"/>
+  <rect x="680" y="90" width="260" height="36" rx="14" fill="#39FF14"/>
+  <rect x="680" y="116" width="260" height="10" fill="#39FF14"/>
+  <text x="810" y="114" text-anchor="middle" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#0E0E0C">3. ENRICH WITH AI</text>
+  <circle cx="710" cy="158" r="6" fill="#39FF14"/><text x="724" y="162" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">Health scoring (4-metric)</text>
+  <circle cx="710" cy="182" r="6" fill="#39FF14"/><text x="724" y="186" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">AI summarization (Claude)</text>
+  <circle cx="710" cy="206" r="6" fill="#39FF14"/><text x="724" y="210" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">EA reconciliation</text>
+  <circle cx="710" cy="236" r="6" fill="#A8A194"/><text x="724" y="240" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">8 autonomous CMDB agents</text>
+  <circle cx="710" cy="260" r="6" fill="#A8A194"/><text x="724" y="264" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Change impact analysis</text>
+  <circle cx="710" cy="284" r="6" fill="#A8A194"/><text x="724" y="288" font-family="'DM Sans', sans-serif" font-size="11" fill="#A8A194">Risk scoring per application</text>
+  <text x="810" y="335" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194">Intelligence products add value</text>
+
+  <!-- Arrow 3→4 -->
+  <line x1="940" y1="220" x2="990" y2="220" stroke="#39FF14" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="965" y="210" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">Sync</text>
+
+  <!-- Step 4: ServiceNow -->
+  <rect x="1000" y="90" width="170" height="260" rx="14" fill="#1C1917" stroke="#39FF14" stroke-width="2" filter="url(#s1)"/>
+  <rect x="1000" y="90" width="170" height="36" rx="14" fill="#39FF14"/>
+  <rect x="1000" y="116" width="170" height="10" fill="#39FF14"/>
+  <text x="1085" y="114" text-anchor="middle" font-family="'Syne', sans-serif" font-size="13" font-weight="700" fill="#0E0E0C">4. SERVICENOW</text>
+  <text x="1020" y="158" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">Integration CIs</text>
+  <text x="1020" y="180" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">Interface CIs</text>
+  <text x="1020" y="202" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">Health Dashboard</text>
+  <text x="1020" y="224" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">Coverage Gaps</text>
+  <text x="1020" y="246" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">EA Mapping</text>
+  <text x="1020" y="268" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">Risk Scoring</text>
+  <text x="1020" y="290" font-family="'DM Sans', sans-serif" font-size="11" fill="#FFFFFF">Self-Healing</text>
+  <text x="1085" y="335" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#39FF14">Polaris Workspace</text>
+
+  <!-- Value Props -->
+  <rect x="40" y="380" width="1130" height="140" rx="14" fill="url(#lg1)" stroke="#39FF1422" stroke-width="1"/>
+  <text x="600" y="410" text-anchor="middle" font-family="'Syne', sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">What You Get</text>
+
+  <g transform="translate(80,430)">
+    <rect width="180" height="70" rx="8" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+    <text x="90" y="24" text-anchor="middle" font-family="'Syne', sans-serif" font-size="22" font-weight="700" fill="#39FF14">Minutes</text>
+    <text x="90" y="44" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Time to first service map</text>
+    <text x="90" y="58" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="9" fill="#A8A194">vs. weeks with manual discovery</text>
+  </g>
+  <g transform="translate(290,430)">
+    <rect width="180" height="70" rx="8" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+    <text x="90" y="24" text-anchor="middle" font-family="'Syne', sans-serif" font-size="22" font-weight="700" fill="#39FF14">Zero</text>
+    <text x="90" y="44" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Code changes required</text>
+    <text x="90" y="58" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="9" fill="#A8A194">Kernel-level observation only</text>
+  </g>
+  <g transform="translate(500,430)">
+    <rect width="180" height="70" rx="8" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+    <text x="90" y="24" text-anchor="middle" font-family="'Syne', sans-serif" font-size="22" font-weight="700" fill="#39FF14">AI-Powered</text>
+    <text x="90" y="44" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Health scoring + summaries</text>
+    <text x="90" y="58" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="9" fill="#A8A194">Claude-powered intelligence</text>
+  </g>
+  <g transform="translate(710,430)">
+    <rect width="180" height="70" rx="8" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+    <text x="90" y="24" text-anchor="middle" font-family="'Syne', sans-serif" font-size="22" font-weight="700" fill="#39FF14">Autonomous</text>
+    <text x="90" y="44" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">8 CMDB quality agents</text>
+    <text x="90" y="58" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="9" fill="#A8A194">Continuous CMDB improvement</text>
+  </g>
+  <g transform="translate(920,430)">
+    <rect width="180" height="70" rx="8" fill="#1C1917" stroke="#39FF1444" stroke-width="1"/>
+    <text x="90" y="24" text-anchor="middle" font-family="'Syne', sans-serif" font-size="22" font-weight="700" fill="#39FF14">$15-38</text>
+    <text x="90" y="44" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Per host per month</text>
+    <text x="90" y="58" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="9" fill="#A8A194">3 tiers: Starter / Pro / Enterprise</text>
+  </g>
+
+  <!-- Pricing tiers -->
+  <g transform="translate(40,540)">
+    <rect width="360" height="80" rx="10" fill="#1C1917" stroke="#06b6d4" stroke-width="1.5"/>
+    <text x="20" y="28" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#06b6d4">Starter — $15/host</text>
+    <text x="20" y="48" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Discovery + classification + CMDB sync</text>
+    <text x="20" y="64" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">Basic health status + workspace</text>
+  </g>
+  <g transform="translate(420,540)">
+    <rect width="360" height="80" rx="10" fill="#1C1917" stroke="#39FF14" stroke-width="2"/>
+    <text x="20" y="28" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#39FF14">Professional — $28/host</text>
+    <text x="290" y="28" font-family="'Space Mono', monospace" font-size="8" fill="#39FF14">POPULAR</text>
+    <text x="20" y="48" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">+ AI health scoring, summaries, EA reconciliation</text>
+    <text x="20" y="64" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">+ Anomaly detection, self-healing notifications</text>
+  </g>
+  <g transform="translate(800,540)">
+    <rect width="370" height="80" rx="10" fill="#1C1917" stroke="#ff8c40" stroke-width="1.5"/>
+    <text x="20" y="28" font-family="'Syne', sans-serif" font-size="14" font-weight="700" fill="#ff8c40">Enterprise — $38/host</text>
+    <text x="20" y="48" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">+ 8 autonomous CMDB agents, change impact</text>
+    <text x="20" y="64" font-family="'DM Sans', sans-serif" font-size="10" fill="#A8A194">+ Risk scoring, auto-deploy self-healing</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="660" text-anchor="middle" font-family="'Space Mono', monospace" font-size="9" fill="#A8A194" letter-spacing="0.1em">AVENNORTH PATHFINDER — INTEGRATION DISCOVERY + INTELLIGENCE FOR SERVICENOW</text>
+  <text x="600" y="680" text-anchor="middle" font-family="'Space Mono', monospace" font-size="8" fill="#A8A194">avennorth.com/pathfinder</text>
+</svg>
