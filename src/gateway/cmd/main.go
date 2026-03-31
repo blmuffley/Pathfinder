@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
+	"github.com/blmuffley/Pathfinder/src/gateway/internal/bearing"
 	"github.com/blmuffley/Pathfinder/src/gateway/internal/classify"
 	"github.com/blmuffley/Pathfinder/src/gateway/internal/config"
 	"github.com/blmuffley/Pathfinder/src/gateway/internal/server"
@@ -75,6 +76,20 @@ func main() {
 		go syncLoop.Run(ctx)
 	} else {
 		logger.Warn("ServiceNow sync disabled — no valid instance configured")
+	}
+
+	// Start Bearing confidence feed publisher (if configured)
+	bearingCfg := bearing.LoadConfigFromEnv()
+	if bearingCfg.Enabled {
+		if bearingCfg.SNInstanceURL == "" && cfg.ServiceNow.Instance != "https://mock-sn.localhost" {
+			bearingCfg.SNInstanceURL = cfg.ServiceNow.Instance
+		}
+		resolver := bearing.NewResolver(cfg.ServiceNow.Instance, "", logger)
+		go resolver.RunCacheRefresh(ctx, 5*time.Minute)
+		pub := bearing.NewPublisher(bearingCfg, db, resolver, logger)
+		go pub.Run(ctx)
+	} else {
+		logger.Info("Bearing integration disabled (set BEARING_WEBHOOK_URL to enable)")
 	}
 
 	// Start gRPC server
