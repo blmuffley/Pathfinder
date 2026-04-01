@@ -3,6 +3,15 @@
  * Scope: x_avnth_pathfinder
  * Base path: /api/x_avnth/pathfinder/v1
  *
+ * DEPRECATED: This API is superseded by the Pathfinder Service Graph Connector (SGC)
+ * which uses the standard ServiceNow IRE identifyreconcile API.
+ *
+ * For new deployments, use the SGC scoped app at src/servicenow/sgc/.
+ * These endpoints remain functional for backward compatibility during migration.
+ * Set PF_LEGACY_SYNC=true on the gateway to use this API.
+ *
+ * See docs/architecture/11-service-graph-connector.md for migration details.
+ *
  * Endpoints:
  *   POST   /integrations           — Upsert integration CIs (batch)
  *   GET    /integrations/{sys_id}  — Get integration CI by sys_id

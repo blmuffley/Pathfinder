@@ -1,3 +1,15 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700;800&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
 html, body, #root { height: 100%; width: 100%; }
-body { background: #0e0e0c; }
+body {
+  font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+  background: #0e0e0c;
+  color: #d6d3d1;
+  -webkit-font-smoothing: antialiased;
+}
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #0e0e0c; }
+::-webkit-scrollbar-thumb { background: #292524; border-radius: 3px; }
+button { font-family: inherit; cursor: pointer; }
+input, textarea, select { font-family: inherit; }

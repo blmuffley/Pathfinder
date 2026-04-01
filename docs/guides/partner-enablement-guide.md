@@ -14,35 +14,40 @@ Avennorth Pathfinder discovers integrations between applications automatically u
 
 ### When to Include Pathfinder
 
-| Engagement Type | Include? | Tier | Why |
-|----------------|----------|------|-----|
-| ITSM implementation | Yes | Starter | CMDB accuracy from day one. No manual CI entry. |
-| ITOM / Service Mapping | Yes | Professional | Complements native Discovery. AI intelligence is the differentiator. |
-| CMDB health / cleanup | Yes | Enterprise | 8 autonomous agents do what manual audits can't. |
-| CSM / HR / SecOps only | Maybe | Starter | Useful if project touches CMDB at all. |
+| Engagement Type | Include? | Package | Why |
+|----------------|----------|---------|-----|
+| ITSM implementation | Yes | Standard | CMDB accuracy from day one. No manual CI entry. Automated hygiene. |
+| ITOM / Service Mapping | Yes | Professional | Complements native Discovery. AI intelligence + service map analytics. |
+| CMDB health / cleanup | Yes | Standard | CMDB Ops automates what manual audits can't. |
+| Integration governance | Yes | Professional | Cross-platform data flow analysis, anomaly detection. |
+| CSM / HR / SecOps only | Maybe | Standard | Useful if project touches CMDB at all. |
 | Pure workflow (no CMDB) | No | — | No value if CMDB isn't part of scope. |
 
 ### Sizing the Deal
 
-| Client Environment | Hosts | Recommended Tier | Monthly | Annual |
-|-------------------|-------|-----------------|---------|--------|
-| Mid-market (50-150 servers) | 100 | Starter $15 | $1,500 | $18,000 |
-| Enterprise pilot | 100 | Professional $28 | $2,800 | $33,600 |
-| Enterprise production | 500 | Professional $28 | $14,000 | $168,000 |
-| Large enterprise (full) | 2,000 | Enterprise $38 | $76,000 | $912,000 |
+| Client Environment | Managed Nodes | Recommended Package | Annual (starting at) |
+|-------------------|---------------|--------------------|--------------------|
+| Mid-market (up to 500 servers) | S tier | Standard | $50,000/yr |
+| Enterprise pilot | S tier | Standard | $50,000/yr |
+| Enterprise production | M tier (501-2,000) | Standard | $90,000/yr |
+| Enterprise + intelligence | M tier | Professional | $175,000/yr |
+| Large enterprise (full) | L tier (2,001-5,000) | Professional | $250,000/yr |
+| XL enterprise (5,001+) | XL tier | Standard $200K+ / Professional Custom | Custom |
 
-**Your markup:** Add 20-30% to list price. Client pays you. You remit list price to Avennorth.
+**Managed Node** = any endpoint running a Pathfinder agent. Network devices, desktops, and agentless discoveries are free.
+
+**Your markup:** Add 20-30% to Avennorth list price. Client pays you. You remit list price to Avennorth.
 
 ### SOW Language Template
 
 ```
 Avennorth Pathfinder Integration Discovery
-- Deploy Pathfinder agents to [N] production servers
+- Deploy Pathfinder agents to [N] production servers ([S/M/L/XL] tier)
 - Configure Gateway and ServiceNow scoped app integration
 - Validate discovered integrations against known documentation
-- Enable health scoring and AI summarization [Professional/Enterprise only]
+- Enable Integration Intelligence and Service Map Intelligence [Professional only]
 - Train client team on Pathfinder workspace
-- Monthly license: [N] hosts × $[price]/host = $[total]/month
+- Annual license: Pathfinder [Standard/Professional], [S/M/L/XL] tier = $[amount]/yr
 - Implementation services: [40-80] hours at $[rate]/hour
 ```
 
@@ -77,7 +82,7 @@ Avennorth Pathfinder Integration Discovery
 |------|-------|-------|
 | Expand to full production | 2 | Automate with Ansible/SCCM |
 | Enable intelligence (Professional) | 2 | Deploy AI Engine, configure ANTHROPIC_API_KEY |
-| Enable CMDB Ops (Enterprise) | 2 | Deploy CMDB Ops Agent, set autonomy level |
+| Enable CMDB Ops (Standard) | 2 | Deploy CMDB Ops Agent, set autonomy level |
 | Client training | 4 | Analyst workflow, EA reconciliation, gap triage |
 
 ### Handoff Checklist
@@ -94,28 +99,28 @@ Avennorth Pathfinder Integration Discovery
 
 ## Partner Revenue Model
 
-### Year 1 Per-Client Economics
+### Year 1 Per-Client Economics (Example: M-Tier Standard → Professional Upgrade)
 
 ```
-Pilot:       100 hosts × $35/host (your price) × 3 months  = $10,500
-Expansion:   500 hosts × $35/host × 9 months              = $157,500
-Annual total:                                               = $168,000
+Pilot (Q1-Q2):    Standard S-tier (up to 500 nodes)       = $50,000/yr
+Expand (Q3):       Standard M-tier (501-2,000 nodes)       = $90,000/yr
+Upgrade (Q4):      Professional M-tier                      = $175,000/yr
 
-Your revenue:  $168,000 (client pays you)
-Avennorth:     $140,000 (you remit list price $28/host)
-Your margin:   $28,000 (20% markup)
+Your price to client (25% markup):                          = $218,750/yr
+Avennorth list price:                                       = $175,000/yr
+Your margin:                                                = $43,750/yr
 
-Implementation services: 80 hours × $250/hour = $20,000
-Total partner revenue per client: ~$48,000/year
+Implementation services: 80 hours × $250/hour              = $20,000
+Total partner revenue per client: ~$63,750/year
 ```
 
 ### Portfolio Math
 
-| Deployments/Year | Partner Revenue | Avennorth Revenue |
-|-----------------|----------------|-------------------|
-| 2 | $96,000 | $280,000 |
-| 5 | $240,000 | $700,000 |
-| 10 | $480,000 | $1,400,000 |
+| Deployments/Year | Partner Margin (25% markup) | Avennorth Revenue |
+|-----------------|---------------------------|-------------------|
+| 2 | $87,500 | $350,000 |
+| 5 | $218,750 | $875,000 |
+| 10 | $437,500 | $1,750,000 |
 
 ---
 

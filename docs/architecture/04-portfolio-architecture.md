@@ -136,34 +136,60 @@ This document maps the full Avennorth product portfolio, defines how Pathfinder 
 
 ## 4. Product Packaging & Tiers
 
-### 4.1 Tier Structure
+### 4.1 Two-Tier Package Structure
 
-| Tier | Products Included | Target Customer |
-|------|-------------------|----------------|
-| **Pathfinder Essentials** | Pathfinder (agents + gateway + SN app) | Mid-market, getting started with CMDB |
-| **Pathfinder Professional** | Essentials + Integration Intelligence + Service Map Intelligence | Enterprise with CMDB maturity |
-| **Pathfinder Enterprise** | Professional + CMDB Ops Agent (all 8 agents) | Large enterprise, full automation |
+Pathfinder is sold in two packages:
 
-### 4.2 Pricing Model
+| Package | Products Included | Target Customer |
+|---------|-------------------|----------------|
+| **Pathfinder Standard** | Pathfinder Discovery Engine + CMDB Ops (automated hygiene, CI lifecycle, stale record detection) | Mid-market to enterprise, CMDB accuracy and governance |
+| **Pathfinder Professional** | Everything in Standard + Integration Intelligence + Service Map Intelligence | Enterprise with integration complexity and service map requirements |
 
-| Component | Model | Unit |
-|-----------|-------|------|
-| Pathfinder Agents | Subscription | Per agent (server) per month |
-| Gateway | Included | N/A (runs on customer infra) |
-| Integration Intelligence | Subscription | Per integration CI per month |
-| CMDB Ops Agent | Subscription | Per CMDB CI under management per month |
-| Service Map Intelligence | Subscription | Flat fee per tier |
-| Shared AI Engine | Consumption | Claude API tokens (pass-through + margin) |
+### 4.2 Managed Node Definition
 
-### 4.3 Pricing Tiers
+A **Managed Node** is any endpoint where the Pathfinder agent is deployed:
 
-| Tier | Agents | Price Point | Includes |
-|------|--------|------------|----------|
-| Essentials | Up to 100 | $$ / month | Discovery + SN app |
-| Professional | Up to 500 | $$$ / month | + Intelligence + Service Map |
-| Enterprise | Unlimited | $$$$ / month | + CMDB Ops (all 8 agents) |
+- Physical servers
+- Virtual machines (VMs)
+- Cloud compute instances (EC2, Azure VMs, GCE, etc.)
+- Any endpoint running a supported OS (Linux via eBPF, Windows via ETW)
 
-*Exact pricing TBD based on market validation.*
+**Not counted as Managed Nodes** (discovered free, no license cost):
+
+- Network devices (routers, switches, firewalls, load balancers)
+- Endpoints and desktops
+- Any infrastructure discovered through agentless observation
+
+> **Sales one-liner:** "If our agent runs on it, it's a Managed Node. Everything else we discover is free."
+
+### 4.3 Pricing by Managed Node Tier
+
+| Tier | Managed Nodes | Standard (starting at) | Professional (starting at) |
+|------|---------------|----------------------|--------------------------|
+| **S** | Up to 500 | $50,000/yr | $100,000/yr |
+| **M** | 501 – 2,000 | $90,000/yr | $175,000/yr |
+| **L** | 2,001 – 5,000 | $150,000/yr | $250,000/yr |
+| **XL** | 5,001+ | Starting at $200,000/yr | Custom |
+
+**Key pricing notes:**
+
+- All prices are "starting at" — per-node cost decreases at higher tiers
+- XL engagements are bespoke with $200K+ as the qualifying floor
+- The ~2x multiplier from Standard to Professional is intentional and consistent across tiers
+- Node counts are measured directly from the Pathfinder platform — no self-reporting, no ambiguity
+
+### 4.4 Package Contents
+
+**Standard Package:**
+
+- Pathfinder Discovery Engine (eBPF/ETW agent deployment, behavioral confidence scoring)
+- CMDB Ops (automated hygiene, CI lifecycle management, stale record detection & cleanup)
+- Agentless network device discovery (free, not counted toward Managed Nodes)
+
+**Professional Package** (everything in Standard, plus):
+
+- Integration Intelligence (cross-platform data flow analysis, integration anomaly detection)
+- Service Map Intelligence (dependency mapping & validation, unmapped service detection)
 
 ---
 

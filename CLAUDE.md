@@ -11,8 +11,9 @@ This is the Avennorth Pathfinder + Intelligence Platform monorepo. It contains f
 | Pathfinder Agent (Linux) | `src/agent/linux/` | Go + eBPF (C) | Kernel-level network observer using eBPF |
 | Pathfinder Agent (Windows) | `src/agent/windows/` | Go (ETW) | Windows ETW-based network observer |
 | Pathfinder Agent (K8s) | `src/agent/k8s/` | Go + eBPF | DaemonSet wrapper with K8s API client |
-| Pathfinder Gateway | `src/gateway/` | Go | Classification engine, CI resolution, SN sync |
-| ServiceNow Scoped App | `src/servicenow/` | JavaScript (SN) | Tables, business rules, REST APIs, flows, dashboards |
+| Pathfinder Gateway | `src/gateway/` | Go | Classification engine, CI resolution, SGC publisher, SN sync |
+| ServiceNow Scoped App | `src/servicenow/` | JavaScript (SN) | Tables, business rules, SGC connector, REST APIs, flows, dashboards |
+| Service Graph Connector | `src/servicenow/sgc/` | JavaScript (SN) | Free certified SGC: IRE integration, identification/reconciliation rules, transform maps |
 | Integration Intelligence | `src/intelligence/integration-intelligence/` | Python | AI summarization, health scoring, rationalization |
 | CMDB Ops Agent | `src/intelligence/cmdb-ops-agent/` | Python | 8 autonomous AI agents for CMDB lifecycle |
 | Service Map Intelligence | `src/intelligence/service-map-suite/` | Python | Coverage, risk, change impact, health analytics |
@@ -27,6 +28,12 @@ All architecture documentation is in `docs/architecture/`. Read these before mak
 - `03-cmdb-quality-agentic-ops.md` — Duplicate/orphan/stale detection, 8 AI agents, autonomy levels
 - `04-portfolio-architecture.md` — Full Avennorth portfolio map, pricing, channel strategy
 - `05-acc-models-self-healing.md` — Three ACC deployment models, coverage gap self-healing loop
+- `06-modular-platform-architecture.md` — Modular platform with tiered devices, clinical extension, Armis coexistence
+- `07-discovery-normalization-layer.md` — Multi-source normalization, unified device model, source confidence weighting
+- `08-pricing-licensing-framework.md` — Land-and-expand pricing, metered billing, bundles, partner licensing
+- `09-cloud-saas-paas-discovery.md` — SaaS/PaaS discovery via outbound traffic analysis (500+ patterns)
+- `10-shared-data-model.md` — Cross-product CSDM-aligned schema, product data ownership, webhook events
+- `11-service-graph-connector.md` — Free certified SGC using IRE for CMDB integration
 
 ## Build & Development
 
@@ -105,7 +112,8 @@ cd src/servicenow && sn push --instance your-instance.service-now.com
 - Scope prefix: `x_avnth_`
 - All tables extend `cmdb_ci` where applicable
 - Business rules: use `current` and `previous` objects, never GlideRecord in display business rules
-- Scripted REST: version all endpoints under `/api/x_avnth/pathfinder/v1/`
+- **Service Graph Connector (SGC):** Primary CMDB integration via IRE `identifyreconcile` API. Free on ServiceNow Store. See `src/servicenow/sgc/` and `docs/architecture/11-service-graph-connector.md`
+- Scripted REST: legacy endpoints under `/api/x_avnth/pathfinder/v1/` (deprecated — use SGC for new deployments)
 - Flow Designer: use for all automated workflows (coverage loop, triage, remediation)
 
 ## Key Data Models
@@ -179,3 +187,29 @@ helm install pathfinder-agent charts/agent/ --namespace pathfinder-system
 | `PF_SN_CLIENT_SECRET` | Gateway | ServiceNow OAuth client secret |
 | `ANTHROPIC_API_KEY` | AI Engine | Claude API key for intelligence products |
 | `PF_AI_ENGINE_URL` | SN Scoped App | Avennorth AI engine endpoint |
+
+---
+
+## File Output Rules
+
+**These rules are critical. Follow them exactly.**
+
+1. **Code stays in this Git repo.** Go, Python, JavaScript source — all here in `~/Code/Pathfinder/`.
+2. **Generated documents go to iCloud:**
+   `~/Library/Mobile Documents/com~apple~CloudDocs/Projects/Avennorth/Solutions/Pathfinder/`
+3. **Never duplicate files** between this repo and iCloud. Code here, outputs there.
+4. **Brand assets** are sourced from `iCloud/Projects/Avennorth/Brand/` — never copy into this repo.
+5. **Corporate-level docs** go to `iCloud/Projects/Avennorth/Corporate/`, NOT into Pathfinder's solution folder.
+
+### iCloud Output Paths
+
+| Category | Destination |
+|----------|------------|
+| Pathfinder docs | `Avennorth/Solutions/Pathfinder/Docs/` |
+| Pathfinder diagrams | `Avennorth/Solutions/Pathfinder/Diagrams/` |
+| Pathfinder financials | `Avennorth/Solutions/Pathfinder/Financial/` |
+| Presentations | `Avennorth/Solutions/Pathfinder/Presentations/` |
+
+### Markdown Rule
+
+Every `.md` file that will be shared externally must have a `.docx` or `.pptx` companion. MDs go in a `markdown/` subfolder; the shareable version goes in the parent folder.

@@ -1,0 +1,237 @@
+{
+  "_comment": "IRE Identification Rules for Avennorth Pathfinder SGC. These rules define how incoming CI data from the Pathfinder Gateway is matched against existing CMDB records during Identification and Reconciliation Engine (IRE) processing.",
+  "scope": "x_avnth_pathfinder_sgc",
+  "data_source": "Avennorth Pathfinder",
+  "identification_rules": [
+    {
+      "name": "Pathfinder Server Identification",
+      "applies_to": "cmdb_ci_server",
+      "description": "Identifies servers observed by Pathfinder agents. Matches on hostname and primary IP address. Servers are the foundational CIs discovered through eBPF/ETW kernel observation.",
+      "priority": 2,
+      "is_independent": true,
+      "criteria": [
+        {
+          "match_fields": [
+            {
+              "field": "name",
+              "type": "string",
+              "description": "Server hostname as reported by the Pathfinder agent"
+            },
+            {
+              "field": "ip_address",
+              "type": "string",
+              "description": "Primary IP address observed by the agent"
+            }
+          ]
+        }
+      ],
+      "fallback_criteria": [
+        {
+          "match_fields": [
+            {
+              "field": "serial_number",
+              "type": "string",
+              "description": "Hardware serial number when available from agent inventory"
+            }
+          ]
+        }
+      ],
+      "attributes_to_set_on_create": [
+        "discovery_source",
+        "x_avnth_pathfinder_managed",
+        "x_avnth_first_observed",
+        "x_avnth_confidence_score"
+      ]
+    },
+    {
+      "name": "Pathfinder Application Instance Identification",
+      "applies_to": "cmdb_ci_app_server",
+      "description": "Identifies application server instances discovered through process-port inference. Uses a composite key of application name, host reference, and TCP port to uniquely identify each instance.",
+      "priority": 2,
+      "is_independent": false,
+      "depends_on": ["Pathfinder Server Identification"],
+      "criteria": [
+        {
+          "match_fields": [
+            {
+              "field": "name",
+              "type": "string",
+              "description": "Application instance name inferred from process name and classification engine"
+            },
+            {
+              "field": "host",
+              "type": "reference",
+              "reference_table": "cmdb_ci_server",
+              "description": "Reference to the hosting server CI"
+            },
+            {
+              "field": "tcp_port",
+              "type": "integer",
+              "description": "Primary listening TCP port for this application instance"
+            }
+          ]
+        }
+      ],
+      "attributes_to_set_on_create": [
+        "discovery_source",
+        "x_avnth_pathfinder_managed",
+        "x_avnth_first_observed",
+        "x_avnth_confidence_score",
+        "x_avnth_behavioral_class"
+      ]
+    },
+    {
+      "name": "Pathfinder Cloud Service Identification",
+      "applies_to": "cmdb_ci_cloud_service",
+      "description": "Identifies cloud services discovered through outbound traffic analysis. Pathfinder agents observe outbound connections and the classification engine maps destination IPs and TLS SNI values to known cloud service endpoints.",
+      "priority": 2,
+      "is_independent": true,
+      "criteria": [
+        {
+          "match_fields": [
+            {
+              "field": "name",
+              "type": "string",
+              "description": "Cloud service name (e.g., 'AWS S3', 'Azure Blob Storage')"
+            },
+            {
+              "field": "service_type",
+              "type": "string",
+              "description": "Service category (e.g., 'storage', 'compute', 'database', 'messaging')"
+            },
+            {
+              "field": "cloud_region",
+              "type": "string",
+              "description": "Cloud region identifier (e.g., 'us-east-1', 'westus2')"
+            }
+          ]
+        }
+      ],
+      "attributes_to_set_on_create": [
+        "discovery_source",
+        "x_avnth_pathfinder_managed",
+        "x_avnth_first_observed",
+        "x_avnth_confidence_score",
+        "x_avnth_cloud_provider"
+      ]
+    },
+    {
+      "name": "Pathfinder Medical Device Identification",
+      "applies_to": "cmdb_ci_medical_device",
+      "description": "Identifies medical devices discovered through healthcare protocol analysis (HL7, FHIR, DICOM). Uses serial number as primary identifier with MAC+IP fallback for devices that do not report serial numbers.",
+      "priority": 1,
+      "is_independent": true,
+      "criteria": [
+        {
+          "match_fields": [
+            {
+              "field": "serial_number",
+              "type": "string",
+              "description": "Device serial number extracted from protocol metadata"
+            }
+          ]
+        }
+      ],
+      "fallback_criteria": [
+        {
+          "match_fields": [
+            {
+              "field": "mac_address",
+              "type": "string",
+              "description": "Device MAC address observed on the network"
+            },
+            {
+              "field": "ip_address",
+              "type": "string",
+              "description": "Device IP address observed on the network"
+            }
+          ]
+        }
+      ],
+      "attributes_to_set_on_create": [
+        "discovery_source",
+        "x_avnth_pathfinder_managed",
+        "x_avnth_first_observed",
+        "x_avnth_confidence_score",
+        "x_avnth_device_risk_tier",
+        "x_avnth_protocol_type"
+      ]
+    },
+    {
+      "name": "Pathfinder IoT Device Identification",
+      "applies_to": "cmdb_ci_ip_device",
+      "description": "Identifies IoT and IP-connected devices discovered through IoT protocol analysis (MQTT, CoAP, AMQP). Uses MAC address and IP address as the composite key since IoT devices rarely have meaningful hostnames.",
+      "priority": 2,
+      "is_independent": true,
+      "criteria": [
+        {
+          "match_fields": [
+            {
+              "field": "mac_address",
+              "type": "string",
+              "description": "Device MAC address observed on the network"
+            },
+            {
+              "field": "ip_address",
+              "type": "string",
+              "description": "Device IP address observed on the network"
+            }
+          ]
+        }
+      ],
+      "attributes_to_set_on_create": [
+        "discovery_source",
+        "x_avnth_pathfinder_managed",
+        "x_avnth_first_observed",
+        "x_avnth_confidence_score",
+        "x_avnth_protocol_type",
+        "x_avnth_iot_category"
+      ]
+    },
+    {
+      "name": "Pathfinder Relationship Identification",
+      "applies_to": "cmdb_rel_ci",
+      "description": "Identifies relationships between CIs discovered by Pathfinder. Relationships are observed at the network level (TCP connections, protocol exchanges) and classified by the gateway engine.",
+      "priority": 2,
+      "is_independent": false,
+      "depends_on": [
+        "Pathfinder Server Identification",
+        "Pathfinder Application Instance Identification",
+        "Pathfinder Cloud Service Identification",
+        "Pathfinder Medical Device Identification",
+        "Pathfinder IoT Device Identification"
+      ],
+      "criteria": [
+        {
+          "match_fields": [
+            {
+              "field": "parent",
+              "type": "reference",
+              "reference_table": "cmdb_ci",
+              "description": "Source CI of the relationship (upstream dependency)"
+            },
+            {
+              "field": "child",
+              "type": "reference",
+              "reference_table": "cmdb_ci",
+              "description": "Target CI of the relationship (downstream consumer)"
+            },
+            {
+              "field": "type",
+              "type": "reference",
+              "reference_table": "cmdb_rel_type",
+              "description": "Relationship type (e.g., 'Depends on::Used by', 'Sends data to::Receives data from')"
+            }
+          ]
+        }
+      ],
+      "attributes_to_set_on_create": [
+        "discovery_source",
+        "x_avnth_first_observed",
+        "x_avnth_last_observed",
+        "x_avnth_confidence_score",
+        "x_avnth_connection_count"
+      ]
+    }
+  ]
+}

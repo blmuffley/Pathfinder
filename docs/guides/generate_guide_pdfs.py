@@ -89,7 +89,7 @@ def generate():
     pdf.ln(10)
     pdf.set_font("Helvetica", "", 11)
     pdf.set_text_color(100, 100, 120)
-    pdf.multi_cell(0, 6, "CMDB-first integration discovery with AI-powered intelligence,\nautonomous CMDB governance, and service map analytics.\n\nBuilt with Claude-assisted development. Sold through Compass.\nOperated with 14 people. $40M ARR by Year 5.")
+    pdf.multi_cell(0, 6, "CMDB-first integration discovery with AI-powered intelligence,\nautonomous CMDB governance, and service map analytics.\n\nTwo packages: Standard (Discovery + CMDB Ops) and Professional\n(+ Integration Intelligence + Service Map Intelligence).\nDual-scenario model: ~$33M (moderate) to ~$84M (penetration) Y5 ARR.")
     pdf.ln(20)
     pdf.set_font("Helvetica", "", 9)
     pdf.cell(0, 6, "Version: Business Case v1.0  |  March 2026  |  Confidential")
@@ -107,19 +107,19 @@ def generate():
         pdf.p(item)
     pdf.ln(2)
     pdf.h3("Key Numbers")
-    for label, value in [("Year 5 ARR", "$40.0M"), ("Year 5 Headcount", "14"), ("ARR/Employee", "$2.86M (11-19x industry median)"), ("Break-even", "Late Year 2"), ("5-Year Cumulative Profit", "~$37.5M"), ("Funding Required", "None (bootstrappable)")]:
+    for label, value in [("Y5 ARR (Likely)", "~$84.0M"), ("Y5 ARR (Bear/Bull/Best)", "$33M / $110M / $135M"), ("Year 5 Headcount", "~16"), ("Y5 EBITDA Margin", "91.6%"), ("Y5 Customers", "546 (Likely)"), ("Funding Required", "None (bootstrappable)")]:
         pdf.row(label, value)
 
     # Product Portfolio
     pdf.add_page()
     pdf.h2("Product Portfolio", (0, 180, 140))
     w = [42, 75, 35, 38]
-    pdf.th(["Product", "Description", "Tier", "Status"], w)
+    pdf.th(["Product", "Description", "Package", "Status"], w)
     for r in [
-        ("Pathfinder Discovery", "Agents, Gateway, Classification, SN sync", "Starter $15", "Built"),
-        ("Integration Intel", "AI health, summaries, EA recon, rationalize", "Professional $28", "Built"),
-        ("CMDB Ops Agent", "8 autonomous agents, 4 autonomy levels", "Enterprise $38", "Built"),
-        ("Service Map Intel", "Coverage, risk, change impact, self-healing", "Enterprise $38", "Built"),
+        ("Pathfinder Discovery", "Agents, Gateway, Classification, SN sync", "Standard", "Built"),
+        ("CMDB Ops", "Automated hygiene, CI lifecycle, stale cleanup", "Standard", "Built"),
+        ("Integration Intel", "AI health, summaries, EA recon, rationalize", "Professional", "Built"),
+        ("Service Map Intel", "Coverage, risk, change impact, self-healing", "Professional", "Built"),
     ]:
         pdf.tr(r, w)
     pdf.ln(4)
@@ -127,28 +127,28 @@ def generate():
 
     # Revenue
     pdf.add_page()
-    pdf.h2("Five-Year Revenue (Base Case)", (60, 200, 120))
+    pdf.h2("Revenue Projections (Dual Scenario)", (60, 200, 120))
+    pdf.h3("Likely Case (Penetration Pricing = Base Plan)")
     w2 = [15, 18, 18, 22, 22, 22, 22, 22]
-    pdf.th(["Year", "Partners", "Clients", "ARR", "Revenue", "OpEx", "Cash Flow", "Cumulative"], w2)
+    pdf.th(["Year", "Partners", "Clients", "ARR", "Revenue", "OpEx", "Cash Flow", "EBITDA"], w2)
     for r in [
-        ("Y1", "0", "3", "$65k", "$25k", "$1.03M", "-$1.01M", "-$1.01M"),
-        ("Y2", "15", "33", "$1.5M", "$900k", "$1.31M", "-$410k", "-$1.42M"),
-        ("Y3", "40", "110", "$5.8M", "$4.2M", "$1.62M", "+$2.58M", "+$1.16M"),
-        ("Y4", "75", "255", "$15.5M", "$11.5M", "$2.05M", "+$9.45M", "+$10.61M"),
-        ("Y5", "110", "495", "$40.0M", "$29.5M", "$2.58M", "+$26.9M", "+$37.5M"),
+        ("Y1", "0", "39", "$3.0M", "$1.5M", "$2.20M", "-$700k", "--"),
+        ("Y2", "20", "94", "$10.2M", "$6.6M", "$3.20M", "+$3.4M", "--"),
+        ("Y3", "45", "180", "$24.5M", "$17.0M", "$4.20M", "+$12.8M", "--"),
+        ("Y4", "70", "301", "$48.0M", "$36.0M", "$5.80M", "+$30.2M", "--"),
+        ("Y5", "100", "546", "$84.0M", "$66.0M", "$6.50M", "+$59.5M", "91.6%"),
     ]:
         pdf.tr(r, w2)
     pdf.ln(4)
 
     pdf.h3("Scenario Analysis")
-    w3 = [45, 35, 35, 35]
-    pdf.th(["Metric", "Conservative", "Base Case", "Aggressive"], w3)
+    w3 = [40, 30, 30, 30, 30]
+    pdf.th(["Metric", "Bear", "Likely (Base)", "Bull", "Best Case"], w3)
     for r in [
-        ("Y5 ARR", "$28.0M", "$40.0M", "$56.0M"),
-        ("Y5 Clients", "347", "495", "693"),
-        ("Break-even", "Early Y3", "Late Y2", "Mid Y2"),
-        ("5-Year Profit", "$18.5M", "$37.5M", "$63.4M"),
-        ("Funding Needed", "Maybe $500k", "None", "None"),
+        ("Y5 ARR", "~$33M", "~$84M", "~$110M", "~$135M"),
+        ("Y5 Customers", "217", "546", "710", "875"),
+        ("Y5 EBITDA", "89.6%", "91.6%", "92.3%", "92.8%"),
+        ("Profitable Y1?", "No", "Yes", "Yes", "Yes"),
     ]:
         pdf.tr(r, w3)
 
@@ -166,11 +166,11 @@ def generate():
     ]:
         pdf.tr(r, w4)
     pdf.ln(4)
-    pdf.p("Year 5: $40M ARR on 14 people = $2.86M ARR/employee. Typical SaaS at this ARR: 150-250 people at $150-250k ARR/employee.")
+    pdf.p("Likely: ~$84M ARR on ~16 people = ~$5.25M ARR/employee. Bear: ~$33M. Bull: ~$110M. Best: ~$135M. All scenarios vastly outperform typical SaaS ARR/employee ratios.")
 
     # Capital Efficiency
     pdf.h2("Capital Efficiency", (200, 200, 0))
-    pdf.p("No sales team (Compass). No support org (partners handle tier-1). Minimal marketing (content only). AI-multiplied engineering (2-3x output). Claude API tokens are 0.3% of revenue.")
+    pdf.p("No sales team (Compass). No support org (partners handle tier-1). Minimal marketing (content only). AI-multiplied engineering (2-3x output). $50K starting price removes procurement friction.")
     pdf.ln(2)
     pdf.h3("Why Bootstrappable")
     pdf.p("Year 1 incremental cost is $610k (2 engineers + infrastructure + legal). Avennorth consulting revenue absorbs this. Break-even late Year 2. No pitch decks, no dilution, no board seats.")
@@ -184,12 +184,12 @@ def generate():
         ("CAC", "$35-50k", "$8-15k", "~70% lower"),
         ("Sales Cycle", "3-6 months", "2-4 weeks", "~80% faster"),
         ("Sales Team (Y3)", "4-6 AEs", "1-2 channel mgrs", "~70% less HC"),
-        ("NRR", "120-130%", "145-165%", "Intelligence upsell"),
-        ("Y5 Cumulative CF", "-$5.8M", "+$37.5M", "Profitable from Y2"),
+        ("Std->Pro Upgrade", "--", "15-35%/yr", "Standard surfaces gaps"),
+        ("Y5 Cumulative CF", "--", "+$19.5M (mod.)", "Profitable from Y1 (pen.)"),
     ]:
         pdf.tr(r, w5)
     pdf.ln(4)
-    pdf.p("Deal flow: Pilot 75 hosts (Starter $15) -> Expand 300 hosts (Professional $28) -> Full estate 800 hosts (Enterprise $38). Single client LTV: $364,800/yr Avennorth ARR.")
+    pdf.p("Deal flow: Standard S-tier pilot ($50K/yr) -> Expand to M-tier ($90K/yr) -> Upgrade to Professional ($175K/yr). Partner earns 20-30% markup.")
 
     # Next Steps
     pdf.h2("Next Steps", (0, 150, 80))

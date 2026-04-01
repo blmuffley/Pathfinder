@@ -53,50 +53,51 @@ const fmt = (n) => {
 
 // ── UPDATED: Compass projections with 4-product portfolio ──
 
+// ── Likely Case (Penetration Pricing = Base Plan) ──
 const compassChannelProjection = [
   {
-    year: "Y1", label: "Build + Compass Integration",
-    compassPartners: 0, directCustomers: 3, channelCustomers: 0,
-    totalCustomers: 3, arr: 108, revenue: 45,
-    opex: 1800, headcount: 7,
-    note: "Months 1-9 build (10 phases). Compass integration in parallel. 3 design partners get full platform including intelligence. Lower opex — no sales team.",
+    year: "Y1", label: "Build + First Customers",
+    compassPartners: 0, directCustomers: 15, channelCustomers: 24,
+    totalCustomers: 39, arr: 3000, revenue: 1500,
+    opex: 2200, headcount: 7,
+    note: "39 initial customers. $50K entry price removes procurement friction. Self-serve onboarding investment begins. 0% Std→Pro upgrade.",
   },
   {
-    year: "Y2", label: "Compass Launch + Intelligence Upsell",
-    compassPartners: 15, directCustomers: 8, channelCustomers: 25,
-    totalCustomers: 33, arr: 1980, revenue: 1200,
-    opex: 2400, headcount: 10,
-    note: "15 consulting firms on Compass deploying Pathfinder. Intelligence products drive 60% of new deals to Professional tier. NRR 140% as pilots expand + upgrade tiers.",
+    year: "Y2", label: "Compass Launch + Std→Pro Upgrades",
+    compassPartners: 20, directCustomers: 24, channelCustomers: 70,
+    totalCustomers: 94, arr: 10200, revenue: 6600,
+    opex: 3200, headcount: 10,
+    note: "20 Compass partners. 15% Std→Pro upgrade rate. 8% logo churn. Standard dashboards surface 'detected but not actionable without Professional' items.",
   },
   {
-    year: "Y3", label: "Channel Flywheel + CMDB Ops",
-    compassPartners: 40, directCustomers: 18, channelCustomers: 85,
-    totalCustomers: 103, arr: 6800, revenue: 4800,
-    opex: 3400, headcount: 14,
-    note: "40 Compass partners. CMDB Ops Agent is the killer feature — autonomous CMDB management drives Enterprise tier adoption. NRR 150%.",
+    year: "Y3", label: "Channel Flywheel",
+    compassPartners: 45, directCustomers: 35, channelCustomers: 145,
+    totalCustomers: 180, arr: 24500, revenue: 17000,
+    opex: 4200, headcount: 14,
+    note: "45 Compass partners. 25% Std→Pro upgrade. 3% price increase. CoreX consultants drive upgrade conversations at quarterly reviews.",
   },
   {
-    year: "Y4", label: "Market Leadership",
-    compassPartners: 75, directCustomers: 35, channelCustomers: 210,
-    totalCustomers: 245, arr: 18200, revenue: 13500,
-    opex: 5200, headcount: 20,
-    note: "75 partners, 210 channel clients. Intelligence revenue is now 45% of total ARR. Enterprise tier adoption accelerating.",
+    year: "Y4", label: "Scaling",
+    compassPartners: 70, directCustomers: 50, channelCustomers: 251,
+    totalCustomers: 301, arr: 48000, revenue: 36000,
+    opex: 5800, headcount: 16,
+    note: "70 partners. 35% Std→Pro upgrade. Portfolio flywheel: Pathfinder → Bearing → Contour → Vantage.",
   },
   {
-    year: "Y5", label: "Dominant Position",
-    compassPartners: 120, directCustomers: 55, channelCustomers: 420,
-    totalCustomers: 475, arr: 42000, revenue: 31000,
-    opex: 7800, headcount: 28,
-    note: "120 consulting firms. Avennorth Pathfinder is the default for ServiceNow integration governance. 475 end clients. $42M ARR on 28 people.",
+    year: "Y5", label: "Market Leadership",
+    compassPartners: 100, directCustomers: 70, channelCustomers: 476,
+    totalCustomers: 546, arr: 84000, revenue: 66000,
+    opex: 6500, headcount: 16,
+    note: "546 customers. ~$84M ARR at 91.6% EBITDA. Bear: ~$33M. Bull: ~$110M. Best: ~$135M.",
   },
 ];
 
 const compassFlywheel = [
   { step: "1", title: "Consultant Uses Compass", desc: "Implementation firm scopes a ServiceNow engagement. ITSM, ITOM, or any project touching the CMDB.", color: C.cyan },
-  { step: "2", title: "Avennorth Pathfinder in the SOW", desc: "Compass suggests Pathfinder as a line item. 'Add automated integration discovery + AI intelligence — 50 hosts, $750/mo.' One click.", color: C.blue },
-  { step: "3", title: "Deploy During Implementation", desc: "Consultant deploys agents in week 1-2. Client sees live integration map with health scores before the first sprint review.", color: C.teal },
-  { step: "4", title: "Intelligence Proves Value", desc: "AI summaries, health scoring, and coverage gap detection deliver instant value. Consultant is the hero. Client trusts the CMDB from day one.", color: C.lime },
-  { step: "5", title: "Expand + Upgrade Tier", desc: "Pilot of 50 hosts expands to full estate. Client upgrades to Professional (AI intelligence) or Enterprise (autonomous CMDB agents). NRR goes through the roof.", color: C.orange },
+  { step: "2", title: "Avennorth Pathfinder in the SOW", desc: "Compass suggests Pathfinder Standard as a line item. 'Add automated integration discovery + CMDB Ops — starting at $50K/yr.' One click.", color: C.blue },
+  { step: "3", title: "Deploy During Implementation", desc: "Consultant deploys agents in week 1-2. Client sees live integration map before the first sprint review.", color: C.teal },
+  { step: "4", title: "Standard Surfaces Gaps", desc: "CMDB Ops dashboards show 'detected but not actionable without Professional' items. Standard instrumentally surfaces integration gaps and unmapped services.", color: C.lime },
+  { step: "5", title: "Expand + Upgrade to Professional", desc: "Node count grows. Client upgrades from Standard to Professional for Integration Intelligence + Service Map Intelligence. CoreX consultants point to the dashboards — upgrade conversation writes itself.", color: C.orange },
   { step: "6", title: "Consultant Repeats", desc: "Same consultant uses Avennorth Pathfinder on their next 10 engagements. Compass is the distribution engine. Every Compass customer is a reseller.", color: C.purple },
 ];
 
@@ -109,11 +110,11 @@ const channelComparison = [
   { metric: "Time to First Revenue", directOnly: "Month 10-12", withCompass: "Month 8-9", improvement: "Faster payback", color: C.green },
 ];
 
-// ── UPDATED: Deal flow with intelligence tiers ──
+// ── UPDATED: Deal flow with two-package model (Standard / Professional) ──
 const dealFlowExample = [
-  { stage: "Pilot (Month 1-3)", hosts: 75, tier: "Starter", listPrice: "$15/host", clientPays: "$19/host", avennorthGets: "$15/host", partnerEarns: "$4/host", monthly: "$1,125 | $300", color: C.teal },
-  { stage: "Expand + Intelligence (Month 4-8)", hosts: 300, tier: "Professional", listPrice: "$28/host", clientPays: "$35/host", avennorthGets: "$28/host", partnerEarns: "$7/host", monthly: "$8,400 | $2,100", color: C.blue },
-  { stage: "Full Estate + CMDB Ops (Month 9+)", hosts: 800, tier: "Enterprise", listPrice: "$38/host", clientPays: "$48/host", avennorthGets: "$38/host", partnerEarns: "$10/host", monthly: "$30,400 | $8,000", color: C.lime },
+  { stage: "Pilot (Month 1-3)", hosts: 200, tier: "Standard S", listPrice: "$50K/yr", clientPays: "$62.5K/yr", avennorthGets: "$50K/yr", partnerEarns: "$12.5K/yr", monthly: "$50K | $12.5K", color: C.teal },
+  { stage: "Expand (Month 4-8)", hosts: 800, tier: "Standard M", listPrice: "$90K/yr", clientPays: "$112.5K/yr", avennorthGets: "$90K/yr", partnerEarns: "$22.5K/yr", monthly: "$90K | $22.5K", color: C.blue },
+  { stage: "Upgrade + Full Estate (Month 9+)", hosts: 800, tier: "Professional M", listPrice: "$175K/yr", clientPays: "$218.75K/yr", avennorthGets: "$175K/yr", partnerEarns: "$43.75K/yr", monthly: "$175K | $43.75K", color: C.lime },
 ];
 
 const cashFlowChart = compassChannelProjection.map(y => ({
@@ -130,7 +131,7 @@ const tabs = [
 export default function PathfinderV4() {
   const [tab, setTab] = useState("flywheel");
   const [scenario, setScenario] = useState(1.0);
-  const sLabel = scenario === 0.7 ? "Conservative" : scenario === 1.0 ? "Base Case" : "Aggressive";
+  const sLabel = scenario === 0.4 ? "Bear" : scenario === 1.0 ? "Likely (Base)" : scenario === 1.3 ? "Bull" : "Best Case";
 
   return (
     <div style={{ fontFamily: "'DM Sans','Segoe UI',system-ui,sans-serif", background: C.bg, color: C.text, minHeight: "100vh", padding: "24px 18px" }}>
@@ -260,7 +261,7 @@ export default function PathfinderV4() {
               </div>
               <div style={{ marginTop: 14, padding: 12, borderRadius: 8, background: `${C.lime}08`, border: `1px solid ${C.limeBorder}` }}>
                 <div style={{ fontSize: 12, color: C.text, lineHeight: 1.5 }}>
-                  <strong style={{ color: C.lime }}>Single client lifetime value:</strong> Pilot → Full estate over 9 months. Avennorth ARR from this one client: <strong style={{ color: C.white }}>$364,800/yr</strong>. The upgrade from Starter to Enterprise is driven by intelligence features — AI health scoring convinces them at Professional, autonomous CMDB agents close Enterprise.
+                  <strong style={{ color: C.lime }}>Single client journey:</strong> Standard S-tier pilot → node expansion to M-tier → Professional upgrade. Avennorth ARR from this one client grows from <strong style={{ color: C.white }}>$50K/yr to $175K/yr</strong>. Standard dashboards surface integration gaps that only Professional can address — the upgrade conversation writes itself.
                 </div>
               </div>
             </div>
@@ -272,7 +273,7 @@ export default function PathfinderV4() {
             <SectionHeader color={C.green} label="Financial Model" title="Avennorth — Compass Channel Projections" subtitle="4-product portfolio with intelligence-driven NRR" />
 
             <div style={{ display: "flex", gap: 3, marginBottom: 18, background: C.bgCard, borderRadius: 8, padding: 3, width: "fit-content" }}>
-              {[{ l: "Conservative", m: 0.7 }, { l: "Base Case", m: 1.0 }, { l: "Aggressive", m: 1.4 }].map(s => (
+              {[{ l: "Bear", m: 0.4 }, { l: "Likely (Base)", m: 1.0 }, { l: "Bull", m: 1.3 }, { l: "Best Case", m: 1.6 }].map(s => (
                 <button key={s.l} onClick={() => setScenario(s.m)} style={{
                   padding: "6px 14px", borderRadius: 6, border: "none", cursor: "pointer",
                   fontSize: 11, fontWeight: scenario === s.m ? 600 : 400,

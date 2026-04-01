@@ -1,3 +1,11 @@
+// Package snsync provides the legacy ServiceNow REST API sync client.
+//
+// DEPRECATED: Use the Service Graph Connector (internal/sgc) for new deployments.
+// This package pushes data via proprietary REST endpoints (/api/x_avnth/pathfinder/v1/*).
+// The SGC publisher uses the standard IRE identifyreconcile API instead.
+//
+// To enable legacy sync during migration, set PF_LEGACY_SYNC=true.
+// See docs/architecture/11-service-graph-connector.md for migration path.
 package snsync
 
 import (

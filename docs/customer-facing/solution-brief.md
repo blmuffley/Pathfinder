@@ -40,15 +40,23 @@ Avennorth Pathfinder discovers every integration between your applications **aut
 - **EA reconciliation** — Side-by-side view to confirm or reject AI-suggested EA matches
 - **Health dashboard** — Time-series trends, anomaly detection, risk heatmap
 
-### Pricing
+### Packaging & Pricing
 
-| Tier | Price | What's Included |
-|------|-------|-----------------|
-| **Starter** | $15/host/month | Discovery + classification + CMDB sync + basic workspace |
-| **Professional** | $28/host/month | + AI health scoring, summarization, EA reconciliation, anomaly detection |
-| **Enterprise** | $38/host/month | + 8 autonomous CMDB agents, change impact, risk scoring, auto-deploy |
+Pathfinder is sold in two packages, priced annually by Managed Node count:
 
-Minimum: 50 hosts. Annual commitment. Volume discounts available.
+| Package | What's Included |
+|---------|-----------------|
+| **Standard** | Pathfinder Discovery Engine + CMDB Ops (automated hygiene, CI lifecycle, stale record cleanup) + agentless network device discovery (free) |
+| **Professional** | Everything in Standard + Integration Intelligence (data flow analysis, anomaly detection) + Service Map Intelligence (dependency mapping, unmapped service detection) |
+
+| Tier | Managed Nodes | Standard (starting at) | Professional (starting at) |
+|------|---------------|----------------------|--------------------------|
+| S | Up to 500 | $50,000/yr | $100,000/yr |
+| M | 501 – 2,000 | $90,000/yr | $175,000/yr |
+| L | 2,001 – 5,000 | $150,000/yr | $250,000/yr |
+| XL | 5,001+ | Starting at $200,000/yr | Custom |
+
+**Managed Node** = any endpoint running a Pathfinder agent (servers, VMs, cloud instances). Network devices, desktops, and agentless discoveries are included free.
 
 ### Deployment Timeline
 

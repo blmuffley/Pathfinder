@@ -32,8 +32,12 @@
 | `internal/classify/loop.go` | Background loop — polls unclassified flows, classifies, upserts results |
 | `internal/classify/engine_test.go` | 8 tests: port rules, grouping, confidence modifiers, direction, patterns |
 | `internal/server/grpc.go` | gRPC server — Enroll, SendFlows (streaming), Heartbeat handlers |
-| `internal/snsync/client.go` | ServiceNow OAuth2 REST client — token caching, upsert integrations/interfaces/agents |
-| `internal/snsync/loop.go` | Background SN sync loop — pushes unsynced data on interval |
+| `internal/sgc/publisher.go` | **Service Graph Connector publisher** — IRE-based CMDB sync (primary integration path) |
+| `internal/sgc/types.go` | IRE payload types + CI class mapping functions (server, app, cloud, medical, IoT) |
+| `internal/sgc/export.go` | HTTP export API for SN scheduled import pull model |
+| `internal/sgc/publisher_test.go` | 13 tests: CI mapping, batching, OAuth, IRE responses |
+| `internal/snsync/client.go` | ServiceNow OAuth2 REST client (legacy — use SGC for new deployments) |
+| `internal/snsync/loop.go` | Background SN sync loop (legacy) |
 | `internal/snsync/client_test.go` | 5 tests: upsert, auth, token caching, auth failure |
 | `internal/bearing/types.go` | Bearing webhook payload types (PathfinderConfidenceFeed schema) |
 | `internal/bearing/resolver.go` | CI-to-SysID resolver — SN CMDB REST lookup + local cache + shadow IT hashing |
@@ -145,7 +149,14 @@
 |------|-------------|
 | **Tables** (`tables/`) | 6 JSON table definitions with all fields |
 | **Business Rules** (`business-rules/`) | 6 JS files: auto-name, health status, stale check, agent heartbeat, coverage gap |
-| **Scripted REST** (`scripted-rest/pathfinder_api_v1.js`) | 7 endpoints under /api/x_avnth/pathfinder/v1/ |
+| **Service Graph Connector** (`sgc/`) | Free certified SGC for ServiceNow Store |
+| `sgc/connector-definition.json` | SGC manifest: OAuth2, discovered CI classes, relationship types |
+| `sgc/identification-rules.json` | 6 IRE identification rules for CI matching |
+| `sgc/reconciliation-rules.json` | Per-class attribute reconciliation (Pathfinder vs existing data) |
+| `sgc/scheduled-import.js` | Scheduled import job: pull from gateway, transform via IRE |
+| `sgc/health-check.js` | 5-minute health monitor: connectivity, sync status, CI counts |
+| `sgc/transform-maps.json` | Transform maps for servers, apps, cloud, medical, IoT, relationships |
+| **Scripted REST** (`scripted-rest/pathfinder_api_v1.js`) | 7 endpoints under /api/x_avnth/pathfinder/v1/ (legacy — use SGC for new deployments) |
 | **Workspace** (`workspace/`) | |
 | `ux-app-config.json` | Workspace shell: routes, nav menu, badges, roles, theme |
 | `ux-pages/pf_overview.json` | Landing page: KPIs, donuts, lists with component tree |
@@ -225,6 +236,36 @@
 | `03-cmdb-quality-agentic-ops.md` | 8 CMDB agents, autonomy levels, scheduling, guardrails |
 | `04-portfolio-architecture.md` | Product portfolio, pricing, channel strategy |
 | `05-acc-models-self-healing.md` | ACC deployment models, coverage gap self-healing, Crawl/Walk/Run/Fly |
+| `06-modular-platform-architecture.md` | Modular platform, tiered devices (T1-T4), clinical extension, Armis coexistence |
+| `07-discovery-normalization-layer.md` | Multi-source normalization, unified device model, Armis/SN Discovery adapters |
+| `08-pricing-licensing-framework.md` | Land-and-expand pricing, metered billing, bundles, partner licensing |
+| `09-cloud-saas-paas-discovery.md` | SaaS/PaaS discovery via outbound traffic (500+ patterns, included in Base) |
+| `10-shared-data-model.md` | Cross-product CSDM-aligned schema, data ownership, webhook events |
+| `11-service-graph-connector.md` | Free certified SGC: IRE integration, CI mapping, SN Store listing |
+| **Products** (`products/`) | |
+| `meridian-clinical-ops-graph.md` | Meridian: UKG integration, workforce correlation, clinical ops graph |
+| `ledger-compliance-automation.md` | Ledger: compliance rule engine, JC/CMS/FDA, evidence compilation |
+| `vantage-clinical-extension.md` | Vantage Clinical: incident response, PSIS scoring, MAUDE matching |
+| **Legal** (`legal/`) | |
+| `patent-claims-clinical-extension.md` | 5 Tier 1 provisional patent claims (file before Armis close H2 2026) |
+| **Competitive** (`competitive/`) | |
+| `clinical-competitive-analysis.md` | vs Armis, Claroty, Cynerio, Ordr — features, pricing, positioning |
+| **Demos** (`demos/`) | |
+| `demo-10min-executive-brief.md` | 10-min CIO/C-suite demo script with Q&A |
+| `demo-30min-technical-brief.md` | 30-min IT Director/CMDB Manager demo with 6 acts |
+| `demo-50min-technical-deep-dive.md` | 50-min SN architect deep dive with 10 acts + 27 Q&A |
+| **Sales** (`sales/`) | |
+| `pathfinder-one-pager.md` | Customer leave-behind (single page) |
+| `pathfinder-battlecard.md` | Internal competitive battlecard |
+| `pathfinder-roi-calculator.md` | ROI walkthrough framework |
+| `pathfinder-objection-handling.md` | 20 objections with responses |
+| `pathfinder-partner-pitch.md` | 8-slide Compass partner pitch |
+| **Prompts** (`prompts/`) | |
+| `contour-project-prompt.md` | Full Claude prompt for building Contour (separate repo) |
+| `bearing-project-prompt.md` | Full Claude prompt for building Bearing (separate repo) |
+| **Templates** (`templates/`) | |
+| `product-financial-intake.md` | Questionnaire for any Avennorth product business case |
+| `product-business-case-template.md` | 15-section business case template |
 | **Diagrams** (`diagrams/`) | 10 SVGs + Figma import specs |
 | **Guides** (`guides/`) | |
 | `installation-guide.md` (.docx) | Prerequisites, quick start, K8s/bare metal/Windows, SN setup |

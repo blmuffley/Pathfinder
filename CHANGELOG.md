@@ -4,6 +4,56 @@ All notable changes to the Avennorth Pathfinder + Intelligence Platform.
 
 Format based on [Keep a Changelog](https://keepachangelog.com/). This project uses [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-04-01
+
+### Added — Service Graph Connector
+- **Free Service Graph Connector (SGC)** for ServiceNow Store — uses IRE `identifyreconcile` API instead of proprietary REST endpoints
+- Gateway SGC publisher module (`src/gateway/internal/sgc/`) — 4 files, 1,960 lines, 13 tests all passing
+- ServiceNow SGC scoped app (`src/servicenow/sgc/`) — connector definition, IRE identification/reconciliation rules, scheduled import, health check, transform maps
+- CI class mapping: servers → `cmdb_ci_linux_server`/`cmdb_ci_win_server`, apps → `cmdb_ci_app_server`, cloud → `cmdb_ci_cloud_service`, medical → `cmdb_ci_medical_device`
+- Standard CSDM relationship types: `Depends on::Used by`, `Sends data to::Receives data from`
+- Gateway export API (`GET /api/v1/sgc/export`, `POST /api/v1/sgc/ack`) for SN pull model
+- SGC enabled by default (`PF_SGC_ENABLED`); legacy sync available via `PF_LEGACY_SYNC=true`
+
+### Added — Clinical Extension
+- Modular platform architecture with 4-tier device classification (T1 IT, T2 IoT, T3 Clinical, T4 Life-Critical)
+- Discovery Normalization Layer — multi-source (eBPF + Armis + SN Discovery + manual) with confidence weighting
+- Pathfinder Cloud module — SaaS/PaaS discovery from outbound traffic (500+ patterns, included in Base)
+- Meridian (Clinical Operations Graph) — UKG Pro workforce correlation, schedule-aware impact analysis
+- Ledger (Compliance Automation) — rule engine with healthcare (JC/CMS/FDA) + general (SOC 2/ISO) packs
+- Vantage Clinical extension spec — PSIS scoring, blast radius, RACI escalation, MAUDE matching
+- 5 provisional patent claims drafted (clinical ops graph, discovery-agnostic platform, behavioral classification)
+- Competitive analysis vs Armis, Claroty, Cynerio, Ordr
+- Shared data model (`docs/architecture/10-shared-data-model.md`) — cross-product CSDM-aligned schema
+
+### Added — Demo & Sales
+- 13-page interactive prototype with light/dark theme toggle (http://localhost:4200)
+- Applications page with visual dependency diagram (4 layout modes, device type filters, legend)
+- Demo data package: Mercy Health System (3 facilities, 6,425 devices, 22 clinical devices, 8 staff)
+- 3 demo scripts: 10-min executive, 30-min technical, 50-min deep dive
+- 5 sales materials: one-pager, battlecard, ROI calculator, objection handling, partner pitch
+- Contour and Bearing project prompts for separate repo builds
+- Master port registry for all Avennorth solutions
+
+### Changed
+- Pricing restructured: 2 packages (Standard/Professional) with annual pricing by managed node bands (S/M/L/XL)
+- Revenue model: penetration pricing as base plan (Likely ~$97.5M Y5 ARR) with Bear/Bull/Best scenarios
+- Five-year business case rewritten to investor/CFO grade (P&L, cash flow, unit economics, portfolio shared costs)
+- Business case adds: stickiness analysis (7 switching cost layers), exit optionality (SN acquisition at 15-25x ARR)
+- Pathfinder + Contour bundle as primary offering ($70K S-tier, 30% discount)
+
+### Deprecated
+- Proprietary REST API (`/api/x_avnth/pathfinder/v1/*`) — use SGC for new deployments
+- `src/gateway/internal/snsync/` — legacy sync loop, enable with `PF_LEGACY_SYNC=true`
+
+## [0.2.0] - 2026-03-31
+
+### Added
+- Customer-facing docs: solution brief, FAQ
+- Partner enablement guide with SOW template
+- Internal product strategy document
+- Five-year business case v1.0
+
 ## [0.1.0] - 2026-03-29
 
 ### Added

@@ -24,19 +24,29 @@ Customer Environment
 
 - Pathfinder is a **SOW line item** in Compass, not a separate product sale
 - Consulting firms deploy Pathfinder during ServiceNow implementations
-- Intelligence products drive tier upgrades: Starter → Professional → Enterprise
-- NRR 145-165% because partners are incentivized to expand coverage + upgrade tiers
+- Standard surfaces integration gaps that drive Standard → Professional upgrades
+- CoreX consultants point to "detected but not actionable without Professional" dashboards — upgrade conversation writes itself
 - Zero sales team — 1-2 channel managers replace 4-6 AEs
 
-### Revenue Model
+### Two-Package Model
 
-| Year | ARR | Clients | Headcount | ARR/Employee |
-|------|-----|---------|-----------|-------------|
-| 1 | $65k | 3 | 5 | $13k |
-| 2 | $1.5M | 33 | 7 | $214k |
-| 3 | $5.8M | 110 | 9 | $644k |
-| 4 | $15.5M | 255 | 11 | $1.41M |
-| 5 | $40.0M | 495 | 14 | $2.86M |
+| Package | Contents | Starting Price (S-tier) |
+|---------|----------|------------------------|
+| **Standard** | Pathfinder Discovery Engine + CMDB Ops | $50,000/yr |
+| **Professional** | Standard + Integration Intelligence + Service Map Intelligence | $100,000/yr |
+
+Pricing by Managed Node tier: S (≤500), M (501-2K), L (2K-5K), XL (5K+). ~2x multiplier from Standard to Professional.
+
+### Revenue Model (Four Scenarios)
+
+| Scenario | Y5 ARR | Y5 Customers | Y5 EBITDA Margin |
+|----------|--------|-------------|-----------------|
+| **Bear** | ~$33M | 217 | 89.6% |
+| **Likely (Base)** | **~$84M** | **546** | **91.6%** |
+| **Bull** | ~$110M | 710 | 92.3% |
+| **Best Case** | ~$135M | 875 | 92.8% |
+
+Penetration pricing is the base plan: $50K entry removes procurement friction, Compass distribution amplifies reach, word-of-mouth in the tight ServiceNow ecosystem.
 
 ### What Needs to Be True
 

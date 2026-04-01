@@ -1,0 +1,86 @@
+{
+  "name": "Avennorth Pathfinder",
+  "scope": "x_avnth_pathfinder_sgc",
+  "version": "1.0.0",
+  "vendor": "Avennorth LLC",
+  "description": "Discovers application integrations, cloud services, and medical devices using kernel-level behavioral observation (eBPF/ETW). Populates CMDB with confidence-scored CIs via IRE.",
+  "connector_type": "Service Graph Connector",
+  "minimum_version": "Utah",
+  "license": "Free",
+  "connection": {
+    "type": "oauth2_client_credentials",
+    "token_url": "${instance}/oauth_token.do",
+    "properties": [
+      {
+        "name": "gateway_url",
+        "label": "Pathfinder Gateway URL",
+        "type": "string",
+        "required": true,
+        "placeholder": "https://pathfinder-gw.example.com:8443"
+      },
+      {
+        "name": "client_id",
+        "label": "OAuth2 Client ID",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "client_secret",
+        "label": "OAuth2 Client Secret",
+        "type": "password",
+        "required": true
+      },
+      {
+        "name": "sync_interval",
+        "label": "Sync Interval (seconds)",
+        "type": "integer",
+        "default": 60
+      },
+      {
+        "name": "batch_size",
+        "label": "Batch Size",
+        "type": "integer",
+        "default": 100
+      }
+    ]
+  },
+  "discovers": [
+    {
+      "ci_class": "cmdb_ci_server",
+      "method": "behavioral_observation"
+    },
+    {
+      "ci_class": "cmdb_ci_app_server",
+      "method": "process_port_inference"
+    },
+    {
+      "ci_class": "cmdb_ci_cloud_service",
+      "method": "outbound_traffic_analysis"
+    },
+    {
+      "ci_class": "cmdb_ci_medical_device",
+      "method": "healthcare_protocol_analysis"
+    },
+    {
+      "ci_class": "cmdb_ci_ip_device",
+      "method": "iot_protocol_analysis"
+    }
+  ],
+  "relationships": [
+    {
+      "type": "Depends on::Used by",
+      "source": "cmdb_ci_app_server",
+      "target": "cmdb_ci_app_server"
+    },
+    {
+      "type": "Sends data to::Receives data from",
+      "source": "cmdb_ci_app_server",
+      "target": "cmdb_ci_app_server"
+    },
+    {
+      "type": "Depends on::Used by",
+      "source": "cmdb_ci_app_server",
+      "target": "cmdb_ci_cloud_service"
+    }
+  ]
+}

@@ -1,0 +1,533 @@
+{
+  "_comment": "Transform Map definitions for Avennorth Pathfinder SGC. These maps define how data from the Pathfinder Gateway export is transformed and mapped to CMDB CI fields during import. Each map corresponds to a CI class and includes source-to-target column mappings, transform scripts for field-level logic, and coalesce fields for IRE identification.",
+  "scope": "x_avnth_pathfinder_sgc",
+  "data_source": "Avennorth Pathfinder",
+  "transform_maps": [
+    {
+      "name": "Pathfinder Server Transform",
+      "table": "cmdb_ci_server",
+      "description": "Transforms server data from Pathfinder agent observations into CMDB server CI records. Servers are discovered through kernel-level eBPF/ETW monitoring.",
+      "active": true,
+      "run_business_rules": true,
+      "enforce_mandatory_fields": false,
+      "coalesce_fields": ["name", "ip_address"],
+      "column_mappings": [
+        {
+          "source": "name",
+          "target": "name",
+          "coalesce": true,
+          "description": "Server hostname as reported by agent"
+        },
+        {
+          "source": "ip_address",
+          "target": "ip_address",
+          "coalesce": true,
+          "description": "Primary IP address"
+        },
+        {
+          "source": "os",
+          "target": "os",
+          "description": "Operating system name"
+        },
+        {
+          "source": "os_version",
+          "target": "os_version",
+          "description": "OS version string"
+        },
+        {
+          "source": "cpu_count",
+          "target": "cpu_count",
+          "description": "Number of CPU cores"
+        },
+        {
+          "source": "ram",
+          "target": "ram",
+          "description": "Total RAM in MB"
+        },
+        {
+          "source": "mac_address",
+          "target": "mac_address",
+          "description": "Primary MAC address"
+        },
+        {
+          "source": "dns_domain",
+          "target": "dns_domain",
+          "description": "DNS domain name"
+        },
+        {
+          "source": "serial_number",
+          "target": "serial_number",
+          "description": "Hardware serial number"
+        },
+        {
+          "source": "agent_version",
+          "target": "x_avnth_agent_version",
+          "description": "Pathfinder agent version"
+        },
+        {
+          "source": "confidence_score",
+          "target": "x_avnth_confidence_score",
+          "description": "Classification confidence (0-100)"
+        },
+        {
+          "source": "first_observed",
+          "target": "x_avnth_first_observed",
+          "description": "Timestamp of first observation"
+        },
+        {
+          "source": "last_observed",
+          "target": "x_avnth_last_observed",
+          "description": "Timestamp of most recent observation"
+        },
+        {
+          "source": "coverage_tier",
+          "target": "x_avnth_coverage_tier",
+          "description": "Coverage tier (full, partial, minimal)"
+        }
+      ],
+      "transform_scripts": {
+        "onBefore": "// Set discovery source and managed flag for all server records\nsource.discovery_source = 'Avennorth Pathfinder';\nsource.x_avnth_pathfinder_managed = 'true';",
+        "onAfter": "// Log successful transform\ngs.debug('Pathfinder SGC: Transformed server CI \"' + target.name + '\" (sys_id=' + target.sys_id + ')');",
+        "field_transforms": [
+          {
+            "target_field": "os",
+            "script": "// Normalize OS names to ServiceNow standard values\nvar osMap = {\n    'linux': 'Linux',\n    'ubuntu': 'Linux',\n    'centos': 'Linux',\n    'rhel': 'Linux',\n    'red hat': 'Linux',\n    'debian': 'Linux',\n    'suse': 'Linux',\n    'windows': 'Windows',\n    'windows server': 'Windows',\n    'aix': 'AIX',\n    'solaris': 'Solaris',\n    'hpux': 'HP-UX',\n    'hp-ux': 'HP-UX',\n    'macos': 'Mac OS',\n    'darwin': 'Mac OS'\n};\nvar osLower = (source.os || '').toLowerCase();\nfor (var key in osMap) {\n    if (osLower.indexOf(key) >= 0) {\n        answer = osMap[key];\n        break;\n    }\n}\nif (!answer) {\n    answer = source.os || 'Unknown';\n}"
+          },
+          {
+            "target_field": "ram",
+            "script": "// Convert RAM from bytes to MB if needed\nvar ramValue = parseInt(source.ram, 10);\nif (ramValue > 1048576) {\n    // Likely in bytes, convert to MB\n    answer = Math.round(ramValue / 1048576);\n} else if (ramValue > 1024) {\n    // Likely in KB, convert to MB\n    answer = Math.round(ramValue / 1024);\n} else {\n    answer = ramValue;\n}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pathfinder App Instance Transform",
+      "table": "cmdb_ci_app_server",
+      "description": "Transforms application instance data discovered through process-port inference into CMDB application server CI records.",
+      "active": true,
+      "run_business_rules": true,
+      "enforce_mandatory_fields": false,
+      "coalesce_fields": ["name", "host", "tcp_port"],
+      "column_mappings": [
+        {
+          "source": "name",
+          "target": "name",
+          "coalesce": true,
+          "description": "Application instance name"
+        },
+        {
+          "source": "host_name",
+          "target": "host",
+          "type": "reference_lookup",
+          "reference_table": "cmdb_ci_server",
+          "reference_field": "name",
+          "coalesce": true,
+          "description": "Hosting server CI (looked up by hostname)"
+        },
+        {
+          "source": "tcp_port",
+          "target": "tcp_port",
+          "coalesce": true,
+          "description": "Primary listening TCP port"
+        },
+        {
+          "source": "ip_address",
+          "target": "ip_address",
+          "description": "Binding IP address"
+        },
+        {
+          "source": "process_name",
+          "target": "running_process",
+          "description": "Process name"
+        },
+        {
+          "source": "process_command",
+          "target": "running_process_command",
+          "description": "Full process command line"
+        },
+        {
+          "source": "app_version",
+          "target": "version",
+          "description": "Application version"
+        },
+        {
+          "source": "behavioral_class",
+          "target": "x_avnth_behavioral_class",
+          "description": "Behavioral classification (web_server, database, message_broker, etc.)"
+        },
+        {
+          "source": "protocol_fingerprint",
+          "target": "x_avnth_protocol_fingerprint",
+          "description": "Protocol-level fingerprint"
+        },
+        {
+          "source": "connection_count",
+          "target": "x_avnth_connection_count",
+          "description": "Active connection count"
+        },
+        {
+          "source": "confidence_score",
+          "target": "x_avnth_confidence_score",
+          "description": "Classification confidence (0-100)"
+        },
+        {
+          "source": "first_observed",
+          "target": "x_avnth_first_observed",
+          "description": "First observation timestamp"
+        },
+        {
+          "source": "last_observed",
+          "target": "x_avnth_last_observed",
+          "description": "Last observation timestamp"
+        }
+      ],
+      "transform_scripts": {
+        "onBefore": "source.discovery_source = 'Avennorth Pathfinder';\nsource.x_avnth_pathfinder_managed = 'true';",
+        "onAfter": "gs.debug('Pathfinder SGC: Transformed app instance CI \"' + target.name + '\" on port ' + target.tcp_port);",
+        "field_transforms": [
+          {
+            "target_field": "name",
+            "script": "// Normalize application names from process names when no explicit name is provided\nvar rawName = source.name || '';\nif (!rawName && source.process_name) {\n    var processMap = {\n        'httpd': 'Apache HTTP Server',\n        'apache2': 'Apache HTTP Server',\n        'nginx': 'NGINX',\n        'java': 'Java Application',\n        'node': 'Node.js Application',\n        'python': 'Python Application',\n        'postgres': 'PostgreSQL',\n        'mysqld': 'MySQL',\n        'mongod': 'MongoDB',\n        'redis-server': 'Redis',\n        'rabbitmq-server': 'RabbitMQ',\n        'kafka': 'Apache Kafka',\n        'tomcat': 'Apache Tomcat',\n        'iis': 'IIS Web Server',\n        'w3wp': 'IIS Application Pool',\n        'sqlservr': 'Microsoft SQL Server',\n        'oracle': 'Oracle Database'\n    };\n    var procLower = source.process_name.toLowerCase();\n    answer = processMap[procLower] || source.process_name;\n} else {\n    answer = rawName;\n}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pathfinder Cloud Service Transform",
+      "table": "cmdb_ci_cloud_service",
+      "description": "Transforms cloud service data discovered through outbound traffic analysis (TLS SNI, DNS resolution, IP range mapping) into CMDB cloud service CI records.",
+      "active": true,
+      "run_business_rules": true,
+      "enforce_mandatory_fields": false,
+      "coalesce_fields": ["name", "service_type", "cloud_region"],
+      "column_mappings": [
+        {
+          "source": "name",
+          "target": "name",
+          "coalesce": true,
+          "description": "Cloud service name (e.g., 'AWS S3')"
+        },
+        {
+          "source": "service_type",
+          "target": "service_type",
+          "coalesce": true,
+          "description": "Service category (storage, compute, database, etc.)"
+        },
+        {
+          "source": "cloud_region",
+          "target": "cloud_region",
+          "coalesce": true,
+          "description": "Cloud region identifier"
+        },
+        {
+          "source": "cloud_provider",
+          "target": "x_avnth_cloud_provider",
+          "description": "Cloud provider (AWS, Azure, GCP, etc.)"
+        },
+        {
+          "source": "endpoint_url",
+          "target": "x_avnth_endpoint_url",
+          "description": "Observed service endpoint URL"
+        },
+        {
+          "source": "tls_version",
+          "target": "x_avnth_tls_version",
+          "description": "TLS version observed in connections"
+        },
+        {
+          "source": "confidence_score",
+          "target": "x_avnth_confidence_score",
+          "description": "Service identification confidence (0-100)"
+        },
+        {
+          "source": "first_observed",
+          "target": "x_avnth_first_observed",
+          "description": "First observation timestamp"
+        },
+        {
+          "source": "last_observed",
+          "target": "x_avnth_last_observed",
+          "description": "Last observation timestamp"
+        }
+      ],
+      "transform_scripts": {
+        "onBefore": "source.discovery_source = 'Avennorth Pathfinder';\nsource.x_avnth_pathfinder_managed = 'true';",
+        "onAfter": "gs.debug('Pathfinder SGC: Transformed cloud service CI \"' + target.name + '\" in region ' + target.cloud_region);",
+        "field_transforms": [
+          {
+            "target_field": "service_type",
+            "script": "// Normalize cloud service types to consistent categories\nvar typeMap = {\n    's3': 'storage',\n    'blob': 'storage',\n    'gcs': 'storage',\n    'ec2': 'compute',\n    'vm': 'compute',\n    'gce': 'compute',\n    'rds': 'database',\n    'dynamodb': 'database',\n    'cosmosdb': 'database',\n    'cloud sql': 'database',\n    'sqs': 'messaging',\n    'sns': 'messaging',\n    'service bus': 'messaging',\n    'pubsub': 'messaging',\n    'lambda': 'serverless',\n    'functions': 'serverless',\n    'cloud functions': 'serverless',\n    'cloudfront': 'cdn',\n    'cdn': 'cdn',\n    'cloud cdn': 'cdn',\n    'api gateway': 'api_management',\n    'apim': 'api_management'\n};\nvar rawType = (source.service_type || '').toLowerCase();\nanswer = typeMap[rawType] || source.service_type || 'other';"
+          },
+          {
+            "target_field": "name",
+            "script": "// Standardize cloud service naming: 'Provider - Service (Region)'\nvar provider = source.cloud_provider || 'Unknown';\nvar rawName = source.name || '';\nvar region = source.cloud_region || '';\n\n// Only reformat if name does not already contain provider\nif (rawName.indexOf(provider) < 0 && provider !== 'Unknown') {\n    answer = provider + ' - ' + rawName;\n} else {\n    answer = rawName;\n}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pathfinder Medical Device Transform",
+      "table": "cmdb_ci_medical_device",
+      "description": "Transforms medical device data discovered through healthcare protocol analysis (HL7, FHIR, DICOM) into CMDB medical device CI records. Medical devices require careful handling due to regulatory compliance requirements.",
+      "active": true,
+      "run_business_rules": true,
+      "enforce_mandatory_fields": false,
+      "coalesce_fields": ["serial_number"],
+      "coalesce_fields_fallback": ["mac_address", "ip_address"],
+      "column_mappings": [
+        {
+          "source": "name",
+          "target": "name",
+          "description": "Device name or model"
+        },
+        {
+          "source": "serial_number",
+          "target": "serial_number",
+          "coalesce": true,
+          "description": "Device serial number (primary identifier)"
+        },
+        {
+          "source": "ip_address",
+          "target": "ip_address",
+          "coalesce_fallback": true,
+          "description": "Device IP address (fallback identifier)"
+        },
+        {
+          "source": "mac_address",
+          "target": "mac_address",
+          "coalesce_fallback": true,
+          "description": "Device MAC address (fallback identifier)"
+        },
+        {
+          "source": "manufacturer",
+          "target": "manufacturer",
+          "description": "Device manufacturer"
+        },
+        {
+          "source": "model_number",
+          "target": "model_number",
+          "description": "Device model number"
+        },
+        {
+          "source": "risk_tier",
+          "target": "x_avnth_device_risk_tier",
+          "description": "Risk tier (critical, high, medium, low)"
+        },
+        {
+          "source": "protocol_type",
+          "target": "x_avnth_protocol_type",
+          "description": "Primary communication protocol (HL7v2, FHIR, DICOM)"
+        },
+        {
+          "source": "network_segment",
+          "target": "x_avnth_network_segment",
+          "description": "Network segment or VLAN"
+        },
+        {
+          "source": "confidence_score",
+          "target": "x_avnth_confidence_score",
+          "description": "Device identification confidence (0-100)"
+        },
+        {
+          "source": "first_observed",
+          "target": "x_avnth_first_observed",
+          "description": "First observation timestamp"
+        },
+        {
+          "source": "last_observed",
+          "target": "x_avnth_last_observed",
+          "description": "Last observation timestamp"
+        }
+      ],
+      "transform_scripts": {
+        "onBefore": "source.discovery_source = 'Avennorth Pathfinder';\nsource.x_avnth_pathfinder_managed = 'true';",
+        "onAfter": "// Medical device transforms require audit logging for regulatory compliance\ngs.info('Pathfinder SGC: Transformed medical device CI \"' + target.name + '\" (serial=' + target.serial_number + ', risk_tier=' + target.x_avnth_device_risk_tier + ')');",
+        "field_transforms": [
+          {
+            "target_field": "x_avnth_device_risk_tier",
+            "script": "// Assign risk tier based on protocol type and connectivity patterns\nvar riskTier = source.risk_tier || '';\nif (!riskTier) {\n    var protocol = (source.protocol_type || '').toLowerCase();\n    if (protocol === 'dicom' || protocol === 'hl7v2') {\n        // Imaging and clinical data systems are typically high risk\n        answer = 'high';\n    } else if (protocol === 'fhir') {\n        // FHIR endpoints may be read-only reference queries\n        answer = 'medium';\n    } else {\n        answer = 'low';\n    }\n} else {\n    answer = riskTier;\n}"
+          },
+          {
+            "target_field": "name",
+            "script": "// Build a descriptive name for medical devices when no name is provided\nvar rawName = source.name || '';\nif (!rawName) {\n    var parts = [];\n    if (source.manufacturer) parts.push(source.manufacturer);\n    if (source.model_number) parts.push(source.model_number);\n    if (parts.length > 0) {\n        answer = parts.join(' ');\n    } else {\n        answer = 'Medical Device ' + (source.serial_number || source.mac_address || 'Unknown');\n    }\n} else {\n    answer = rawName;\n}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pathfinder IoT Device Transform",
+      "table": "cmdb_ci_ip_device",
+      "description": "Transforms IoT and IP-connected device data discovered through IoT protocol analysis (MQTT, CoAP, AMQP) into CMDB IP device CI records.",
+      "active": true,
+      "run_business_rules": true,
+      "enforce_mandatory_fields": false,
+      "coalesce_fields": ["mac_address", "ip_address"],
+      "column_mappings": [
+        {
+          "source": "name",
+          "target": "name",
+          "description": "Device name or identifier"
+        },
+        {
+          "source": "mac_address",
+          "target": "mac_address",
+          "coalesce": true,
+          "description": "Device MAC address"
+        },
+        {
+          "source": "ip_address",
+          "target": "ip_address",
+          "coalesce": true,
+          "description": "Device IP address"
+        },
+        {
+          "source": "firmware",
+          "target": "os",
+          "description": "Firmware or embedded OS name"
+        },
+        {
+          "source": "firmware_version",
+          "target": "os_version",
+          "description": "Firmware version"
+        },
+        {
+          "source": "manufacturer",
+          "target": "manufacturer",
+          "description": "Device manufacturer (from OUI lookup)"
+        },
+        {
+          "source": "model_number",
+          "target": "model_number",
+          "description": "Device model number"
+        },
+        {
+          "source": "protocol_type",
+          "target": "x_avnth_protocol_type",
+          "description": "Primary IoT protocol (MQTT, CoAP, AMQP)"
+        },
+        {
+          "source": "iot_category",
+          "target": "x_avnth_iot_category",
+          "description": "IoT device category (sensor, actuator, gateway, controller)"
+        },
+        {
+          "source": "network_segment",
+          "target": "x_avnth_network_segment",
+          "description": "Network segment or VLAN"
+        },
+        {
+          "source": "firmware_hash",
+          "target": "x_avnth_firmware_hash",
+          "description": "Firmware fingerprint hash"
+        },
+        {
+          "source": "confidence_score",
+          "target": "x_avnth_confidence_score",
+          "description": "Device identification confidence (0-100)"
+        },
+        {
+          "source": "first_observed",
+          "target": "x_avnth_first_observed",
+          "description": "First observation timestamp"
+        },
+        {
+          "source": "last_observed",
+          "target": "x_avnth_last_observed",
+          "description": "Last observation timestamp"
+        }
+      ],
+      "transform_scripts": {
+        "onBefore": "source.discovery_source = 'Avennorth Pathfinder';\nsource.x_avnth_pathfinder_managed = 'true';",
+        "onAfter": "gs.debug('Pathfinder SGC: Transformed IoT device CI \"' + target.name + '\" (mac=' + target.mac_address + ', category=' + target.x_avnth_iot_category + ')');",
+        "field_transforms": [
+          {
+            "target_field": "manufacturer",
+            "script": "// Use OUI database lookup to determine manufacturer from MAC address\n// when manufacturer is not provided in the source data\nvar mfg = source.manufacturer || '';\nif (!mfg && source.mac_address) {\n    // Extract OUI prefix (first 6 hex chars)\n    var mac = (source.mac_address || '').replace(/[:\\-]/g, '').toUpperCase();\n    var oui = mac.substring(0, 6);\n    // Common OUI prefixes for IoT manufacturers\n    var ouiMap = {\n        'B827EB': 'Raspberry Pi Foundation',\n        'DC4F22': 'Espressif Inc.',\n        'A020A6': 'Espressif Inc.',\n        '00124B': 'Texas Instruments',\n        '001BC5': 'Cisco Systems',\n        'F0B429': 'Siemens AG',\n        '000D6F': 'Ember Corporation',\n        '001E8F': 'Honeywell'\n    };\n    answer = ouiMap[oui] || 'Unknown';\n} else {\n    answer = mfg;\n}"
+          },
+          {
+            "target_field": "name",
+            "script": "// Build a descriptive name for IoT devices when no name is provided\nvar rawName = source.name || '';\nif (!rawName) {\n    var parts = [];\n    if (source.iot_category) parts.push(source.iot_category);\n    if (source.manufacturer) parts.push(source.manufacturer);\n    if (parts.length > 0) {\n        answer = 'IoT ' + parts.join(' - ');\n    } else {\n        answer = 'IoT Device ' + (source.mac_address || source.ip_address || 'Unknown');\n    }\n} else {\n    answer = rawName;\n}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pathfinder Relationship Transform",
+      "table": "cmdb_rel_ci",
+      "description": "Transforms relationship data from Pathfinder observed network connections into CMDB CI relationship records. Relationships are discovered through TCP connection tracking and protocol-level analysis.",
+      "active": true,
+      "run_business_rules": false,
+      "enforce_mandatory_fields": true,
+      "coalesce_fields": ["parent", "child", "type"],
+      "column_mappings": [
+        {
+          "source": "parent_name",
+          "target": "parent",
+          "type": "reference_lookup",
+          "reference_table": "cmdb_ci",
+          "reference_field": "name",
+          "coalesce": true,
+          "description": "Source CI of the relationship"
+        },
+        {
+          "source": "child_name",
+          "target": "child",
+          "type": "reference_lookup",
+          "reference_table": "cmdb_ci",
+          "reference_field": "name",
+          "coalesce": true,
+          "description": "Target CI of the relationship"
+        },
+        {
+          "source": "relationship_type",
+          "target": "type",
+          "type": "reference_lookup",
+          "reference_table": "cmdb_rel_type",
+          "reference_field": "name",
+          "coalesce": true,
+          "description": "Relationship type descriptor"
+        },
+        {
+          "source": "confidence_score",
+          "target": "x_avnth_confidence_score",
+          "description": "Relationship confidence based on observation frequency"
+        },
+        {
+          "source": "first_observed",
+          "target": "x_avnth_first_observed",
+          "description": "First connection observed"
+        },
+        {
+          "source": "last_observed",
+          "target": "x_avnth_last_observed",
+          "description": "Last connection observed"
+        },
+        {
+          "source": "connection_count",
+          "target": "x_avnth_connection_count",
+          "description": "Total connections observed in measurement window"
+        },
+        {
+          "source": "bytes_transferred",
+          "target": "x_avnth_bytes_transferred",
+          "description": "Total bytes transferred in measurement window"
+        },
+        {
+          "source": "protocol",
+          "target": "x_avnth_protocol",
+          "description": "Primary protocol observed (HTTP, gRPC, SQL, HL7, etc.)"
+        }
+      ],
+      "transform_scripts": {
+        "onBefore": "source.discovery_source = 'Avennorth Pathfinder';",
+        "onAfter": "gs.debug('Pathfinder SGC: Transformed relationship \"' + source.parent_name + ' -> ' + source.child_name + '\" (' + source.relationship_type + ')');",
+        "field_transforms": [
+          {
+            "target_field": "type",
+            "script": "// Map Pathfinder relationship type identifiers to ServiceNow cmdb_rel_type names\nvar relTypeMap = {\n    'depends_on': 'Depends on::Used by',\n    'sends_data_to': 'Sends data to::Receives data from',\n    'runs_on': 'Runs on::Runs',\n    'connects_to': 'Connects to::Connected by',\n    'uses': 'Depends on::Used by',\n    'hosted_on': 'Hosted on::Hosts',\n    'cluster_of': 'Cluster of::Cluster is'\n};\nvar rawType = (source.relationship_type || '').toLowerCase().replace(/\\s+/g, '_');\nvar mappedType = relTypeMap[rawType];\n\nif (mappedType) {\n    // Look up the sys_id for this relationship type\n    var relTypeGr = new GlideRecord('cmdb_rel_type');\n    relTypeGr.addQuery('name', mappedType);\n    relTypeGr.setLimit(1);\n    relTypeGr.query();\n    if (relTypeGr.next()) {\n        answer = relTypeGr.getUniqueValue();\n    } else {\n        // Fall back to 'Depends on::Used by' if type not found\n        relTypeGr = new GlideRecord('cmdb_rel_type');\n        relTypeGr.addQuery('name', 'Depends on::Used by');\n        relTypeGr.setLimit(1);\n        relTypeGr.query();\n        if (relTypeGr.next()) {\n            answer = relTypeGr.getUniqueValue();\n        }\n    }\n}"
+          }
+        ]
+      }
+    }
+  ]
+}

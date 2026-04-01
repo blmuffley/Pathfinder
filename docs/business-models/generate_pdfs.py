@@ -157,37 +157,60 @@ def generate_v03():
 
     # Pricing
     pdf.section_title("4. Pricing Model", (200, 255, 0))
-    tiers = [
-        ("Starter", "$15/host/mo", "50 hosts min", "Discovery only - agents, classification, CMDB sync, basic health"),
-        ("Professional", "$28/host/mo", "100 hosts min", "AI health scoring, summarization, EA reconciliation, anomaly detection"),
-        ("Enterprise", "$38/host/mo", "200 hosts min", "8 CMDB Ops agents, change impact, risk scoring, auto-deploy self-healing"),
+    pdf.body_text("Two packages, priced annually by Managed Node count:")
+    packages = [
+        ("Standard", "Discovery Engine + CMDB Ops", "Automated hygiene, CI lifecycle, stale record cleanup"),
+        ("Professional", "Standard + Integration Intel + Service Map Intel", "Data flow analysis, anomaly detection, dependency mapping"),
     ]
-    w3 = [35, 35, 30, 90]
-    pdf.table_header(["Tier", "Price", "Minimum", "Key Features"], w3)
+    w3a = [35, 75, 80]
+    pdf.table_header(["Package", "Contents", "Key Features"], w3a)
+    for p in packages:
+        pdf.table_row(p, w3a)
+    pdf.ln(2)
+    tiers = [
+        ("S", "Up to 500", "$50,000/yr", "$100,000/yr"),
+        ("M", "501-2,000", "$90,000/yr", "$175,000/yr"),
+        ("L", "2,001-5,000", "$150,000/yr", "$250,000/yr"),
+        ("XL", "5,001+", "$200,000+/yr", "Custom"),
+    ]
+    w3 = [20, 45, 55, 55]
+    pdf.table_header(["Tier", "Managed Nodes", "Standard (starting at)", "Professional (starting at)"], w3)
     for t in tiers:
         pdf.table_row(t, w3)
     pdf.ln(4)
 
     # Revenue Projections
     pdf.add_page()
-    pdf.section_title("5. Five-Year Revenue Projection", (60, 200, 120))
-    projections = [
-        ("Year 1", "5", "$180k", "$75k", "$1.80M", "-$1.73M", "Build + launch. 3-5 design partners."),
-        ("Year 2", "23", "$1.38M", "$900k", "$2.60M", "-$1.70M", "15 Compass partners. NRR 135%."),
-        ("Year 3", "59", "$4.96M", "$3.50M", "$4.20M", "-$700k", "40 partners. Enterprise tier accelerating."),
-        ("Year 4", "116", "$12.96M", "$9.20M", "$6.80M", "+$2.40M", "NRR 145%. Cash flow positive."),
-        ("Year 5", "189", "$27.22M", "$19.80M", "$10.00M", "+$9.80M", "Market leadership. Intelligence is the moat."),
+    pdf.section_title("5. Revenue Projections (Dual Scenario)", (60, 200, 120))
+    pdf.body_text("Scenario A: Moderate Growth")
+    proj_a = [
+        ("Year 1", "16", "$1.2M", "$600k", "$1.80M", "-$1.20M", "First customers, Standard S-tier."),
+        ("Year 2", "38", "$3.8M", "$2.5M", "$2.40M", "+$100k", "15% Std->Pro upgrade, 8% churn."),
+        ("Year 3", "72", "$8.5M", "$6.2M", "$3.40M", "+$2.80M", "25% upgrade, 3% price increase."),
+        ("Year 4", "120", "$17.5M", "$13.0M", "$5.20M", "+$7.80M", "35% upgrade, portfolio flywheel."),
+        ("Year 5", "217", "$33.2M", "$25.0M", "$5.50M", "+$19.5M", "89.6% EBITDA margin."),
     ]
     w4 = [18, 15, 23, 23, 22, 22, 67]
     pdf.table_header(["Year", "Clients", "ARR", "Revenue", "OpEx", "Cash Flow", "Notes"], w4)
-    for p in projections:
+    for p in proj_a:
         pdf.table_row(p, w4, bold_last=False)
-    pdf.ln(6)
+    pdf.ln(4)
+    pdf.body_text("Scenario Analysis:")
+    w4b = [35, 30, 30, 30, 30]
+    pdf.table_header(["Metric", "Bear", "Likely (Base)", "Bull", "Best Case"], w4b)
+    for r in [
+        ("Y5 ARR", "~$33M", "~$84M", "~$110M", "~$135M"),
+        ("Y5 Customers", "217", "546", "710", "875"),
+        ("Y5 EBITDA", "89.6%", "91.6%", "92.3%", "92.8%"),
+        ("Profitable Y1?", "No", "Yes", "Yes", "Yes"),
+    ]:
+        pdf.table_row(r, w4b)
+    pdf.ln(4)
 
     pdf.body_text(
-        "Key assumptions: Average deal size grows from $36k (Y1) to $144k (Y5) via host expansion + tier upgrades. "
-        "NRR 135-145% driven by intelligence product adoption. Annual logo churn ~8-10%, offset by expansion. "
-        "Intelligence products add ~45% to per-client ARPU by Year 4."
+        "Key assumptions (Likely): Std->Pro upgrade 0% Y1, 15% Y2, 25% Y3, 35% Y4-Y5. "
+        "Logo churn 5% Y1, 8% Y2-Y3, 10% Y4-Y5. Price increase 0% Y1-Y2, 3% Y3-Y4, 5% Y5. "
+        "XL Professional blended at $350K/yr."
     )
 
     pdf.output(os.path.join(OUTPUT_DIR, "v03-business-case.pdf"))
@@ -247,25 +270,25 @@ def generate_v04():
     pdf.add_page()
     pdf.section_title("3. Example Deal Flow", (200, 255, 0))
     deals = [
-        ("Pilot (Mo 1-3)", "75 hosts", "Starter $15", "$1,125/mo AV", "$300/mo partner"),
-        ("Expand (Mo 4-8)", "300 hosts", "Professional $28", "$8,400/mo AV", "$2,100/mo partner"),
-        ("Full Estate (Mo 9+)", "800 hosts", "Enterprise $38", "$30,400/mo AV", "$8,000/mo partner"),
+        ("Pilot (Mo 1-3)", "200 nodes", "Standard S", "$50K/yr AV", "$12.5K/yr partner"),
+        ("Expand (Mo 4-8)", "800 nodes", "Standard M", "$90K/yr AV", "$22.5K/yr partner"),
+        ("Upgrade (Mo 9+)", "800 nodes", "Professional M", "$175K/yr AV", "$43.75K/yr partner"),
     ]
     w2 = [35, 25, 35, 40, 40]
-    pdf.table_header(["Stage", "Hosts", "Tier", "Avennorth", "Partner"], w2)
+    pdf.table_header(["Stage", "Nodes", "Package/Tier", "Avennorth", "Partner (25%)"], w2)
     for d in deals:
         pdf.table_row(d, w2)
     pdf.ln(4)
-    pdf.body_text("Single client LTV: $364,800/yr Avennorth ARR. Partner earns $96,000/yr ongoing. Both incentivized to expand.")
+    pdf.body_text("Single client journey: Standard pilot -> node expansion -> Professional upgrade. Partner earns 20-30% markup. Both incentivized to expand.")
 
     # Projections
-    pdf.section_title("4. Five-Year Compass Projections", (60, 200, 120))
+    pdf.section_title("4. Five-Year Projections (Likely Case)", (60, 200, 120))
     proj = [
-        ("Y1", "0", "3", "$108k", "$45k", "$1.80M", "7"),
-        ("Y2", "15", "33", "$1.98M", "$1.20M", "$2.40M", "10"),
-        ("Y3", "40", "103", "$6.80M", "$4.80M", "$3.40M", "14"),
-        ("Y4", "75", "245", "$18.20M", "$13.50M", "$5.20M", "20"),
-        ("Y5", "120", "475", "$42.00M", "$31.00M", "$7.80M", "28"),
+        ("Y1", "0", "39", "$3.0M", "$1.5M", "$2.20M", "7"),
+        ("Y2", "20", "94", "$10.2M", "$6.6M", "$3.20M", "10"),
+        ("Y3", "45", "180", "$24.5M", "$17.0M", "$4.20M", "14"),
+        ("Y4", "70", "301", "$48.0M", "$36.0M", "$5.80M", "16"),
+        ("Y5", "100", "546", "$84.0M", "$66.0M", "$6.50M", "16"),
     ]
     w3 = [15, 20, 20, 25, 25, 22, 15]
     pdf.table_header(["Year", "Partners", "Clients", "ARR", "Revenue", "OpEx", "HC"], w3)
@@ -274,8 +297,9 @@ def generate_v04():
     pdf.ln(4)
 
     pdf.body_text(
-        "Y5: $42M ARR on 28 people = $1.5M ARR/employee. Intelligence products are 45% of ARR. "
-        "Channel-enabling features still needed: multi-tenancy, partner billing, usage metering (~8-12 weeks engineering)."
+        "Likely (Base): ~$84M ARR at 91.6% EBITDA, 546 customers. "
+        "Bear: ~$33M (217 customers). Bull: ~$110M (710). Best: ~$135M (875). "
+        "Penetration pricing is the base plan -- $50K entry removes procurement friction."
     )
 
     pdf.output(os.path.join(OUTPUT_DIR, "v04-compass-channel.pdf"))
@@ -341,13 +365,13 @@ def generate_v05():
     # Capital Efficiency
     pdf.section_title("4. Capital Efficiency (Confirmed)", (200, 255, 0))
     efficiency = [
-        ("Y5 ARR", "$40.0M", "4-product portfolio"),
-        ("Y5 Headcount", "14", "vs. 150-250 typical SaaS at this ARR"),
-        ("Y5 ARR/Employee", "$2.86M", "11-19x industry median ($150-250k)"),
-        ("Y5 Customers", "495", "110 Compass partners, 55 direct, 440 channel"),
-        ("Break-Even", "Late Year 2", "Intelligence products accelerate"),
+        ("Y5 ARR (Likely)", "~$84.0M", "Penetration pricing = base plan"),
+        ("Y5 ARR (Bear/Bull/Best)", "$33M / $110M / $135M", "Four-scenario analysis"),
+        ("Y5 Headcount", "~16", "vs. 300-500 typical SaaS at this ARR"),
+        ("Y5 Customers (Likely)", "546", "100 Compass partners, 70 direct, 476 channel"),
+        ("Y5 EBITDA Margin", "91.6%", "Profitable in Year 1"),
+        ("ARR/Employee", "~$5.25M", "20-35x industry median"),
         ("Funding Required", "Bootstrappable", "$610k incremental Year 1 investment"),
-        ("5-Year Cumulative Profit", "~$35M+", "After all operating costs"),
     ]
     for label, value, note in efficiency:
         pdf.metric_row(label, value, note)

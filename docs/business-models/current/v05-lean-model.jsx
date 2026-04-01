@@ -111,46 +111,49 @@ const leanStaffing = [
 
 const existingTeamCost = 420000;
 
+// ── Likely Case (Penetration Pricing = Base Plan) ──
+// Scenarios: Bear (0.4x), Likely/Base (1.0x), Bull (1.3x), Best Case (1.6x)
+
 const yearlyFinancials = [
   {
-    year: "Y1", label: "Build All 10 Phases + Compass Integration",
+    year: "Y1", label: "Build All 10 Phases + First Customers",
     newHireCost: 375000, existingTeamAlloc: existingTeamCost, infra: 48000, snLicenses: 12000, legal: 40000, patent: 50000, partner: 35000, marketing: 30000, aiTokens: 24000, contingency: 0,
-    compassPartners: 0, directClients: 3, channelClients: 0, totalClients: 3,
-    avgHostsNew: 100, avgPrice: 18, arr: 65, revenue: 25,
+    compassPartners: 0, directClients: 15, channelClients: 24, totalClients: 39,
+    avgHostsNew: 0, avgPrice: 0, arr: 3000, revenue: 1500,
     headcount: 5,
-    note: "All 10 phases built with AI-assisted development. 4-product portfolio complete. 104+ tests. 3 design partners. Claude API ~$2k/mo during build, $4k/mo at launch.",
+    note: "All 10 phases built. 39 customers on penetration pricing ($50K/yr entry). Self-serve onboarding investment. Profitable in Y1.",
   },
   {
-    year: "Y2", label: "Launch + Intelligence Upsell",
+    year: "Y2", label: "Compass Launch + Std→Pro Upgrades",
     newHireCost: 320000, existingTeamAlloc: existingTeamCost, infra: 60000, snLicenses: 15000, legal: 15000, patent: 0, partner: 10000, marketing: 45000, aiTokens: 48000, contingency: 0,
-    compassPartners: 15, directClients: 8, channelClients: 25, totalClients: 33,
-    avgHostsNew: 150, avgPrice: 24, arr: 1500, revenue: 900,
+    compassPartners: 20, directClients: 24, channelClients: 70, totalClients: 94,
+    avgHostsNew: 0, avgPrice: 0, arr: 10200, revenue: 6600,
     headcount: 7,
-    note: "15 Compass partners trained. Intelligence products drive 60% to Professional tier. NRR 140%. AI tokens scale with usage ~$4k/mo.",
+    note: "20 Compass partners. 15% Std→Pro upgrade. Standard dashboards surface Professional-only insights. Dedicated support team.",
   },
   {
-    year: "Y3", label: "Channel Flywheel + CMDB Ops Differentiator",
+    year: "Y3", label: "Channel Flywheel + Price Increases",
     newHireCost: 250000, existingTeamAlloc: existingTeamCost, infra: 84000, snLicenses: 18000, legal: 10000, patent: 0, partner: 10000, marketing: 60000, aiTokens: 72000, contingency: 0,
-    compassPartners: 40, directClients: 20, channelClients: 90, totalClients: 110,
-    avgHostsNew: 200, avgPrice: 28, arr: 5800, revenue: 4200,
+    compassPartners: 45, directClients: 35, channelClients: 145, totalClients: 180,
+    avgHostsNew: 0, avgPrice: 0, arr: 24500, revenue: 17000,
     headcount: 9,
-    note: "40 partners, 2-3 deployments each. CMDB Ops agents drive Enterprise tier. NRR 150%. AI tokens ~$6k/mo.",
+    note: "45 partners. 25% Std→Pro upgrade. 3% price increase. CoreX consultants drive upgrade conversations at quarterly reviews.",
   },
   {
     year: "Y4", label: "Scaling",
     newHireCost: 340000, existingTeamAlloc: existingTeamCost, infra: 108000, snLicenses: 20000, legal: 10000, patent: 15000, partner: 10000, marketing: 80000, aiTokens: 96000, contingency: 0,
-    compassPartners: 70, directClients: 35, channelClients: 220, totalClients: 255,
-    avgHostsNew: 280, avgPrice: 32, arr: 15500, revenue: 11500,
+    compassPartners: 70, directClients: 50, channelClients: 251, totalClients: 301,
+    avgHostsNew: 0, avgPrice: 0, arr: 48000, revenue: 36000,
     headcount: 11,
-    note: "70 partners. Intelligence revenue is 45% of ARR. Second patent. Cash flow strongly positive.",
+    note: "70 partners. 35% Std→Pro upgrade. Portfolio flywheel: Pathfinder → Bearing → Contour → Vantage.",
   },
   {
-    year: "Y5", label: "Market Leader",
+    year: "Y5", label: "Market Leader (Likely Case)",
     newHireCost: 455000, existingTeamAlloc: existingTeamCost, infra: 144000, snLicenses: 24000, legal: 10000, patent: 0, partner: 10000, marketing: 100000, aiTokens: 120000, contingency: 0,
-    compassPartners: 110, directClients: 55, channelClients: 440, totalClients: 495,
-    avgHostsNew: 320, avgPrice: 35, arr: 40000, revenue: 29500,
+    compassPartners: 100, directClients: 70, channelClients: 476, totalClients: 546,
+    avgHostsNew: 0, avgPrice: 0, arr: 84000, revenue: 66000,
     headcount: 14,
-    note: "110 partners. 495 end clients. $40M ARR on 14 people. ARR/employee: $2.86M. Avennorth Pathfinder is the default for ServiceNow CMDB governance.",
+    note: "546 customers. ~$84M ARR at 91.6% EBITDA. Bear: ~$33M/217. Bull: ~$110M/710. Best: ~$135M/875.",
   },
 ];
 
@@ -176,7 +179,7 @@ export default function PathfinderV5() {
   const [tab, setTab] = useState("team");
   const [scenario, setScenario] = useState(1.0);
   const [expandedYear, setExpandedYear] = useState(null);
-  const sLabel = scenario === 0.7 ? "Conservative" : scenario === 1.0 ? "Base Case" : "Aggressive";
+  const sLabel = scenario === 0.4 ? "Bear" : scenario === 1.0 ? "Likely (Base)" : scenario === 1.3 ? "Bull" : "Best Case";
 
   return (
     <div style={{ fontFamily: "'DM Sans','Segoe UI',system-ui,sans-serif", background: C.bg, color: C.text, minHeight: "100vh", padding: "24px 18px" }}>
@@ -280,7 +283,7 @@ export default function PathfinderV5() {
             </CalloutBox>
 
             <div style={{ display: "flex", gap: 3, marginBottom: 18, background: C.bgCard, borderRadius: 8, padding: 3, width: "fit-content" }}>
-              {[{ l: "Conservative", m: 0.7 }, { l: "Base Case", m: 1.0 }, { l: "Aggressive", m: 1.4 }].map(s => (
+              {[{ l: "Bear", m: 0.4 }, { l: "Likely (Base)", m: 1.0 }, { l: "Bull", m: 1.3 }, { l: "Best Case", m: 1.6 }].map(s => (
                 <button key={s.l} onClick={() => setScenario(s.m)} style={{ padding: "6px 14px", borderRadius: 6, border: "none", cursor: "pointer", fontSize: 11, fontWeight: scenario === s.m ? 600 : 400, color: scenario === s.m ? C.bg : C.dim, background: scenario === s.m ? C.lime : "transparent" }}>{s.l}</button>
               ))}
             </div>

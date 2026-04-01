@@ -49,11 +49,14 @@ A: Yes. The gateway can run as a Docker container or bare-metal binary. Linux ag
 
 ## Pricing
 
-**Q: What's the minimum commitment?**
-A: 50 hosts, annual commitment. Pilot pricing available for design partners.
+**Q: How is Pathfinder priced?**
+A: Annual subscription based on Managed Node count. A Managed Node is any endpoint where the Pathfinder agent is deployed (servers, VMs, cloud instances). Network devices, desktops, and anything discovered via agentless observation are included free.
 
-**Q: What's the difference between tiers?**
-A: Starter = discovery only. Professional = adds AI intelligence (health scoring, summarization, EA reconciliation). Enterprise = adds autonomous CMDB agents, change impact analysis, and risk scoring.
+**Q: What are the two packages?**
+A: **Standard** includes Pathfinder Discovery Engine + CMDB Ops (automated hygiene, CI lifecycle, stale record cleanup). **Professional** adds Integration Intelligence (cross-platform data flow analysis, anomaly detection) and Service Map Intelligence (dependency mapping, unmapped service detection).
+
+**Q: What are the price points?**
+A: Pricing starts at $50,000/yr (Standard, up to 500 nodes) and $100,000/yr (Professional, up to 500 nodes). Per-node cost decreases at higher tiers. Engagements over 5,000 nodes are custom-quoted.
 
 **Q: Is there a free trial?**
-A: We offer a 30-day proof of concept at pilot pricing for qualified customers. Contact your Avennorth partner or sales@avennorth.com.
+A: We offer a proof of concept at pilot pricing for qualified customers. Contact your Avennorth partner or sales@avennorth.com.

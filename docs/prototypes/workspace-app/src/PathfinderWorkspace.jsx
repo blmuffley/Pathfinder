@@ -525,8 +525,9 @@ const NAV=[
   {id:"health",label:"Health Dashboard",icon:"\uD83D\uDCC8"},
 ];
 
-export default function PathfinderWorkspace() {
+export default function PathfinderWorkspace({ embeddedPage }) {
   const [page,setPage]=useState("overview");
+  const activePage = embeddedPage || page;
   const [toast,setToast]=useState(null);
   const addToast=useCallback((msg,color)=>setToast({msg,color,key:Date.now()}),[]);
   const goTo=useCallback((p)=>setPage(p),[]);
@@ -538,7 +539,16 @@ export default function PathfinderWorkspace() {
     gaps: ()=><CoverageGapsPage addToast={addToast}/>,
     ea: ()=><EAReconciliationPage addToast={addToast}/>,
     health: ()=><HealthDashboardPage goTo={goTo}/>,
-  }[page]||OverviewPage;
+  }[activePage]||OverviewPage;
+
+  // When embedded in the clinical extension Layout, render content only (no sidebar)
+  if (embeddedPage) {
+    return <>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:${T.bg}}::-webkit-scrollbar-thumb{background:${T.bgHover};border-radius:3px}button{font-family:inherit}input,textarea{font-family:inherit}`}</style>
+      <Page />
+      {toast&&<Toast key={toast.key} message={toast.msg} color={toast.color} onDone={()=>setToast(null)} />}
+    </>;
+  }
 
   return <div style={{fontFamily:"'DM Sans','Segoe UI',system-ui,sans-serif",background:T.bg,color:T.text,minHeight:"100vh",display:"flex"}}>
     <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:${T.bg}}::-webkit-scrollbar-thumb{background:${T.bgHover};border-radius:3px}button{font-family:inherit}input,textarea{font-family:inherit}`}</style>

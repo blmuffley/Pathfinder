@@ -349,3 +349,221 @@ func (s *Store) InsertSyncLog(ctx context.Context, entityType, entityID, snSysID
 	)
 	return err
 }
+
+// --- SGC (Service Graph Connector) operations ---
+
+// GetUnsyncedSGCRecords retrieves records of the given type that have not yet
+// been synced via the Service Graph Connector. Returns generic maps so the
+// SGC publisher can apply type-specific mapping.
+func (s *Store) GetUnsyncedSGCRecords(ctx context.Context, recordType string, limit int) ([]map[string]interface{}, error) {
+	var query string
+	switch recordType {
+	case "servers":
+		query = `SELECT id::text, agent_id, hostname, os_type,
+		                COALESCE(ip_address, '') as ip_address,
+		                COALESCE(serial_number, '') as serial_number,
+		                COALESCE(cpu_count, 0) as cpu_count,
+		                COALESCE(ram_mb, 0) as ram_mb
+		         FROM agents
+		         WHERE sgc_synced = FALSE
+		         ORDER BY last_heartbeat DESC
+		         LIMIT $1`
+	case "app_instances":
+		query = `SELECT id::text, name, COALESCE(version, '') as version,
+		                COALESCE(vendor, '') as vendor,
+		                COALESCE(host_sys_id, '') as host_sys_id,
+		                COALESCE(listen_port, 0) as listen_port,
+		                COALESCE(install_path, '') as install_path
+		         FROM app_instances
+		         WHERE sgc_synced = FALSE
+		         ORDER BY last_observed DESC
+		         LIMIT $1`
+	case "integrations":
+		query = `SELECT id::text, source_app, target_app, integration_type,
+		                COALESCE(port, 0) as port,
+		                classification_confidence as confidence
+		         FROM classified_integrations
+		         WHERE sgc_synced = FALSE
+		         ORDER BY last_seen DESC
+		         LIMIT $1`
+	case "cloud_services":
+		query = `SELECT id::text, name, COALESCE(service_type, '') as service_type,
+		                COALESCE(provider_name, '') as provider_name,
+		                COALESCE(fqdn, '') as fqdn,
+		                COALESCE(ip_address, '') as ip_address,
+		                COALESCE(region, '') as region,
+		                COALESCE(account_id, '') as account_id
+		         FROM cloud_services
+		         WHERE sgc_synced = FALSE
+		         ORDER BY last_observed DESC
+		         LIMIT $1`
+	case "medical_devices":
+		query = `SELECT id::text, name, COALESCE(manufacturer, '') as manufacturer,
+		                COALESCE(model_number, '') as model_number,
+		                COALESCE(serial_number, '') as serial_number,
+		                COALESCE(ip_address, '') as ip_address,
+		                COALESCE(mac_address, '') as mac_address,
+		                COALESCE(device_class, '') as device_class,
+		                COALESCE(fda_classification, '') as fda_classification,
+		                COALESCE(operating_system, '') as operating_system
+		         FROM medical_devices
+		         WHERE sgc_synced = FALSE
+		         ORDER BY last_observed DESC
+		         LIMIT $1`
+	default:
+		return nil, fmt.Errorf("unknown SGC record type: %s", recordType)
+	}
+
+	rows, err := s.pool.Query(ctx, query, limit)
+	if err != nil {
+		return nil, fmt.Errorf("query unsynced %s: %w", recordType, err)
+	}
+	defer rows.Close()
+
+	fieldDescriptions := rows.FieldDescriptions()
+	var results []map[string]interface{}
+
+	for rows.Next() {
+		values, err := rows.Values()
+		if err != nil {
+			return nil, fmt.Errorf("scan %s row: %w", recordType, err)
+		}
+
+		record := make(map[string]interface{}, len(fieldDescriptions))
+		for i, fd := range fieldDescriptions {
+			record[string(fd.Name)] = values[i]
+		}
+		results = append(results, record)
+	}
+
+	return results, rows.Err()
+}
+
+// MarkSGCRecordSynced marks a record as synced via the Service Graph Connector
+// and stores the ServiceNow sys_id.
+func (s *Store) MarkSGCRecordSynced(ctx context.Context, recordType, id, sysID string) error {
+	var query string
+	switch recordType {
+	case "server":
+		query = `UPDATE agents SET sgc_synced = TRUE, sgc_sys_id = $1 WHERE id = $2::uuid`
+	case "app_instance":
+		query = `UPDATE app_instances SET sgc_synced = TRUE, sgc_sys_id = $1 WHERE id = $2::uuid`
+	case "integration":
+		query = `UPDATE classified_integrations SET sgc_synced = TRUE, sgc_sys_id = $1 WHERE id = $2::uuid`
+	case "cloud_service":
+		query = `UPDATE cloud_services SET sgc_synced = TRUE, sgc_sys_id = $1 WHERE id = $2::uuid`
+	case "medical_device":
+		query = `UPDATE medical_devices SET sgc_synced = TRUE, sgc_sys_id = $1 WHERE id = $2::uuid`
+	default:
+		return fmt.Errorf("unknown SGC record type: %s", recordType)
+	}
+
+	_, err := s.pool.Exec(ctx, query, sysID, id)
+	return err
+}
+
+// GetSGCExportRecords retrieves records modified since the given timestamp for
+// the SGC pull-based export API. Returns generic maps with a "record_type"
+// field so the export handler can route to the correct mapping function.
+// Supports cursor-based pagination; cursor is the last id from the previous page.
+func (s *Store) GetSGCExportRecords(ctx context.Context, ciType string, since time.Time, limit int, cursor string) ([]map[string]interface{}, string, error) {
+	types := []string{"server", "app_instance", "integration", "cloud_service", "medical_device"}
+	if ciType != "" {
+		types = []string{ciType}
+	}
+
+	var allRecords []map[string]interface{}
+
+	for _, rt := range types {
+		records, err := s.getSGCExportByType(ctx, rt, since, limit, cursor)
+		if err != nil {
+			s.logger.Warn("SGC export query failed for type", zap.String("type", rt), zap.Error(err))
+			continue
+		}
+		allRecords = append(allRecords, records...)
+	}
+
+	// Trim to limit and compute next cursor.
+	nextCursor := ""
+	if len(allRecords) > limit {
+		allRecords = allRecords[:limit]
+	}
+	if len(allRecords) == limit {
+		if lastID, ok := allRecords[len(allRecords)-1]["id"].(string); ok {
+			nextCursor = lastID
+		}
+	}
+
+	return allRecords, nextCursor, nil
+}
+
+// getSGCExportByType queries a single table for export records.
+func (s *Store) getSGCExportByType(ctx context.Context, recordType string, since time.Time, limit int, cursor string) ([]map[string]interface{}, error) {
+	var baseQuery string
+	switch recordType {
+	case "server":
+		baseQuery = `SELECT id::text, agent_id, hostname, os_type,
+		                    COALESCE(ip_address, '') as ip_address,
+		                    COALESCE(serial_number, '') as serial_number,
+		                    'server' as record_type
+		             FROM agents WHERE last_heartbeat >= $1`
+	case "app_instance":
+		baseQuery = `SELECT id::text, name, COALESCE(version, '') as version,
+		                    COALESCE(host_sys_id, '') as host_sys_id,
+		                    'app_instance' as record_type
+		             FROM app_instances WHERE last_observed >= $1`
+	case "integration":
+		baseQuery = `SELECT id::text, source_app, target_app, integration_type,
+		                    COALESCE(port, 0) as port,
+		                    classification_confidence as confidence,
+		                    'integration' as record_type
+		             FROM classified_integrations WHERE last_seen >= $1`
+	case "cloud_service":
+		baseQuery = `SELECT id::text, name, COALESCE(service_type, '') as service_type,
+		                    COALESCE(provider_name, '') as provider_name,
+		                    COALESCE(fqdn, '') as fqdn,
+		                    'cloud_service' as record_type
+		             FROM cloud_services WHERE last_observed >= $1`
+	case "medical_device":
+		baseQuery = `SELECT id::text, name, COALESCE(manufacturer, '') as manufacturer,
+		                    COALESCE(serial_number, '') as serial_number,
+		                    COALESCE(ip_address, '') as ip_address,
+		                    'medical_device' as record_type
+		             FROM medical_devices WHERE last_observed >= $1`
+	default:
+		return nil, fmt.Errorf("unknown export type: %s", recordType)
+	}
+
+	if cursor != "" {
+		baseQuery += " AND id > $3::uuid"
+	}
+	baseQuery += " ORDER BY id LIMIT $2"
+
+	var args []interface{}
+	if cursor != "" {
+		args = []interface{}{since, limit, cursor}
+	} else {
+		args = []interface{}{since, limit}
+	}
+
+	rows, err := s.pool.Query(ctx, baseQuery, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	fieldDescs := rows.FieldDescriptions()
+	var results []map[string]interface{}
+	for rows.Next() {
+		vals, err := rows.Values()
+		if err != nil {
+			return nil, err
+		}
+		record := make(map[string]interface{}, len(fieldDescs))
+		for i, fd := range fieldDescs {
+			record[string(fd.Name)] = vals[i]
+		}
+		results = append(results, record)
+	}
+	return results, rows.Err()
+}

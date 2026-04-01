@@ -1,0 +1,516 @@
+{
+  "_comment": "IRE Reconciliation Rules for Avennorth Pathfinder SGC. These rules define attribute-level source precedence when the IRE merges data from multiple discovery sources. Pathfinder is authoritative for observed/technical data; manual entry retains precedence for business context fields.",
+  "scope": "x_avnth_pathfinder_sgc",
+  "data_source": "Avennorth Pathfinder",
+  "data_source_priority": 3,
+  "reconciliation_rules": [
+    {
+      "name": "Server Reconciliation",
+      "applies_to": "cmdb_ci_server",
+      "description": "Reconciliation rules for servers. Pathfinder is authoritative for all network-observed and OS-level attributes. Business ownership fields defer to manual or ServiceNow Discovery data.",
+      "pathfinder_authoritative": [
+        {
+          "field": "ip_address",
+          "reason": "Observed in real-time by kernel-level agent"
+        },
+        {
+          "field": "os",
+          "reason": "Detected from kernel and process metadata"
+        },
+        {
+          "field": "os_version",
+          "reason": "Detected from kernel and process metadata"
+        },
+        {
+          "field": "cpu_count",
+          "reason": "Read from host system by agent"
+        },
+        {
+          "field": "ram",
+          "reason": "Read from host system by agent"
+        },
+        {
+          "field": "mac_address",
+          "reason": "Observed on network interfaces by agent"
+        },
+        {
+          "field": "dns_domain",
+          "reason": "Resolved from agent hostname"
+        },
+        {
+          "field": "discovery_source",
+          "reason": "Always set to 'Avennorth Pathfinder' for Pathfinder-managed CIs"
+        },
+        {
+          "field": "x_avnth_pathfinder_managed",
+          "reason": "Pathfinder agent enrollment status"
+        },
+        {
+          "field": "x_avnth_agent_version",
+          "reason": "Reported by agent heartbeat"
+        },
+        {
+          "field": "x_avnth_last_observed",
+          "reason": "Timestamp of last agent observation"
+        },
+        {
+          "field": "x_avnth_first_observed",
+          "reason": "Timestamp of first agent observation"
+        },
+        {
+          "field": "x_avnth_confidence_score",
+          "reason": "Calculated by Pathfinder classification engine"
+        },
+        {
+          "field": "x_avnth_coverage_tier",
+          "reason": "Assigned by coverage gap analysis"
+        }
+      ],
+      "manual_authoritative": [
+        {
+          "field": "assigned_to",
+          "reason": "Business ownership — set by ITSM processes"
+        },
+        {
+          "field": "support_group",
+          "reason": "Support routing — set by ITSM processes"
+        },
+        {
+          "field": "used_for",
+          "reason": "Business context — set by asset management"
+        },
+        {
+          "field": "department",
+          "reason": "Organizational assignment — set by asset management"
+        },
+        {
+          "field": "cost_center",
+          "reason": "Financial attribution — set by finance"
+        },
+        {
+          "field": "environment",
+          "reason": "May be manually classified (prod/dev/staging)"
+        },
+        {
+          "field": "location",
+          "reason": "Physical location — set by facilities or asset management"
+        },
+        {
+          "field": "comments",
+          "reason": "Free-text notes — never overwritten"
+        }
+      ],
+      "merge_strategy": "pathfinder_wins_on_conflict",
+      "stale_threshold_days": 30,
+      "stale_action": "mark_stale_do_not_delete"
+    },
+    {
+      "name": "Application Instance Reconciliation",
+      "applies_to": "cmdb_ci_app_server",
+      "description": "Reconciliation rules for application instances. Pathfinder is authoritative for runtime characteristics observed through process and port monitoring.",
+      "pathfinder_authoritative": [
+        {
+          "field": "ip_address",
+          "reason": "Observed binding address"
+        },
+        {
+          "field": "tcp_port",
+          "reason": "Observed listening port"
+        },
+        {
+          "field": "host",
+          "reason": "Hosting server reference resolved by agent"
+        },
+        {
+          "field": "running_process",
+          "reason": "Process name observed by agent"
+        },
+        {
+          "field": "running_process_command",
+          "reason": "Process command line observed by agent"
+        },
+        {
+          "field": "version",
+          "reason": "Application version detected from process metadata"
+        },
+        {
+          "field": "discovery_source",
+          "reason": "Always set to 'Avennorth Pathfinder'"
+        },
+        {
+          "field": "x_avnth_pathfinder_managed",
+          "reason": "Pathfinder management status"
+        },
+        {
+          "field": "x_avnth_last_observed",
+          "reason": "Timestamp of last observation"
+        },
+        {
+          "field": "x_avnth_first_observed",
+          "reason": "Timestamp of first observation"
+        },
+        {
+          "field": "x_avnth_confidence_score",
+          "reason": "Classification engine confidence"
+        },
+        {
+          "field": "x_avnth_behavioral_class",
+          "reason": "Behavioral classification (web server, database, message broker, etc.)"
+        },
+        {
+          "field": "x_avnth_protocol_fingerprint",
+          "reason": "Protocol-level fingerprint from traffic analysis"
+        },
+        {
+          "field": "x_avnth_connection_count",
+          "reason": "Active connection count at last observation"
+        }
+      ],
+      "manual_authoritative": [
+        {
+          "field": "assigned_to",
+          "reason": "Application owner — set by ITSM"
+        },
+        {
+          "field": "support_group",
+          "reason": "Support routing — set by ITSM"
+        },
+        {
+          "field": "used_for",
+          "reason": "Business purpose — set by app portfolio management"
+        },
+        {
+          "field": "department",
+          "reason": "Owning department — set by asset management"
+        },
+        {
+          "field": "cost_center",
+          "reason": "Financial attribution"
+        },
+        {
+          "field": "environment",
+          "reason": "May be manually classified"
+        },
+        {
+          "field": "comments",
+          "reason": "Free-text notes — never overwritten"
+        }
+      ],
+      "merge_strategy": "pathfinder_wins_on_conflict",
+      "stale_threshold_days": 14,
+      "stale_action": "mark_stale_do_not_delete"
+    },
+    {
+      "name": "Cloud Service Reconciliation",
+      "applies_to": "cmdb_ci_cloud_service",
+      "description": "Reconciliation rules for cloud services. Pathfinder discovers cloud services through outbound traffic analysis (TLS SNI, DNS, IP range mapping). It is authoritative for service identity and connectivity attributes.",
+      "pathfinder_authoritative": [
+        {
+          "field": "service_type",
+          "reason": "Classified from outbound traffic patterns"
+        },
+        {
+          "field": "cloud_region",
+          "reason": "Determined from destination IP geolocation and DNS"
+        },
+        {
+          "field": "discovery_source",
+          "reason": "Always set to 'Avennorth Pathfinder'"
+        },
+        {
+          "field": "x_avnth_pathfinder_managed",
+          "reason": "Pathfinder management status"
+        },
+        {
+          "field": "x_avnth_last_observed",
+          "reason": "Timestamp of last outbound connection observed"
+        },
+        {
+          "field": "x_avnth_first_observed",
+          "reason": "Timestamp of first outbound connection observed"
+        },
+        {
+          "field": "x_avnth_confidence_score",
+          "reason": "Classification confidence for service identification"
+        },
+        {
+          "field": "x_avnth_cloud_provider",
+          "reason": "Cloud provider (AWS, Azure, GCP, etc.)"
+        },
+        {
+          "field": "x_avnth_endpoint_url",
+          "reason": "Observed service endpoint URL"
+        },
+        {
+          "field": "x_avnth_tls_version",
+          "reason": "TLS version observed in outbound connections"
+        }
+      ],
+      "manual_authoritative": [
+        {
+          "field": "assigned_to",
+          "reason": "Cloud service owner"
+        },
+        {
+          "field": "support_group",
+          "reason": "Support routing"
+        },
+        {
+          "field": "cost_center",
+          "reason": "Cloud cost attribution"
+        },
+        {
+          "field": "used_for",
+          "reason": "Business purpose"
+        },
+        {
+          "field": "environment",
+          "reason": "Environment classification"
+        },
+        {
+          "field": "comments",
+          "reason": "Free-text notes — never overwritten"
+        }
+      ],
+      "merge_strategy": "pathfinder_wins_on_conflict",
+      "stale_threshold_days": 7,
+      "stale_action": "mark_stale_do_not_delete"
+    },
+    {
+      "name": "Medical Device Reconciliation",
+      "applies_to": "cmdb_ci_medical_device",
+      "description": "Reconciliation rules for medical devices. Pathfinder discovers medical devices through healthcare protocol analysis (HL7, FHIR, DICOM). Medical devices have strict regulatory requirements, so Pathfinder only updates technical/network attributes and never modifies compliance or maintenance fields.",
+      "pathfinder_authoritative": [
+        {
+          "field": "ip_address",
+          "reason": "Network address observed by agent"
+        },
+        {
+          "field": "mac_address",
+          "reason": "MAC address observed on network"
+        },
+        {
+          "field": "discovery_source",
+          "reason": "Always set to 'Avennorth Pathfinder'"
+        },
+        {
+          "field": "x_avnth_pathfinder_managed",
+          "reason": "Pathfinder management status"
+        },
+        {
+          "field": "x_avnth_last_observed",
+          "reason": "Timestamp of last protocol exchange observed"
+        },
+        {
+          "field": "x_avnth_first_observed",
+          "reason": "Timestamp of first protocol exchange observed"
+        },
+        {
+          "field": "x_avnth_confidence_score",
+          "reason": "Classification confidence"
+        },
+        {
+          "field": "x_avnth_device_risk_tier",
+          "reason": "Risk tier based on protocol analysis and connectivity patterns"
+        },
+        {
+          "field": "x_avnth_protocol_type",
+          "reason": "Primary protocol (HL7v2, FHIR, DICOM, etc.)"
+        },
+        {
+          "field": "x_avnth_network_segment",
+          "reason": "Network segment / VLAN observed"
+        }
+      ],
+      "manual_authoritative": [
+        {
+          "field": "serial_number",
+          "reason": "May be set by biomedical engineering — Pathfinder only sets on create"
+        },
+        {
+          "field": "assigned_to",
+          "reason": "Device custodian — set by biomed"
+        },
+        {
+          "field": "support_group",
+          "reason": "Clinical engineering support"
+        },
+        {
+          "field": "department",
+          "reason": "Clinical department"
+        },
+        {
+          "field": "location",
+          "reason": "Physical location — set by facilities"
+        },
+        {
+          "field": "used_for",
+          "reason": "Clinical purpose"
+        },
+        {
+          "field": "cost_center",
+          "reason": "Financial attribution"
+        },
+        {
+          "field": "warranty_expiration",
+          "reason": "Warranty tracking — set by procurement"
+        },
+        {
+          "field": "maintenance_schedule",
+          "reason": "PM schedule — set by biomed"
+        },
+        {
+          "field": "fda_class",
+          "reason": "FDA classification — set by regulatory affairs"
+        },
+        {
+          "field": "comments",
+          "reason": "Free-text notes — never overwritten"
+        }
+      ],
+      "merge_strategy": "pathfinder_wins_on_conflict",
+      "stale_threshold_days": 3,
+      "stale_action": "flag_for_review"
+    },
+    {
+      "name": "IoT Device Reconciliation",
+      "applies_to": "cmdb_ci_ip_device",
+      "description": "Reconciliation rules for IoT and IP-connected devices. Pathfinder discovers these through IoT protocol analysis (MQTT, CoAP, AMQP). These devices are often unmanaged, so Pathfinder is the primary source of truth.",
+      "pathfinder_authoritative": [
+        {
+          "field": "ip_address",
+          "reason": "Network address observed by agent"
+        },
+        {
+          "field": "mac_address",
+          "reason": "MAC address observed on network"
+        },
+        {
+          "field": "os",
+          "reason": "Firmware/OS detected from protocol fingerprinting"
+        },
+        {
+          "field": "os_version",
+          "reason": "Firmware version detected from protocol metadata"
+        },
+        {
+          "field": "discovery_source",
+          "reason": "Always set to 'Avennorth Pathfinder'"
+        },
+        {
+          "field": "x_avnth_pathfinder_managed",
+          "reason": "Pathfinder management status"
+        },
+        {
+          "field": "x_avnth_last_observed",
+          "reason": "Timestamp of last protocol exchange observed"
+        },
+        {
+          "field": "x_avnth_first_observed",
+          "reason": "Timestamp of first protocol exchange observed"
+        },
+        {
+          "field": "x_avnth_confidence_score",
+          "reason": "Classification confidence"
+        },
+        {
+          "field": "x_avnth_protocol_type",
+          "reason": "Primary IoT protocol (MQTT, CoAP, AMQP, etc.)"
+        },
+        {
+          "field": "x_avnth_iot_category",
+          "reason": "IoT device category (sensor, actuator, gateway, controller)"
+        },
+        {
+          "field": "x_avnth_network_segment",
+          "reason": "Network segment / VLAN observed"
+        },
+        {
+          "field": "x_avnth_firmware_hash",
+          "reason": "Firmware fingerprint hash"
+        }
+      ],
+      "manual_authoritative": [
+        {
+          "field": "assigned_to",
+          "reason": "Device owner"
+        },
+        {
+          "field": "support_group",
+          "reason": "Support routing"
+        },
+        {
+          "field": "department",
+          "reason": "Owning department"
+        },
+        {
+          "field": "location",
+          "reason": "Physical location"
+        },
+        {
+          "field": "used_for",
+          "reason": "Business purpose"
+        },
+        {
+          "field": "cost_center",
+          "reason": "Financial attribution"
+        },
+        {
+          "field": "comments",
+          "reason": "Free-text notes — never overwritten"
+        }
+      ],
+      "merge_strategy": "pathfinder_wins_on_conflict",
+      "stale_threshold_days": 7,
+      "stale_action": "mark_stale_do_not_delete"
+    },
+    {
+      "name": "Relationship Reconciliation",
+      "applies_to": "cmdb_rel_ci",
+      "description": "Reconciliation rules for CI relationships. Pathfinder discovers relationships through observed network connections and protocol exchanges. It is fully authoritative for relationship technical metadata but does not modify relationship types that were manually created.",
+      "pathfinder_authoritative": [
+        {
+          "field": "discovery_source",
+          "reason": "Always set to 'Avennorth Pathfinder'"
+        },
+        {
+          "field": "x_avnth_first_observed",
+          "reason": "Timestamp of first connection observed"
+        },
+        {
+          "field": "x_avnth_last_observed",
+          "reason": "Timestamp of last connection observed"
+        },
+        {
+          "field": "x_avnth_confidence_score",
+          "reason": "Confidence that this relationship exists based on observation frequency"
+        },
+        {
+          "field": "x_avnth_connection_count",
+          "reason": "Number of connections observed in the measurement window"
+        },
+        {
+          "field": "x_avnth_bytes_transferred",
+          "reason": "Total bytes transferred in the measurement window"
+        },
+        {
+          "field": "x_avnth_protocol",
+          "reason": "Primary protocol observed (HTTP, gRPC, SQL, HL7, etc.)"
+        }
+      ],
+      "manual_authoritative": [
+        {
+          "field": "type",
+          "reason": "Relationship type — Pathfinder only sets on create, never changes existing"
+        },
+        {
+          "field": "comments",
+          "reason": "Free-text notes — never overwritten"
+        }
+      ],
+      "merge_strategy": "pathfinder_wins_on_conflict",
+      "stale_threshold_days": 7,
+      "stale_action": "mark_stale_do_not_delete"
+    }
+  ]
+}

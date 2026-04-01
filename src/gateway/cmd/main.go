@@ -15,6 +15,7 @@ import (
 	"github.com/blmuffley/Pathfinder/src/gateway/internal/classify"
 	"github.com/blmuffley/Pathfinder/src/gateway/internal/config"
 	"github.com/blmuffley/Pathfinder/src/gateway/internal/server"
+	"github.com/blmuffley/Pathfinder/src/gateway/internal/sgc"
 	"github.com/blmuffley/Pathfinder/src/gateway/internal/snsync"
 	"github.com/blmuffley/Pathfinder/src/gateway/internal/store"
 )
@@ -64,8 +65,27 @@ func main() {
 	classifyLoop := classify.NewLoop(db, classifier, 10*time.Second, 1000, logger)
 	go classifyLoop.Run(ctx)
 
-	// Start ServiceNow sync loop (if SN instance is configured)
-	if cfg.ServiceNow.Instance != "" && cfg.ServiceNow.Instance != "https://mock-sn.localhost" {
+	// Start Service Graph Connector publisher (primary CMDB integration via IRE)
+	sgcEnabled := os.Getenv("PF_SGC_ENABLED") != "false" // enabled by default
+	if sgcEnabled && cfg.ServiceNow.Instance != "" && cfg.ServiceNow.Instance != "https://mock-sn.localhost" {
+		sgcPublisher := sgc.NewPublisher(sgc.Config{
+			InstanceURL:   cfg.ServiceNow.Instance,
+			ClientID:      cfg.ServiceNow.ClientID,
+			ClientSecret:  cfg.ServiceNow.ClientSecret,
+			SyncInterval:  cfg.ServiceNow.SyncInterval,
+			BatchSize:     cfg.ServiceNow.BatchSize,
+			Enabled:       true,
+			RetryAttempts: 3,
+			RetryDelay:    5 * time.Second,
+		}, db, logger)
+		go sgcPublisher.Run(ctx)
+		logger.Info("Service Graph Connector publisher started (IRE)")
+	}
+
+	// Start legacy ServiceNow sync loop (deprecated — use SGC for new deployments)
+	// Set PF_LEGACY_SYNC=true to enable during migration
+	legacySync := os.Getenv("PF_LEGACY_SYNC") == "true"
+	if legacySync && cfg.ServiceNow.Instance != "" && cfg.ServiceNow.Instance != "https://mock-sn.localhost" {
 		snClient := snsync.NewClient(
 			cfg.ServiceNow.Instance,
 			cfg.ServiceNow.ClientID,
@@ -74,7 +94,8 @@ func main() {
 		)
 		syncLoop := snsync.NewSyncLoop(db, snClient, cfg.ServiceNow.SyncInterval, cfg.ServiceNow.BatchSize, logger)
 		go syncLoop.Run(ctx)
-	} else {
+		logger.Warn("Legacy SN sync loop started (deprecated — migrate to SGC)")
+	} else if !sgcEnabled {
 		logger.Warn("ServiceNow sync disabled — no valid instance configured")
 	}
 
